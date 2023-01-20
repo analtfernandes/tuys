@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GlobalStyle from "../styles/globalStyles";
 import { Header } from "../header/Header";
+import { Footer } from "../footer/Footer";
 
 function App() {
 	return (
@@ -8,6 +9,8 @@ function App() {
 			<GlobalStyle />
 
 			<Header />
+			<Footer />
+
 			<Routes>
 				<Route path="/" />
 				<Route path="/channels" />
