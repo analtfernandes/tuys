@@ -1,6 +1,11 @@
 import { createGlobalStyle } from "styled-components";
+import { PaletteType } from "./palettes";
 
-const GlobalStyle = createGlobalStyle`
+type GlobalStyleType = {
+	variant: PaletteType;
+};
+
+const GlobalStyle = createGlobalStyle<GlobalStyleType>`
     /* http://meyerweb.com/eric/tools/css/reset/ 
     v2.0 | 20110126
     License: none (public domain)
@@ -134,7 +139,7 @@ const GlobalStyle = createGlobalStyle`
     /* My styles */
     body {
       height: 100vh;
-      background-color: var(--white);
+      background-color: ${(props) => props.variant.body.background};
       font-family: 'Roboto', sans-serif;
     }
 

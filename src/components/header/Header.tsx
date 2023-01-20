@@ -50,7 +50,7 @@ const Wrapper = styled.section`
 	top: 0;
 	left: 0;
 	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-	background-color: #f2d6b3;
+	background-color: ${(props) => props.theme.header.background};
 
 	> img {
 		height: 55px;
@@ -61,6 +61,7 @@ const Wrapper = styled.section`
 			height: 23px;
 			width: 23px;
 			margin-left: 20px;
+			color: ${(props) => props.theme.header.color};
 			cursor: pointer;
 		}
 	}

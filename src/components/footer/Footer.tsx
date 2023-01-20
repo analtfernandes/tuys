@@ -43,11 +43,12 @@ const Wrapper = styled.section`
 	bottom: 0;
 	left: 0;
 	box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.25);
-	background-color: var(--white);
+	background-color: ${props => props.theme.footer.background};
 
 	svg {
 		height: 23px;
 		width: 23px;
+        color: ${props => props.theme.footer.color};
 		cursor: pointer;
 	}
 

@@ -35,5 +35,5 @@ const IconsTypes = Object.freeze({
 export function Icons<Type>({ type, options }: IconsParams<Type>) {
 	const Icon = IconsTypes[type];
 
-	return <Icon title={type} size="20px" color="var(--black)" {...options} />;
+	return <Icon title={type} {...options} />;
 }
