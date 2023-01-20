@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channels {
+  id         Int       @id(map: "Channels_pk") @default(autoincrement())
+  name       String    @unique @db.VarChar(20)
+  background String
+  Stories    Stories[]
+}
+
+model Comments {
+  id      Int     @id(map: "Comments_pk") @default(autoincrement())
+  userId  Int
+  storyId Int
+  text    String  @db.VarChar(255)
+  Users   Users   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk0")
+  Stories Stories @relation(fields: [storyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk1")
+}
+
+model Denunciations {
+  id      Int     @id(map: "Denunciations_pk") @default(autoincrement())
+  userId  Int
+  storyId Int
+  text    String  @db.VarChar(255)
+  Users   Users   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Denunciations_fk0")
+  Stories Stories @relation(fields: [storyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Denunciations_fk1")
+}
+
+model Likes {
+  id      Int      @id(map: "Likes_pk") @default(autoincrement())
+  userId  Int
+  storyId Int
+  date    DateTime @default(dbgenerated("'2023-01-20'::date")) @db.Date
+  Users   Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk0")
+  Stories Stories  @relation(fields: [storyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk1")
+}
+
+model Notifications {
+  id                 Int                @id(map: "Notifications_pk") @default(autoincrement())
+  toUserId           Int
+  text               String             @db.VarChar(255)
+  date               DateTime           @default(dbgenerated("'2023-01-20'::date")) @db.Date
+  typeId             Int
+  Users              Users              @relation(fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk0")
+  NotificationsTypes NotificationsTypes @relation(fields: [typeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk1")
+}
+
+model NotificationsTypes {
+  id            Int             @id(map: "NotificationsTypes_pk") @default(autoincrement())
+  type          String          @unique @db.VarChar(255)
+  Notifications Notifications[]
+}
+
+model Ranks {
+  id    Int     @id(map: "Ranks_pk") @default(autoincrement())
+  name  String  @unique @db.VarChar(255)
+  color String  @unique
+  Users Users[]
+}
+
+model Sessions {
+  id     Int     @id(map: "Sessions_pk") @default(autoincrement())
+  userId Int
+  token  String
+  active Boolean @default(true)
+  Users  Users   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Sessions_fk0")
+}
+
+model Stories {
+  id            Int             @id(map: "Stories_pk") @default(autoincrement())
+  title         String          @db.VarChar(30)
+  body          String          @db.VarChar(1000)
+  date          DateTime        @default(dbgenerated("'2023-01-20'::date")) @db.Date
+  status        String          @default("active") @db.VarChar(255)
+  userId        Int
+  channelId     Int
+  Comments      Comments[]
+  Denunciations Denunciations[]
+  Likes         Likes[]
+  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Stories_fk0")
+  Channels      Channels        @relation(fields: [channelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Stories_fk1")
+}
+
+model Users {
+  id            Int             @id(map: "Users_pk") @default(autoincrement())
+  username      String          @unique @db.VarChar(25)
+  avatar        String
+  email         String          @unique
+  password      String
+  about         String          @db.VarChar(50)
+  status        String          @default("active") @db.VarChar(255)
+  rankId        Int
+  Comments      Comments[]
+  Denunciations Denunciations[]
+  Likes         Likes[]
+  Notifications Notifications[]
+  Sessions      Sessions[]
+  Stories       Stories[]
+  Ranks         Ranks           @relation(fields: [rankId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_fk0")
+}
