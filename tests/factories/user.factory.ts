@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Users } from "@prisma/client";
+import { Users, UserStatus } from "@prisma/client";
 import { prisma } from "database";
 
 function createCustomUser(data: CreateCustomUserParams) {
@@ -10,7 +10,7 @@ function createCustomUser(data: CreateCustomUserParams) {
       email: faker.internet.email(),
       password: faker.internet.password(),
       about: faker.lorem.words(),
-      status: "active",
+      status: UserStatus.ACTIVE,
       ...data,
     },
   });

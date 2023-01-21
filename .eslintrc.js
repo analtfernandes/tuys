@@ -93,7 +93,7 @@ module.exports = {
           },
           {
             from: ["middlewares"],
-            allow: ["services", "controllers", "database"],
+            allow: ["services", "controllers", "database", "repositories"],
           },
           {
             from: ["services"],

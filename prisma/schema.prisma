@@ -11,6 +11,7 @@ model Channels {
   id         Int       @id(map: "Channels_pk") @default(autoincrement())
   name       String    @unique @db.VarChar(20)
   background String
+  editable   Boolean   @default(false)
   Stories    Stories[]
 }
 
@@ -36,32 +37,35 @@ model Likes {
   id      Int      @id(map: "Likes_pk") @default(autoincrement())
   userId  Int
   storyId Int
-  date    DateTime @default(dbgenerated("'2023-01-20'::date")) @db.Date
+  date    DateTime @default(now()) @db.Date
   Users   Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk0")
   Stories Stories  @relation(fields: [storyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk1")
 }
 
 model Notifications {
-  id                 Int                @id(map: "Notifications_pk") @default(autoincrement())
-  toUserId           Int
-  text               String             @db.VarChar(255)
-  date               DateTime           @default(dbgenerated("'2023-01-20'::date")) @db.Date
-  typeId             Int
-  Users              Users              @relation(fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk0")
-  NotificationsTypes NotificationsTypes @relation(fields: [typeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk1")
+  id       Int              @id(map: "Notifications_pk") @default(autoincrement())
+  toUserId Int
+  text     String           @db.VarChar(255)
+  date     DateTime         @default(now()) @db.Date
+  read     Boolean          @default(false)
+  type     NotificationType
+  Users    Users            @relation(fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk0")
 }
 
-model NotificationsTypes {
-  id            Int             @id(map: "NotificationsTypes_pk") @default(autoincrement())
-  type          String          @unique @db.VarChar(255)
-  Notifications Notifications[]
+enum NotificationType {
+  NEW_STORY
+  NEW_DENUNCIATION
+  NEW_LIKE
+  NEW_COMMENT
+  NEW_FOLLOW
 }
 
 model Ranks {
-  id    Int     @id(map: "Ranks_pk") @default(autoincrement())
-  name  String  @unique @db.VarChar(255)
-  color String  @unique
-  Users Users[]
+  id       Int     @id(map: "Ranks_pk") @default(autoincrement())
+  name     String  @unique @db.VarChar(255)
+  color    String  @unique
+  editable Boolean @default(false)
+  Users    Users[]
 }
 
 model Sessions {
@@ -76,8 +80,8 @@ model Stories {
   id            Int             @id(map: "Stories_pk") @default(autoincrement())
   title         String          @db.VarChar(30)
   body          String          @db.VarChar(1000)
-  date          DateTime        @default(dbgenerated("'2023-01-20'::date")) @db.Date
-  status        String          @default("active") @db.VarChar(255)
+  date          DateTime        @default(now()) @db.Date
+  status        StorieStatus    @default(ACTIVE)
   userId        Int
   channelId     Int
   Comments      Comments[]
@@ -87,14 +91,19 @@ model Stories {
   Channels      Channels        @relation(fields: [channelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Stories_fk1")
 }
 
+enum StorieStatus {
+  ACTIVE
+  BANNED
+}
+
 model Users {
   id            Int             @id(map: "Users_pk") @default(autoincrement())
   username      String          @unique @db.VarChar(25)
   avatar        String
   email         String          @unique
   password      String
-  about         String          @db.VarChar(50)
-  status        String          @default("active") @db.VarChar(255)
+  about         String          @default("") @db.VarChar(50)
+  status        UserStatus      @default(ACTIVE)
   rankId        Int
   Comments      Comments[]
   Denunciations Denunciations[]
@@ -103,4 +112,9 @@ model Users {
   Sessions      Sessions[]
   Stories       Stories[]
   Ranks         Ranks           @relation(fields: [rankId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_fk0")
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
 }

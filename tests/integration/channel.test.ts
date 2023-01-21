@@ -59,6 +59,7 @@ describe("GET /channels", () => {
           id: channel.id,
           name: channel.name,
           background: channel.background,
+          editable: false,
         },
       ]);
     });
