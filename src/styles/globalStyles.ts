@@ -156,6 +156,24 @@ const GlobalStyle = createGlobalStyle<GlobalStyleType>`
     #root {
       height: 100%
     }
+
+    main {
+      width: 100%;
+      height: 100%;
+      padding: 65px 0 0;
+      
+      > span {
+        color: ${(props) => props.variant.colors.darkGray};
+        margin-left: 20px;
+        line-height: 50px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      main {
+        padding: 65px 0;
+      }
+    }
 `;
 
 export default GlobalStyle;
