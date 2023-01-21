@@ -16,6 +16,7 @@ export function Channel({ id, name, background, editable }: ChannelType) {
 
 	return (
 		<Wrapper background={background} onClick={goToChannel}>
+			<img src={background} alt={name} />
 			<span>{name}</span>
 		</Wrapper>
 	);
@@ -28,17 +29,15 @@ const Wrapper = styled.div<WrapperProps>`
 	margin: 0 7px 15px;
 	display: flex;
 	align-items: center;
+	position: relative;
 	border-radius: 5px;
-	background-color: ${(props) => props.theme.colors.background};
-	background-image: url(${(props) => props.background});
-	box-shadow: inset 130px 0 0 rgba(0, 0, 0, 0.4);
-	object-fit: cover;
+	box-shadow: inset 130px 0 0 rgba(0, 0, 0, 0.5);
 	word-break: break-word;
 	text-align: center;
 	cursor: pointer;
 
 	:hover {
-		filter: brightness(0.7);
+        box-shadow: inset 130px 0 0 rgba(0, 0, 0, 0.7);
 	}
 
 	span {
@@ -47,13 +46,14 @@ const Wrapper = styled.div<WrapperProps>`
 		color: ${(props) => props.theme.colors.white};
 	}
 
-	/* @media (min-width: 600px) {
-		width: 600px;
-		padding: 0;
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 5px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
 	}
-
-	@media (min-width: 1000px) {
-		width: 50%;
-		padding: 0;
-	} */
 `;
