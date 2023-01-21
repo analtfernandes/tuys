@@ -1,4 +1,4 @@
-export function Ranking() {
+export function RankingPage() {
 	return (
 		<main>
 			<span>Em breve!</span>

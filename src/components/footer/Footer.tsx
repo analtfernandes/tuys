@@ -42,6 +42,7 @@ const Wrapper = styled.section`
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	z-index: 2;
 	box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.25);
 	background-color: ${props => props.theme.colors.background};
 

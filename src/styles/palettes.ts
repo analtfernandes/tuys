@@ -1,4 +1,5 @@
 export type ThemeType = {
+	name: string;
 	colors: {
 		background: string;
 		text: string;
@@ -32,6 +33,7 @@ const neutralPallet = {
 
 const theme = {
 	light: {
+		name: "light",
 		colors: {
 			background: neutralPallet.white,
 			text: neutralPallet.darkGray,

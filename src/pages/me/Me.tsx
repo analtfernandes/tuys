@@ -1,4 +1,4 @@
-export function Me() {
+export function MePage() {
 	return (
 		<main>
 			<span>Em breve!</span>

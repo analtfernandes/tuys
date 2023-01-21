@@ -1,7 +1,9 @@
-export function Channels() {
+import { Channels } from "../../components/channels/Channels";
+
+export function ChannelsPage() {
 	return (
 		<main>
-			<span>Em breve!</span>
+			<Channels />
 		</main>
 	);
 }
