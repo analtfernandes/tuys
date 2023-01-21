@@ -1,8 +1,8 @@
 import { createGlobalStyle } from "styled-components";
-import { PaletteType } from "./palettes";
+import { ThemeType } from "./palettes";
 
 type GlobalStyleType = {
-	variant: PaletteType;
+	variant: ThemeType;
 };
 
 const GlobalStyle = createGlobalStyle<GlobalStyleType>`
@@ -139,7 +139,7 @@ const GlobalStyle = createGlobalStyle<GlobalStyleType>`
     /* My styles */
     body {
       height: 100vh;
-      background-color: ${(props) => props.variant.body.background};
+      background-color: ${(props) => props.variant.colors.background};
       font-family: 'Roboto', sans-serif;
     }
 

@@ -7,10 +7,10 @@ import {
 import { ThemeProvider } from "styled-components";
 import { contextError } from "./contextErros";
 import GlobalStyle from "../styles/globalStyles";
-import { palette, PaletteType } from "../styles/palettes";
+import { palette, ThemeType } from "../styles/palettes";
 
 type ThemeContextType = {
-	theme: PaletteType;
+	theme: ThemeType;
 	changeTheme: (theme: string) => void;
 } | null;
 
@@ -18,18 +18,22 @@ type ReducerAction = {
 	type: string;
 };
 
+const {
+	theme: { light },
+} = palette;
+
 const ThemeContext = createContext<ThemeContextType>(null);
 
 function reducer<Type>(theme: Type, action: ReducerAction) {
 	if (action.type === "light") {
-		return palette.light;
+		return light;
 	}
 
-	return palette.light;
+	return light;
 }
 
 export function ThemeContextProvider({ children }: PropsWithChildren) {
-	const [theme, dispatch] = useReducer(reducer, palette.light);
+	const [theme, dispatch] = useReducer(reducer, light);
 
 	function changeTheme(theme: string) {
 		return dispatch({ type: theme });
