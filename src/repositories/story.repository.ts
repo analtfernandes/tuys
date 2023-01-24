@@ -1,7 +1,7 @@
-import { StorieStatus } from "@prisma/client";
+import { Stories, StorieStatus } from "@prisma/client";
 import { prisma } from "../database";
 
-async function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
+function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
   return prisma.stories.findMany({
     where: { channelId, status: StorieStatus.ACTIVE },
     select: {
@@ -44,6 +44,11 @@ async function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParam
   });
 }
 
-type FindAllByChannelIdParams = { channelId: number; userId: number };
+function createStory(data: CreateStoryParams) {
+  return prisma.stories.create({ data: { ...data } });
+}
 
-export { findAllByChannelId };
+type FindAllByChannelIdParams = { channelId: number; userId: number };
+type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
+
+export { findAllByChannelId, createStory };

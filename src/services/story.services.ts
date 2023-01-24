@@ -4,13 +4,25 @@ import * as channelRepository from "../repositories/channel.repository";
 import { notFoundError } from "../helpers/errors.helper";
 
 async function getAllOfChannel({ channelId, userId }: GetAllOfChannelParams) {
-  const channel = await channelRepository.findById(channelId);
-
-  if (!channel) throw notFoundError();
+  await validateChannelId(channelId);
 
   const stories = await storyRepository.findAllByChannelId({ channelId, userId });
 
   return formatStories(stories, userId);
+}
+
+async function postStory(data: PostStoryParams) {
+  await validateChannelId(data.channelId);
+
+  const createdStory = await storyRepository.createStory(data);
+
+  return { id: createdStory.id };
+}
+
+async function validateChannelId(id: number) {
+  const channel = await channelRepository.findById(id);
+
+  if (!channel) throw notFoundError();
 }
 
 function formatStories(stories: FormatStoriesParams, userId: number) {
@@ -32,6 +44,8 @@ function formatStories(stories: FormatStoriesParams, userId: number) {
 }
 
 type GetAllOfChannelParams = { channelId: number; userId: number };
+
+type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
 
 type FormatStoriesParams = Partial<Stories> &
   {
@@ -55,4 +69,4 @@ type FormatStoriesParams = Partial<Stories> &
     };
   }[];
 
-export { getAllOfChannel };
+export { getAllOfChannel, postStory };

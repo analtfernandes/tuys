@@ -1,8 +1,8 @@
 import supertest from "supertest";
-import server from "server";
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
+import server from "../../src/server";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
 import { createChannel } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
