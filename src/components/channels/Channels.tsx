@@ -6,35 +6,54 @@ import { toast } from "../utils/Toast";
 import { Subtitle, Title } from "../shared";
 import { Channel } from "./Channel";
 import { ChannelType } from "../utils/Protocols";
+import { useNavigate } from "react-router-dom";
 
 export function Channels() {
 	const [channels, setChannels] = useState<ChannelType[]>([]);
 	const { theme } = useThemeContext();
+	const navigate = useNavigate();
+
+	function goToSignIn() {
+		toast({
+			theme: theme.name,
+			type: "warning",
+			text: "Sessão encerrada.",
+		});
+		navigate("/sign-in");
+	}
 
 	useEffect(() => {
 		getChannels()
 			.then((channels) => setChannels(channels))
-			.catch(({ response }) =>
+			.catch(({ response }) => {
+				if (response.status === 401) {
+					return goToSignIn();
+				}
+
 				toast({
 					theme: theme.name,
 					type: "error",
-					text: response.data.message,
-				})
-			);
+					text: response?.data?.message,
+				});
+			});
 	}, []);
 
 	return (
 		<Wrapper>
-			<Title>Canais</Title>
-			<Subtitle>
-				Escolha um dos canais para começar a escrever sua estória.
-			</Subtitle>
+			{channels.length > 0 && (
+				<>
+					<Title>Canais</Title>
+					<Subtitle>
+						Escolha um dos canais para começar a escrever sua estória.
+					</Subtitle>
 
-			<div>
-				{channels.map((channel, index) => (
-					<Channel key={index} {...channel} />
-				))}
-			</div>
+					<div>
+						{channels.map((channel, index) => (
+							<Channel key={index} {...channel} />
+						))}
+					</div>
+				</>
+			)}
 		</Wrapper>
 	);
 }
@@ -66,7 +85,7 @@ const Wrapper = styled.section`
 	}
 
 	@media (min-width: 1000px) {
-		width: 50%;
+		width: 70%;
 		padding: 0;
 	}
 `;

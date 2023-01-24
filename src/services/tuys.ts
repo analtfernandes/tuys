@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChannelType } from "../components/utils/Protocols";
+import { ChannelType, StoryType } from "../components/utils/Protocols";
 
 const BASE_URI = process.env.REACT_APP_API_URI;
 
@@ -25,4 +25,13 @@ async function getChannels() {
 	return response.data;
 }
 
-export { getChannels };
+async function getStoriesFromChannel(channelId: number) {
+	const config = createHeader();
+	const response = await axios.get<StoryType[]>(
+		`${BASE_URI}/stories/${channelId}`,
+		config
+	);
+	return response.data;
+}
+
+export { getChannels, getStoriesFromChannel };

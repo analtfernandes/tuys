@@ -14,7 +14,7 @@ export type ThemeType = {
 		pink: string;
 
 		white: string;
-		lightGrey: string;
+		lightGray: string;
 		mediumGrayPrimary: string;
 		mediumGraySecond: string;
 		darkGray: string;
@@ -24,7 +24,7 @@ export type ThemeType = {
 
 const neutralPallet = {
 	white: "#F2F2F2",
-	lightGrey: "#D2D2D2",
+	lightGray: "#D2D2D2",
 	mediumGrayPrimary: "#A6A6A6",
 	mediumGraySecond: "#595959",
 	darkGray: "#262626",
@@ -44,6 +44,7 @@ const theme = {
 			rosewater: "#F2D6B3",
 			pastelPink: "#D9B3B0",
 			pink: "#A65353",
+			red: "#FF0000",
 			...neutralPallet,
 		},
 	},

@@ -1,14 +1,23 @@
-import { BsBellFill, BsPeopleFill } from "react-icons/bs";
-import { AiFillBook } from "react-icons/ai";
+import { AiFillBook, AiOutlineEdit } from "react-icons/ai";
+import { FaRegCommentDots } from "react-icons/fa";
+import {
+	BsBellFill,
+	BsPeopleFill,
+	BsFlagFill,
+	BsTrashFill,
+} from "react-icons/bs";
 import {
 	IoHome,
 	IoSearch,
 	IoStar,
 	IoMenuSharp,
 	IoPerson,
+	IoHeartOutline,
+	IoHeart,
 } from "react-icons/io5";
 
 type IconsParams<Type> = {
+	options?: Type;
 	type:
 		| "home"
 		| "search"
@@ -17,8 +26,13 @@ type IconsParams<Type> = {
 		| "notification"
 		| "people"
 		| "channels"
-		| "me";
-	options?: Type;
+		| "me"
+		| "like"
+		| "unlike"
+		| "denounce"
+		| "comment"
+		| "delete"
+		| "edit";
 };
 
 const IconsTypes = Object.freeze({
@@ -30,6 +44,12 @@ const IconsTypes = Object.freeze({
 	people: BsPeopleFill,
 	channels: AiFillBook,
 	me: IoPerson,
+	like: IoHeartOutline,
+	unlike: IoHeart,
+	denounce: BsFlagFill,
+	comment: FaRegCommentDots,
+	delete: BsTrashFill,
+	edit: AiOutlineEdit,
 });
 
 export function Icons<Type>({ type, options }: IconsParams<Type>) {

@@ -11,6 +11,7 @@ import { RankingPage } from "../../pages/ranking/Ranking";
 import { NotificationsPage } from "../../pages/notifications/Notifications";
 import { MePage } from "../../pages/me/Me";
 import { SettingsPage } from "../../pages/settings/Settings";
+import { Stories } from "../stories/Stories";
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 					<Routes>
 						<Route path="/" element={<HomePage />} />
 						<Route path="/channels" element={<ChannelsPage />} />
+						<Route path="/channels/:channelName" element={<Stories />} />
 						<Route path="/ranking" element={<RankingPage />} />
 						<Route path="/notifications" element={<NotificationsPage />} />
 						<Route path="/me" element={<MePage />} />

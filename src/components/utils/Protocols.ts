@@ -5,4 +5,24 @@ type ChannelType = {
 	editable: boolean;
 };
 
-export type { ChannelType };
+type StoryType = {
+	id: number;
+	title: string;
+	body: string;
+	userId: number;
+	date: string;
+	owner: {
+		isOwner: boolean;
+		username: string;
+		avatar: string;
+		rankColor: string;
+		status: "ACTIVE" | "BANNED";
+	};
+	likedByUser: boolean;
+	followedByUser: boolean;
+	likes: number;
+	comments: number;
+	channel: string;
+};
+
+export type { ChannelType, StoryType };

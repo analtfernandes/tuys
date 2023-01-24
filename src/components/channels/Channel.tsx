@@ -11,7 +11,7 @@ export function Channel({ id, name, background, editable }: ChannelType) {
 
 	function goToChannel() {
 		const route = name.replaceAll("/", "-").toLocaleLowerCase();
-		navigate(`/channels/${route}`, { state: { id } });
+		navigate(`/channels/${route}`, { state: { channelId: id } });
 	}
 
 	return (
@@ -37,7 +37,7 @@ const Wrapper = styled.div<WrapperProps>`
 	cursor: pointer;
 
 	:hover {
-        box-shadow: inset 130px 0 0 rgba(0, 0, 0, 0.7);
+		box-shadow: inset 130px 0 0 rgba(0, 0, 0, 0.7);
 	}
 
 	span {
