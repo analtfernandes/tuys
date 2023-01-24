@@ -22,4 +22,16 @@ function createStory(userId: number) {
   });
 }
 
-export { createStory };
+function createStoryOfChannel(userId: number, channelId: number) {
+  return prisma.stories.create({
+    data: {
+      title: faker.lorem.word(10),
+      body: faker.lorem.paragraph(),
+      userId,
+      channelId,
+    },
+    include: { Users: true },
+  });
+}
+
+export { createStory, createStoryOfChannel };

@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createChannel, createStory } from "../factories";
+import { createChannel, createStory, createStoryOfChannel } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -173,6 +173,105 @@ describe("POST /stories", () => {
 
         expect(afterCount).toBe(beforeCount + 1);
       });
+    });
+  });
+});
+
+describe("GET /stories/:channelId/after/:storyId", () => {
+  const route = "/stories";
+  const subRoute = "after";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}/1/${subRoute}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(`${route}/1/${subRoute}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(`${route}/1/${subRoute}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return 400 if channel id is invalid", async () => {
+      const authorization = await generateValidToken();
+      
+      const response = await app.get(`${route}/0/${subRoute}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return 400 if story id is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/1/${subRoute}/-1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return 404 if channel does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/1/${subRoute}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return 200 and an empty array", async () => {
+      const user = await generateValidUser();
+      const channelWithStory = await createStory(user.id);
+      const authorization = await generateValidToken(user);
+
+      const response = await app
+        .get(`${route}/${channelWithStory.id}/${subRoute}/${channelWithStory.Stories[0].id}`)
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([]);
+    });
+
+    it("should return 200 and a stories array", async () => {
+      const user = await generateValidUser();
+      const channelWithStory = await createStory(user.id);
+      const newStory = await createStoryOfChannel(user.id, channelWithStory.id);
+      const authorization = await generateValidToken(user);
+
+      const response = await app
+        .get(`${route}/${channelWithStory.id}/${subRoute}/${channelWithStory.Stories[0].id}`)
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: newStory.id,
+          title: newStory.title,
+          body: newStory.body,
+          userId: newStory.Users.id,
+          date: newStory.date.toISOString(),
+          owner: {
+            isOwner: true,
+            status: newStory.Users.status,
+            username: newStory.Users.username,
+            avatar: newStory.Users.avatar,
+            rankColor: expect.any(String),
+          },
+          likedByUser: false,
+          followedByUser: false,
+          likes: 0,
+          comments: 0,
+          channel: channelWithStory.name,
+        },
+      ]);
     });
   });
 });

@@ -18,6 +18,23 @@ async function getAllOfChannel(req: Request, res: Response) {
   }
 }
 
+async function getAfterId(req: Request, res: Response) {
+  const channelId = Number(req.params.channelId);
+  const storyId = Number(req.params.storyId);
+  const userId: number = res.locals.userId;
+
+  try {
+    const stories = await storyService.getAfterId({ channelId, userId, storyId });
+    return responseHelper.OK({ res, body: stories });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Esse canal não existe!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function postStory(req: Request, res: Response) {
   const userId: number = res.locals.userId;
 
@@ -33,4 +50,4 @@ async function postStory(req: Request, res: Response) {
   }
 }
 
-export { getAllOfChannel, postStory };
+export { getAllOfChannel, postStory, getAfterId };

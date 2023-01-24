@@ -11,6 +11,14 @@ async function getAllOfChannel({ channelId, userId }: GetAllOfChannelParams) {
   return formatStories(stories, userId);
 }
 
+async function getAfterId({ channelId, userId, storyId }: GetAfterIdParams) {
+  await validateChannelId(channelId);
+
+  const stories = await storyRepository.findAllAfterId({ channelId, userId, storyId });
+
+  return formatStories(stories, userId);
+}
+
 async function postStory(data: PostStoryParams) {
   await validateChannelId(data.channelId);
 
@@ -45,6 +53,8 @@ function formatStories(stories: FormatStoriesParams, userId: number) {
 
 type GetAllOfChannelParams = { channelId: number; userId: number };
 
+type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
+
 type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
 
 type FormatStoriesParams = Partial<Stories> &
@@ -69,4 +79,4 @@ type FormatStoriesParams = Partial<Stories> &
     };
   }[];
 
-export { getAllOfChannel, postStory };
+export { getAllOfChannel, postStory, getAfterId };
