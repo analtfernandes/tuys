@@ -6,6 +6,7 @@ type ButtonParams = {
 	config?: Partial<WrapperProps> & {
 		type?: "primary" | "secundary" | "primary-invert";
 	};
+	onClick?: () => void;
 };
 
 type WrapperProps = {
@@ -21,16 +22,18 @@ export function Button({
 	children,
 	disabled = false,
 	config = {},
+	onClick,
 }: ButtonParams) {
 	return (
 		<Wrapper
 			disabled={disabled}
-			width={config.width || "111px"}
+			width={config.width || config.type === "secundary" ? "100%" : "111px"}
 			margin={config.margin || "0 auto"}
 			height={config.height || "40px"}
 			radius={config.radius || ""}
 			padding={config.padding || "0"}
 			buttonType={config.type || "primary"}
+			onClick={onClick}
 		>
 			{children}
 		</Wrapper>

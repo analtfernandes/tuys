@@ -40,17 +40,19 @@ Background.Div = ({ margin = "10px 0" }) => {
 };
 
 const Wrapper = styled.div<WrapperProps>`
-	width: ${(props) => props.width};
-	height: auto;
-	padding: 20px;
-	border-radius: 5px;
-	margin: ${(props) => props.margin};
-	background-color: ${(props) => props.theme.colors.white};
-	box-shadow: 0 0 4px 1px
-		${(props) => props.getBorderColor(props.theme.colors.black, 0.25)};
+	&& {
+		width: ${(props) => props.width};
+		height: auto;
+		padding: 20px;
+		border-radius: 5px;
+		margin: ${(props) => props.margin};
+		background-color: ${(props) => props.theme.colors.white};
+		box-shadow: 0 0 4px 1px
+			${(props) => props.getBorderColor(props.theme.colors.black, 0.25)};
 
-	@media (max-width: 400px) {
-		padding: 15px;
+		@media (max-width: 400px) {
+			padding: 15px;
+		}
 	}
 `;
 

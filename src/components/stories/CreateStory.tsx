@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { useState } from "react";
 import { postStory, PostStoryParams } from "../../services/tuys";
 import { Button, Form } from "../shared";
@@ -110,7 +109,7 @@ export function CreateStory({
 					maxLength={30}
 					placeholder="O jardim"
 					name="title"
-                    value={story.title}
+					value={story.title}
 					onChange={handleChange}
 				/>
 			</Form.Section>
@@ -125,7 +124,7 @@ export function CreateStory({
 					maxLength={1000}
 					placeholder="O jardim estava quieto naquele verão..."
 					name="body"
-                    value={story.body}
+					value={story.body}
 					onChange={handleChange}
 				/>
 			</Form.Section>
@@ -136,21 +135,3 @@ export function CreateStory({
 		</Form>
 	);
 }
-
-const Author = styled.div`
-	height: 50px;
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-
-	> div {
-		display: flex;
-		flex-direction: column;
-		margin: 0 0 0 14px;
-
-		span {
-			font-size: 1.1rem;
-			color: ${(props) => props.theme.colors.black};
-		}
-	}
-`;

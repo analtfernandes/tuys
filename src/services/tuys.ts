@@ -34,6 +34,18 @@ async function getStoriesFromChannel(channelId: number) {
 	return response.data;
 }
 
+async function getStoriesFromChannelAfterId(
+	channelId: number,
+	storyId: number
+) {
+	const config = createHeader();
+	const response = await axios.get<StoryType[]>(
+		`${BASE_URI}/stories/${channelId}/after/${storyId}`,
+		config
+	);
+	return response.data;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await axios.post<{ id: number }>(
@@ -50,4 +62,9 @@ export type PostStoryParams = {
 	channelId: number;
 };
 
-export { getChannels, getStoriesFromChannel, postStory };
+export {
+	getChannels,
+	getStoriesFromChannel,
+	postStory,
+	getStoriesFromChannelAfterId,
+};

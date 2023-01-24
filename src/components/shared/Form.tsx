@@ -27,7 +27,7 @@ type SectionProps = {
 
 export function Form({ children, onSubmit }: FormParams) {
 	return (
-		<Background config={{ margin: "0" }}>
+		<Background config={{ margin: "0 0 20px 0" }}>
 			<Wrapper onSubmit={onSubmit}>{children}</Wrapper>
 		</Background>
 	);

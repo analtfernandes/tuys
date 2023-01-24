@@ -14,6 +14,7 @@ import {
 	IoPerson,
 	IoHeartOutline,
 	IoHeart,
+	IoReload,
 } from "react-icons/io5";
 
 type IconsParams<Type> = {
@@ -32,7 +33,8 @@ type IconsParams<Type> = {
 		| "denounce"
 		| "comment"
 		| "delete"
-		| "edit";
+		| "edit"
+		| "reload";
 };
 
 const IconsTypes = Object.freeze({
@@ -50,6 +52,7 @@ const IconsTypes = Object.freeze({
 	comment: FaRegCommentDots,
 	delete: BsTrashFill,
 	edit: AiOutlineEdit,
+	reload: IoReload,
 });
 
 export function Icons<Type>({ type, options }: IconsParams<Type>) {

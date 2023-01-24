@@ -1,17 +1,23 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useInterval } from "use-interval";
 import { useThemeContext } from "../../contexts/ThemeContext";
-import { getStoriesFromChannel } from "../../services/tuys";
+import {
+	getStoriesFromChannel,
+	getStoriesFromChannelAfterId,
+} from "../../services/tuys";
 import { toast } from "../utils/Toast";
-import { Title } from "../shared";
+import { Button, Title } from "../shared";
 import { StoryType } from "../utils/Protocols";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Story } from "./Story";
 import { CreateStory } from "./CreateStory";
+import { Icons } from "../utils/Icons";
 
 export function Stories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const [updateStories, setUpdateStories] = useState(false);
+	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
 	const { theme } = useThemeContext();
 	const { state: location } = useLocation();
 	const navigate = useNavigate();
@@ -23,6 +29,11 @@ export function Stories() {
 			text: "Sessão encerrada.",
 		});
 		navigate("/sign-in");
+	}
+
+	function updateStoriesFunction() {
+		setStories((prev) => [...haveMoreStories, ...prev]);
+		setHaveMoreStories([]);
 	}
 
 	useEffect(() => {
@@ -43,6 +54,22 @@ export function Stories() {
 		}
 	}, [updateStories]);
 
+	useInterval(() => {
+		if (stories.length > 0 && location.channelId) {
+			getStoriesFromChannelAfterId(location.channelId, stories[0].id)
+				.then((newStories) => {
+					if (newStories.length > haveMoreStories.length) {
+						setHaveMoreStories([...newStories]);
+					}
+				})
+				.catch(({ response }) => {
+					if (response.status === 401) {
+						return goToSignIn();
+					}
+				});
+		}
+	}, 30000);
+
 	return (
 		<main>
 			<Wrapper>
@@ -56,6 +83,18 @@ export function Stories() {
 							setUpdateStories={setUpdateStories}
 							goToSignIn={goToSignIn}
 						/>
+
+						{haveMoreStories.length > 0 && (
+							<Button
+								config={{ type: "secundary" }}
+								onClick={updateStoriesFunction}
+							>
+								<span style={{ marginRight: "10px" }}>
+									Há novas estórias para ler
+								</span>
+								<Icons type="reload" />
+							</Button>
+						)}
 
 						<div>
 							{stories.map((story, index) => (
