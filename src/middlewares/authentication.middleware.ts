@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import * as responseHelper from "../helpers/response-helper";
+import * as responseHelper from "../helpers/response.helper";
 import { findActiveSessionByUserId } from "../repositories/sign.repository";
 
 export async function authenticationMiddleware(req: Request, res: Response, next: NextFunction) {

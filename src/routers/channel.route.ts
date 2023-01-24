@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticationMiddleware } from "../middlewares/authentication-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication.middleware";
 import { getAll } from "../controllers/channel.controller";
 
 const channelRoute = Router();

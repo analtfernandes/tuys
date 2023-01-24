@@ -4,4 +4,8 @@ function findAll() {
   return prisma.channels.findMany({ orderBy: { id: "asc" } });
 }
 
-export { findAll };
+function findById(id: number) {
+  return prisma.channels.findUnique({ where: { id } });
+}
+
+export { findAll, findById };

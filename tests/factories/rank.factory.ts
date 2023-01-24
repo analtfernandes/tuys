@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { prisma } from "database";
+import { prisma } from "../../src/database";
 
 function createRank() {
   return prisma.ranks.create({

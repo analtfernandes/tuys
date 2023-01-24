@@ -1,4 +1,4 @@
-import { PrismaClient, Ranks } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -17,7 +17,7 @@ async function createUsersAndStories() {
 
   const ranks = await prisma.ranks.findMany();
   const channelAventura = await prisma.channels.findFirst({ where: { name: "Aventura" } });
-  const channelTerror = await prisma.channels.findFirst({ where: { name: "Terror/Suspense" } });
+  const channelTerror = await prisma.channels.findFirst({ where: { name: "Terror" } });
   const channelRomance = await prisma.channels.findFirst({ where: { name: "Romance" } });
 
   await prisma.users.create({
@@ -173,7 +173,7 @@ async function createChannels() {
   const insertedChannels = await prisma.channels.createMany({
     data: [
       {
-        name: "Terror/Suspense",
+        name: "Terror",
         background:
           "https://static.vecteezy.com/ti/fotos-gratis/p3/6307115-conceito-de-filme-de-terror-gratis-foto.jpg",
       },
@@ -183,7 +183,7 @@ async function createChannels() {
       },
       {
         name: "Aventura",
-        background: "https://australiago.com/wp-content/uploads/2017/06/aventura-na-australia.jpg",
+        background: "https://foradazonadeconforto.com/wp-content/uploads/2019/09/Viagens-de-aventura-pelo-mundo-e1568488207333.jpg",
       },
       {
         name: "Policial",

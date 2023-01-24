@@ -1,5 +1,5 @@
 import { Sessions } from "@prisma/client";
-import { prisma } from "database";
+import { prisma } from "../../src/database";
 
 function createSession(data: CreateSessionParams) {
   return prisma.sessions.create({

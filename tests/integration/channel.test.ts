@@ -13,6 +13,10 @@ beforeAll(async () => {
   await cleanDatabase();
 });
 
+afterAll(async () => {
+  await cleanDatabase();
+});
+
 describe("GET /channels", () => {
   const route = "/channels";
 

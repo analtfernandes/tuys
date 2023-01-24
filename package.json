@@ -11,7 +11,7 @@
     "test": "npm run test:load-envs jest --passWithNoTests --runInBand",
     "test:migration:run": "npm run test:load-envs prisma migrate deploy",
     "test:migration:generate": "npm run test:load-envs prisma migrate dev",
-    "test:watch": "jest --watch --passWithNoTests --runInBand",
+    "test:watch": "npm run test:load-envs jest --watch --passWithNoTests --runInBand",
     "test:load-envs": "dotenv -e .env.test",
     "test:seed": "npm run test:load-envs prisma db seed",
     "dev": "npm run dev:load-envs npx nodemon src/app.ts",
@@ -40,6 +40,7 @@
     "dotenv-expand": "^10.0.0",
     "express": "^4.18.2",
     "http-status": "^1.6.2",
+    "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {

@@ -52,14 +52,6 @@ model Notifications {
   Users    Users            @relation(fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Notifications_fk0")
 }
 
-enum NotificationType {
-  NEW_STORY
-  NEW_DENUNCIATION
-  NEW_LIKE
-  NEW_COMMENT
-  NEW_FOLLOW
-}
-
 model Ranks {
   id       Int     @id(map: "Ranks_pk") @default(autoincrement())
   name     String  @unique @db.VarChar(255)
@@ -81,19 +73,14 @@ model Stories {
   title         String          @db.VarChar(30)
   body          String          @db.VarChar(1000)
   date          DateTime        @default(now()) @db.Date
-  status        StorieStatus    @default(ACTIVE)
   userId        Int
   channelId     Int
+  status        StorieStatus    @default(ACTIVE)
   Comments      Comments[]
   Denunciations Denunciations[]
   Likes         Likes[]
   Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Stories_fk0")
   Channels      Channels        @relation(fields: [channelId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Stories_fk1")
-}
-
-enum StorieStatus {
-  ACTIVE
-  BANNED
 }
 
 model Users {
@@ -103,15 +90,38 @@ model Users {
   email         String          @unique
   password      String
   about         String          @default("") @db.VarChar(50)
-  status        UserStatus      @default(ACTIVE)
   rankId        Int
+  status        UserStatus      @default(ACTIVE)
   Comments      Comments[]
   Denunciations Denunciations[]
+  Followed      Follows[]       @relation("Followed")
+  Follower      Follows[]       @relation("Follower")
   Likes         Likes[]
   Notifications Notifications[]
   Sessions      Sessions[]
   Stories       Stories[]
   Ranks         Ranks           @relation(fields: [rankId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_fk0")
+}
+
+model Follows {
+  id         Int   @id @default(autoincrement())
+  followerId Int
+  followedId Int
+  Followed   Users @relation("Followed", fields: [followerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Follower   Users @relation("Follower", fields: [followedId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum NotificationType {
+  NEW_STORY
+  NEW_DENUNCIATION
+  NEW_LIKE
+  NEW_COMMENT
+  NEW_FOLLOW
+}
+
+enum StorieStatus {
+  ACTIVE
+  BANNED
 }
 
 enum UserStatus {

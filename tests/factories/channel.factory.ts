@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { prisma } from "database";
+import { prisma } from "../../src/database";
 
 function createChannel() {
   return prisma.channels.create({
