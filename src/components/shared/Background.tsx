@@ -7,7 +7,6 @@ type BackgroundParams = {
 
 type WrapperProps = {
 	width: string;
-	padding: string;
 	margin: string;
 	getBorderColor: (hex: string, alpha: number) => string;
 };
@@ -28,7 +27,6 @@ export function Background({ children, config = {} }: BackgroundParams) {
 	return (
 		<Wrapper
 			width={config.width || "100%"}
-			padding={config.padding || "20px"}
 			margin={config.margin || "0"}
 			getBorderColor={hexToRGB}
 		>
@@ -44,12 +42,16 @@ Background.Div = ({ margin = "10px 0" }) => {
 const Wrapper = styled.div<WrapperProps>`
 	width: ${(props) => props.width};
 	height: auto;
-	padding: ${(props) => props.padding};
+	padding: 20px;
 	border-radius: 5px;
 	margin: ${(props) => props.margin};
 	background-color: ${(props) => props.theme.colors.white};
 	box-shadow: 0 0 4px 1px
 		${(props) => props.getBorderColor(props.theme.colors.black, 0.25)};
+
+	@media (max-width: 400px) {
+		padding: 15px;
+	}
 `;
 
 const Division = styled.div<DivisionProps>`

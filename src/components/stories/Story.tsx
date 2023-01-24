@@ -24,7 +24,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	}
 
 	return (
-		<Background config={{ margin: "20px" }}>
+		<Background config={{ margin: "20px 0" }}>
 			<Author>
 				<UserRank
 					background={owner.rankColor}

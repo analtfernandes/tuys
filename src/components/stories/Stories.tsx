@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { useThemeContext } from "../../contexts/ThemeContext";
 import { getStoriesFromChannel } from "../../services/tuys";
 import { toast } from "../utils/Toast";
-import { Background, Title } from "../shared";
+import { Title } from "../shared";
 import { StoryType } from "../utils/Protocols";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Story } from "./Story";
+import { CreateStory } from "./CreateStory";
 
 export function Stories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
+	const [updateStories, setUpdateStories] = useState(false);
 	const { theme } = useThemeContext();
 	const { state: location } = useLocation();
 	const navigate = useNavigate();
@@ -39,7 +41,7 @@ export function Stories() {
 					});
 				});
 		}
-	}, []);
+	}, [updateStories]);
 
 	return (
 		<main>
@@ -47,6 +49,13 @@ export function Stories() {
 				{location.channelId && stories[0] && (
 					<>
 						<Title>{stories[0].channel}</Title>
+
+						<CreateStory
+							channelId={location.channelId}
+							theme={theme}
+							setUpdateStories={setUpdateStories}
+							goToSignIn={goToSignIn}
+						/>
 
 						<div>
 							{stories.map((story, index) => (

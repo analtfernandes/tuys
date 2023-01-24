@@ -25,4 +25,6 @@ type StoryType = {
 	channel: string;
 };
 
-export type { ChannelType, StoryType };
+type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
+
+export type { ChannelType, StoryType, SetState };
