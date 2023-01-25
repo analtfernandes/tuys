@@ -37,6 +37,16 @@ async function postLikeStory(storyId: number, userId: number) {
   await storyRepository.createLike(storyId, userId);
 }
 
+async function postUnlikeStory(storyId: number, userId: number) {
+  const story = await storyRepository.findById(storyId);
+  if (!story) throw notFoundError();
+
+  const isLikedByUser = await storyRepository.findStoryLikedByUser(storyId, userId);
+  if (!isLikedByUser) throw badRequestError();
+
+  await storyRepository.deleteLike(isLikedByUser.id);
+}
+
 async function validateChannelId(id: number) {
   const channel = await channelRepository.findById(id);
 
@@ -89,4 +99,4 @@ type FormatStoriesParams = Partial<Stories> &
     };
   }[];
 
-export { getAllOfChannel, postStory, getAfterId, postLikeStory };
+export { getAllOfChannel, postStory, getAfterId, postLikeStory, postUnlikeStory };

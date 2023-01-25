@@ -7,7 +7,13 @@ import {
   postLikeSchema,
   postStorySchema,
 } from "../schemas/story.schemas";
-import { getAfterId, getAllOfChannel, postLikeStory, postStory } from "../controllers/story.controller";
+import {
+  getAfterId,
+  getAllOfChannel,
+  postLikeStory,
+  postStory,
+  postUnlikeStory,
+} from "../controllers/story.controller";
 
 const storyRoute = Router();
 
@@ -16,6 +22,7 @@ storyRoute
   .get("/:channelId", validateSchema(getStoriesByChannelIdSchema, "params"), getAllOfChannel)
   .get("/:channelId/after/:storyId", validateSchema(getStoriesAfterIdSchema, "params"), getAfterId)
   .post("/", validateSchema(postStorySchema), postStory)
-  .post("/:storyId/like", validateSchema(postLikeSchema, "params"), postLikeStory);
+  .post("/:storyId/like", validateSchema(postLikeSchema, "params"), postLikeStory)
+  .post("/:storyId/unlike", validateSchema(postLikeSchema, "params"), postUnlikeStory);
 
 export { storyRoute };

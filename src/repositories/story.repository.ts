@@ -103,8 +103,12 @@ function createLike(storyId: number, userId: number) {
   return prisma.likes.create({ data: { storyId, userId } });
 }
 
+function deleteLike(id: number) {
+  return prisma.likes.delete({ where: { id } });
+}
+
 type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
 type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
 
-export { findAllByChannelId, createStory, findAllAfterId, findById, findStoryLikedByUser, createLike };
+export { findAllByChannelId, createStory, findAllAfterId, findById, findStoryLikedByUser, createLike, deleteLike };
