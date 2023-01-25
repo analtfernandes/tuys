@@ -1,7 +1,7 @@
 import { Follows, Likes, Stories } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
-import { notFoundError } from "../helpers/errors.helper";
+import { badRequestError, notFoundError } from "../helpers/errors.helper";
 
 async function getAllOfChannel({ channelId, userId }: GetAllOfChannelParams) {
   await validateChannelId(channelId);
@@ -25,6 +25,16 @@ async function postStory(data: PostStoryParams) {
   const createdStory = await storyRepository.createStory(data);
 
   return { id: createdStory.id };
+}
+
+async function postLikeStory(storyId: number, userId: number) {
+  const story = await storyRepository.findById(storyId);
+  if (!story) throw notFoundError();
+
+  const isLikedByUser = await storyRepository.findStoryLikedByUser(storyId, userId);
+  if (isLikedByUser) throw badRequestError();
+
+  await storyRepository.createLike(storyId, userId);
 }
 
 async function validateChannelId(id: number) {
@@ -79,4 +89,4 @@ type FormatStoriesParams = Partial<Stories> &
     };
   }[];
 
-export { getAllOfChannel, postStory, getAfterId };
+export { getAllOfChannel, postStory, getAfterId, postLikeStory };

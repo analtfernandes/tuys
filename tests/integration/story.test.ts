@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createChannel, createStory, createStoryOfChannel } from "../factories";
+import { createChannel, createStory, createStoryOfChannel, likeStory } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -205,7 +205,7 @@ describe("GET /stories/:channelId/after/:storyId", () => {
 
     it("should return 400 if channel id is invalid", async () => {
       const authorization = await generateValidToken();
-      
+
       const response = await app.get(`${route}/0/${subRoute}/1`).set("Authorization", authorization);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
@@ -272,6 +272,92 @@ describe("GET /stories/:channelId/after/:storyId", () => {
           channel: channelWithStory.name,
         },
       ]);
+    });
+  });
+});
+
+describe("POST /stories/:storyId/like", () => {
+  const route = "/stories";
+  const subRoute = "like";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.post(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if story id is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if story does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 400 if user has already liked the story", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const {
+        Stories: [story],
+      } = await createStory(user.id);
+
+      await likeStory(story.id, user.id);
+
+      const response = await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 200", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const {
+        Stories: [story],
+      } = await createStory(user.id);
+
+      const response = await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+    });
+
+    it("should add a new like on database", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const {
+        Stories: [story],
+      } = await createStory(user.id);
+
+      const beforeCount = await prisma.likes.count();
+
+      await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.likes.count();
+
+      expect(afterCount).toBe(beforeCount + 1);
     });
   });
 });

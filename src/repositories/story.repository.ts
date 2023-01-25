@@ -87,12 +87,24 @@ function findAllAfterId({ channelId, userId, storyId }: FindAllAfterIdIdParams) 
   });
 }
 
+function findById(id: number) {
+  return prisma.stories.findUnique({ where: { id } });
+}
+
+function findStoryLikedByUser(storyId: number, userId: number) {
+  return prisma.likes.findFirst({ where: { storyId, userId } });
+}
+
 function createStory(data: CreateStoryParams) {
   return prisma.stories.create({ data: { ...data } });
+}
+
+function createLike(storyId: number, userId: number) {
+  return prisma.likes.create({ data: { storyId, userId } });
 }
 
 type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
 type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
 
-export { findAllByChannelId, createStory, findAllAfterId };
+export { findAllByChannelId, createStory, findAllAfterId, findById, findStoryLikedByUser, createLike };

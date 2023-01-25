@@ -50,4 +50,24 @@ async function postStory(req: Request, res: Response) {
   }
 }
 
-export { getAllOfChannel, postStory, getAfterId };
+async function postLikeStory(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+  const storyId = Number(req.params.storyId);
+
+  try {
+    await storyService.postLikeStory(storyId, userId);
+    return responseHelper.OK({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Essa história não existe!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já curtiu ssa história!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getAllOfChannel, postStory, getAfterId, postLikeStory };

@@ -15,4 +15,8 @@ const getStoriesAfterIdSchema = Joi.object({
   channelId: Joi.number().integer().min(1).required(),
 });
 
-export { getStoriesByChannelIdSchema, postStorySchema, getStoriesAfterIdSchema };
+const postLikeSchema = Joi.object({
+  storyId: Joi.number().integer().min(1).required(),
+});
+
+export { getStoriesByChannelIdSchema, postStorySchema, getStoriesAfterIdSchema, postLikeSchema };
