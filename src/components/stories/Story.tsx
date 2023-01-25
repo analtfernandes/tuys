@@ -5,7 +5,7 @@ import { UserRank } from "../shared/UserRank";
 import { Icons } from "../utils/Icons";
 import { Form } from "./Form";
 import { useState } from "react";
-import { postLike } from "../../services/tuys";
+import { postLike, postUnlike } from "../../services/tuys";
 
 type StoryParams = {
 	story: StoryType;
@@ -30,12 +30,15 @@ export function Story({ story, showChannel = true }: StoryParams) {
 		if (!like) {
 			setLike(true);
 			postLike(story.id)
-				.then(() => story.likes++)
+				.then()
 				.catch(() => setLike(false));
 			return;
 		}
 
 		setLike(false);
+		postUnlike(story.id)
+			.then()
+			.catch(() => setLike(true));
 	}
 
 	return (

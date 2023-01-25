@@ -61,6 +61,11 @@ async function postLike(storyId: number) {
 	await axios.post(`${BASE_URI}/stories/${storyId}/like`, {}, config);
 }
 
+async function postUnlike(storyId: number) {
+	const config = createHeader();
+	await axios.post(`${BASE_URI}/stories/${storyId}/unlike`, {}, config);
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -73,4 +78,5 @@ export {
 	postStory,
 	getStoriesFromChannelAfterId,
 	postLike,
+	postUnlike,
 };
