@@ -56,6 +56,15 @@ async function postUnlikeStory(storyId: number, userId: number) {
   await storyRepository.deleteLike(isLikedByUser.id);
 }
 
+async function postComment(data: PostCommentParams) {
+  const story = await storyRepository.findById(data.storyId);
+  if (!story) throw notFoundError();
+
+  const comment = await storyRepository.createComment(data);
+
+  return { id: comment.id };
+}
+
 async function validateChannelId(id: number) {
   const channel = await channelRepository.findById(id);
 
@@ -97,7 +106,8 @@ function formatComments(comments: FormartCommentsParams, userId: number) {
 
 type GetAllOfChannelParams = { channelId: number; userId: number };
 type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
-type GetCommentsParams = { storyId: number; userId: number };
+type GetCommentsParams = Omit<Comments, "id" | "text">;
+type PostCommentParams = Omit<Comments, "id">;
 
 type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
 
@@ -139,4 +149,4 @@ type FormartCommentsParams = (Comments & {
   };
 })[];
 
-export { getAllOfChannel, getComments, getAfterId, postStory, postLikeStory, postUnlikeStory };
+export { getAllOfChannel, getComments, getAfterId, postStory, postLikeStory, postUnlikeStory, postComment };

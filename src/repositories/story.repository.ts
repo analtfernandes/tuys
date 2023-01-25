@@ -1,4 +1,4 @@
-import { Stories, StorieStatus } from "@prisma/client";
+import { Comments, Stories, StorieStatus } from "@prisma/client";
 import { prisma } from "../database";
 
 function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
@@ -134,9 +134,14 @@ function deleteLike(id: number) {
   return prisma.likes.delete({ where: { id } });
 }
 
+function createComment(data: CreateCommentParams) {
+  return prisma.comments.create({ data: { ...data } });
+}
+
 type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
 type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
+type CreateCommentParams = Omit<Comments, "id">;
 
 export {
   findAllByChannelId,
@@ -146,5 +151,6 @@ export {
   findStoryLikedByUser,
   createStory,
   createLike,
+  createComment,
   deleteLike,
 };
