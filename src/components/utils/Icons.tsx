@@ -15,6 +15,7 @@ import {
 	IoHeartOutline,
 	IoHeart,
 	IoReload,
+	IoPaperPlaneSharp,
 } from "react-icons/io5";
 
 type IconsParams<Type> = {
@@ -35,7 +36,8 @@ type IconsParams<Type> = {
 		| "comment"
 		| "delete"
 		| "edit"
-		| "reload";
+		| "reload"
+		| "send";
 };
 
 const IconsTypes = Object.freeze({
@@ -54,6 +56,7 @@ const IconsTypes = Object.freeze({
 	delete: BsTrashFill,
 	edit: AiOutlineEdit,
 	reload: IoReload,
+	send: IoPaperPlaneSharp,
 });
 
 export function Icons<Type>({ type, options, onClick }: IconsParams<Type>) {

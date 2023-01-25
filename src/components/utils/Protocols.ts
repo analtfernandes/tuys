@@ -41,6 +41,14 @@ type CommentType = {
 	commentedByAuthor: boolean;
 };
 
+type UserType = {
+	id: number;
+	username: string;
+	avatar: string;
+	token: string;
+	rankColor: string;
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 
-export type { ChannelType, StoryType, CommentType, SetState };
+export type { ChannelType, StoryType, CommentType, UserType, SetState };

@@ -79,10 +79,25 @@ async function postUnlike(storyId: number) {
 	await axios.post(`${BASE_URI}/stories/${storyId}/unlike`, {}, config);
 }
 
+async function postComment(data: PostCommentParams) {
+	const config = createHeader();
+	const response = await axios.post<{ id: number }>(
+		`${BASE_URI}/stories/${data.storyId}/comments`,
+		data.body,
+		config
+	);
+	return response.data;
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
 	channelId: number;
+};
+
+export type PostCommentParams = {
+	body: { text: string };
+	storyId: number;
 };
 
 export {
@@ -93,4 +108,5 @@ export {
 	postStory,
 	postLike,
 	postUnlike,
+	postComment,
 };

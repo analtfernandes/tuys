@@ -6,6 +6,7 @@ import { CommentType } from "../../utils/Protocols";
 import { toast } from "../../utils/Toast";
 import { getComments } from "../../../services/tuys";
 import { Comment } from "./Comment";
+import CreateComment from "./CreateComment";
 
 type CommentsProps = {
 	storyId: number;
@@ -19,6 +20,7 @@ type WrapperProps = {
 
 export function Comments({ storyId, showComment }: CommentsProps) {
 	const [comments, setComments] = useState<CommentType[]>([]);
+	const [updateComments, setUpdateComments] = useState(false);
 	const defaultHeight = "0px";
 	const autoHeight = "auto";
 	const [height, setHeight] = useState(defaultHeight);
@@ -59,7 +61,7 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 						"Não foi possível carregar os comentários. Tente novamente.",
 				});
 			});
-	}, [storyId, showComment]);
+	}, [storyId, showComment, updateComments]);
 
 	return (
 		<Wrapper
@@ -71,6 +73,8 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 					<Comment key={index} comment={comment} />
 				))}
 			</div>
+
+			<CreateComment storyId={storyId} setUpdateComments={setUpdateComments} />
 		</Wrapper>
 	);
 }
