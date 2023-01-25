@@ -6,6 +6,7 @@ import { Icons } from "../utils/Icons";
 import { Form } from "./Form";
 import { useState } from "react";
 import { postLike, postUnlike } from "../../services/tuys";
+import { Comments } from "./comments/Comments";
 
 type StoryParams = {
 	story: StoryType;
@@ -18,7 +19,12 @@ type OptionProps = {
 
 export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
+	const [showComment, setShowComment] = useState(false);
 	const { owner } = story;
+	const backgroundConfig = {
+		true: { margin: "0 0 180px 0" },
+		false: { margin: "20px 0" },
+	};
 
 	function compactNumber(number: number) {
 		return Intl.NumberFormat("pt-br", {
@@ -42,7 +48,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	}
 
 	return (
-		<Background config={{ margin: "20px 0" }}>
+		<Background config={backgroundConfig[`${showComment}`]}>
 			<Author>
 				<UserRank
 					background={owner.rankColor}
@@ -88,14 +94,14 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			<Background.Div />
 
 			<StoryOptions>
-				{(owner.isOwner || owner.status === "BANNED") && (
+				{owner.isOwner && (
 					<>
 						<Option iconColor="">
 							<span>{compactNumber(story.likes)} pessoas gostaram</span>
 						</Option>
 
 						<Option iconColor="pastelBlue">
-							<div>
+							<div onClick={() => setShowComment((prev) => !prev)}>
 								<Icons type="comment" options={{ color: "#70A4A2" }} />
 								<span>Comentários</span>
 							</div>
@@ -116,7 +122,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						</Option>
 
 						<Option iconColor="pastelBlue">
-							<div>
+							<div onClick={() => setShowComment((prev) => !prev)}>
 								<Icons type="comment" options={{ color: "#70A4A2" }} />
 								<span>Comentar</span>
 							</div>
@@ -132,6 +138,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					</>
 				)}
 			</StoryOptions>
+
+			<Comments storyId={story.id} showComment={showComment} />
 		</Background>
 	);
 }
@@ -242,8 +250,6 @@ const Following = styled.div`
 		@media (max-width: 400px) {
 			span {
 				font-size: 0.8rem;
-				font-weight: 700;
-				color: ${(props) => props.theme.colors.pastelBlue};
 			}
 		}
 	}

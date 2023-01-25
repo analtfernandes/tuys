@@ -25,6 +25,22 @@ type StoryType = {
 	channel: string;
 };
 
+type CommentType = {
+	id: number;
+	text: string;
+	storyId: number;
+	userId: number;
+	owner: {
+		isOwner: boolean;
+		username: string;
+		avatar: string;
+		rankColor: string;
+		status: "ACTIVE" | "BANNED";
+	};
+	isOwnerFollower: boolean;
+	commentedByAuthor: boolean;
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 
-export type { ChannelType, StoryType, SetState };
+export type { ChannelType, StoryType, CommentType, SetState };

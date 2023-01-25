@@ -45,10 +45,13 @@ const Wrapper = styled.div<WrapperProps>`
 		height: auto;
 		padding: 20px;
 		border-radius: 5px;
+		position: relative;
+		z-index: 1;
 		margin: ${(props) => props.margin};
 		background-color: ${(props) => props.theme.colors.white};
 		box-shadow: 0 0 4px 1px
 			${(props) => props.getBorderColor(props.theme.colors.black, 0.25)};
+		transition: all ease 0.1s;
 
 		@media (max-width: 400px) {
 			padding: 15px;

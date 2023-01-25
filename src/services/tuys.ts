@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ChannelType, StoryType } from "../components/utils/Protocols";
+import {
+	ChannelType,
+	CommentType,
+	StoryType,
+} from "../components/utils/Protocols";
 
 const BASE_URI = process.env.REACT_APP_API_URI;
 
@@ -46,6 +50,15 @@ async function getStoriesFromChannelAfterId(
 	return response.data;
 }
 
+async function getComments(storyId: number) {
+	const config = createHeader();
+	const response = await axios.get<CommentType[]>(
+		`${BASE_URI}/stories/${storyId}/comments`,
+		config
+	);
+	return response.data;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await axios.post<{ id: number }>(
@@ -75,8 +88,9 @@ export type PostStoryParams = {
 export {
 	getChannels,
 	getStoriesFromChannel,
-	postStory,
 	getStoriesFromChannelAfterId,
+	getComments,
+	postStory,
 	postLike,
 	postUnlike,
 };
