@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createChannel, createStory, createStoryOfChannel, likeStory } from "../factories";
+import { createChannel, createComment, createStory, createStoryOfChannel, likeStory } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -445,6 +445,93 @@ describe("POST /stories/:storyId/unlike", () => {
       const afterCount = await prisma.likes.count();
 
       expect(afterCount).toBe(beforeCount - 1);
+    });
+  });
+});
+
+describe("GET /stories/:storyId/comments", () => {
+  const route = "/stories";
+  const subRoute = "comments";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if story id is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if story does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 200 and an empty array if there is no comment", async () => {
+      const user = await generateValidUser();
+      const channelWithStory = await createStory(user.id);
+      const authorization = await generateValidToken(user);
+
+      const response = await app
+        .get(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([]);
+    });
+
+    it("should return status 200 and a comments array", async () => {
+      const user = await generateValidUser();
+      const channelWithStory = await createStory(user.id);
+      const authorization = await generateValidToken(user);
+      const comment = await createComment({ userId: user.id, storyId: channelWithStory.Stories[0].id });
+
+      const response = await app
+        .get(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: comment.id,
+          userId: comment.userId,
+          storyId: comment.storyId,
+          text: comment.text,
+          owner: {
+            isOwner: true,
+            username: user.username,
+            avatar: user.avatar,
+            rankColor: expect.any(String),
+            status: user.status,
+          },
+          isOwnerFollower: false,
+          commentedByAuthor: true,
+        },
+      ]);
     });
   });
 });

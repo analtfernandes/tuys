@@ -1,10 +1,11 @@
+import { Comments } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { prisma } from "../../src/database";
 
 function createStory(userId: number) {
   return prisma.channels.create({
     data: {
-      name: faker.lorem.word({ length: { min: 3, max: 30 } }),
+      name: faker.internet.userName(),
       background: faker.image.abstract(),
       Stories: {
         create: {
@@ -43,4 +44,15 @@ function likeStory(storyId: number, userId: number) {
   });
 }
 
-export { createStory, createStoryOfChannel, likeStory };
+function createComment(data: CreateCommentParams) {
+  return prisma.comments.create({
+    data: {
+      ...data,
+      text: faker.lorem.text(),
+    },
+  });
+}
+
+type CreateCommentParams = Omit<Comments, "id" | "text">;
+
+export { createStory, createStoryOfChannel, likeStory, createComment };

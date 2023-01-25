@@ -18,6 +18,22 @@ async function getAllOfChannel(req: Request, res: Response) {
   }
 }
 
+async function getComments(req: Request, res: Response) {
+  const storyId = Number(req.params.storyId);
+  const userId: number = res.locals.userId;
+
+  try {
+    const comments = await storyService.getComments({ userId, storyId });
+    return responseHelper.OK({ res, body: comments });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Essa história não existe!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function getAfterId(req: Request, res: Response) {
   const channelId = Number(req.params.channelId);
   const storyId = Number(req.params.storyId);
@@ -90,4 +106,4 @@ async function postUnlikeStory(req: Request, res: Response) {
   }
 }
 
-export { getAllOfChannel, postStory, getAfterId, postLikeStory, postUnlikeStory };
+export { getAllOfChannel, getAfterId, getComments, postStory, postLikeStory, postUnlikeStory };

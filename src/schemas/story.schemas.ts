@@ -19,4 +19,6 @@ const postLikeSchema = Joi.object({
   storyId: Joi.number().integer().min(1).required(),
 });
 
-export { getStoriesByChannelIdSchema, postStorySchema, getStoriesAfterIdSchema, postLikeSchema };
+const allCommentsSchema = postLikeSchema;
+
+export { getStoriesByChannelIdSchema, postStorySchema, getStoriesAfterIdSchema, postLikeSchema, allCommentsSchema };

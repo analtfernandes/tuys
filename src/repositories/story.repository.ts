@@ -95,6 +95,33 @@ function findStoryLikedByUser(storyId: number, userId: number) {
   return prisma.likes.findFirst({ where: { storyId, userId } });
 }
 
+function findComments(storyId: number, userId: number) {
+  return prisma.comments.findMany({
+    where: { storyId },
+    include: {
+      Users: {
+        select: {
+          id: true,
+          username: true,
+          avatar: true,
+          status: true,
+          Ranks: { select: { color: true } },
+          Follower: {
+            where: {
+              followerId: userId,
+            },
+          },
+        },
+      },
+      Stories: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+}
+
 function createStory(data: CreateStoryParams) {
   return prisma.stories.create({ data: { ...data } });
 }
@@ -111,4 +138,13 @@ type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
 type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
 
-export { findAllByChannelId, createStory, findAllAfterId, findById, findStoryLikedByUser, createLike, deleteLike };
+export {
+  findAllByChannelId,
+  findComments,
+  findAllAfterId,
+  findById,
+  findStoryLikedByUser,
+  createStory,
+  createLike,
+  deleteLike,
+};

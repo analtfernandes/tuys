@@ -1,4 +1,4 @@
-import { Follows, Likes, Stories } from "@prisma/client";
+import { Comments, Follows, Likes, Stories, UserStatus } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
 import { badRequestError, notFoundError } from "../helpers/errors.helper";
@@ -17,6 +17,15 @@ async function getAfterId({ channelId, userId, storyId }: GetAfterIdParams) {
   const stories = await storyRepository.findAllAfterId({ channelId, userId, storyId });
 
   return formatStories(stories, userId);
+}
+
+async function getComments({ storyId, userId }: GetCommentsParams) {
+  const story = await storyRepository.findById(storyId);
+  if (!story) throw notFoundError();
+
+  const comments = await storyRepository.findComments(storyId, userId);
+
+  return formatComments(comments, userId);
 }
 
 async function postStory(data: PostStoryParams) {
@@ -71,9 +80,24 @@ function formatStories(stories: FormatStoriesParams, userId: number) {
   }));
 }
 
-type GetAllOfChannelParams = { channelId: number; userId: number };
+function formatComments(comments: FormartCommentsParams, userId: number) {
+  return comments.map(({ Users, Stories, ...comment }) => ({
+    owner: {
+      isOwner: Users.id === userId,
+      username: Users.username,
+      avatar: Users.avatar,
+      rankColor: Users.Ranks.color,
+      status: Users.status,
+    },
+    isOwnerFollower: Users.Follower.length === 0 ? false : true,
+    commentedByAuthor: Users.id === Stories.userId,
+    ...comment,
+  }));
+}
 
+type GetAllOfChannelParams = { channelId: number; userId: number };
 type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
+type GetCommentsParams = { storyId: number; userId: number };
 
 type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
 
@@ -99,4 +123,20 @@ type FormatStoriesParams = Partial<Stories> &
     };
   }[];
 
-export { getAllOfChannel, postStory, getAfterId, postLikeStory, postUnlikeStory };
+type FormartCommentsParams = (Comments & {
+  Users: {
+    id: number;
+    status: UserStatus;
+    username: string;
+    avatar: string;
+    Ranks: {
+      color: string;
+    };
+    Follower: Follows[];
+  };
+  Stories: {
+    userId: number;
+  };
+})[];
+
+export { getAllOfChannel, getComments, getAfterId, postStory, postLikeStory, postUnlikeStory };
