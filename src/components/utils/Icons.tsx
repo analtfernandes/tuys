@@ -18,6 +18,7 @@ import {
 } from "react-icons/io5";
 
 type IconsParams<Type> = {
+	onClick?: () => void;
 	options?: Type;
 	type:
 		| "home"
@@ -55,8 +56,8 @@ const IconsTypes = Object.freeze({
 	reload: IoReload,
 });
 
-export function Icons<Type>({ type, options }: IconsParams<Type>) {
+export function Icons<Type>({ type, options, onClick }: IconsParams<Type>) {
 	const Icon = IconsTypes[type];
 
-	return <Icon title={type} {...options} />;
+	return <Icon title={type} {...options} onClick={onClick} />;
 }

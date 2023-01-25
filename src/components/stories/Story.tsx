@@ -4,6 +4,8 @@ import { StoryType } from "../utils/Protocols";
 import { UserRank } from "../shared/UserRank";
 import { Icons } from "../utils/Icons";
 import { Form } from "./Form";
+import { useState } from "react";
+import { postLike } from "../../services/tuys";
 
 type StoryParams = {
 	story: StoryType;
@@ -15,12 +17,25 @@ type OptionProps = {
 };
 
 export function Story({ story, showChannel = true }: StoryParams) {
+	const [like, setLike] = useState(story.likedByUser);
 	const { owner } = story;
 
 	function compactNumber(number: number) {
 		return Intl.NumberFormat("pt-br", {
 			notation: "compact",
 		}).format(number);
+	}
+
+	function toggleLike() {
+		if (!like) {
+			setLike(true);
+			postLike(story.id)
+				.then(() => story.likes++)
+				.catch(() => setLike(false));
+			return;
+		}
+
+		setLike(false);
 	}
 
 	return (
@@ -90,8 +105,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					<>
 						<Option iconColor="red">
 							<div>
-								{story.likedByUser && <Icons type="unlike" />}
-								{!story.likedByUser && <Icons type="like" />}
+								{like && <Icons type="unlike" onClick={toggleLike} />}
+								{!like && <Icons type="like" onClick={toggleLike} />}
 								<span>Gostei</span>
 							</div>
 							<span>{compactNumber(story.likes)}</span>
