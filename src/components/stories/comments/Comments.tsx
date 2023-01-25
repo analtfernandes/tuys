@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useThemeContext } from "../../../contexts/ThemeContext";
 import { CommentType } from "../../utils/Protocols";
 import { toast } from "../../utils/Toast";
 import { getComments } from "../../../services/tuys";
 import { Comment } from "./Comment";
 import CreateComment from "./CreateComment";
+import useInterval from "use-interval";
 
 type CommentsProps = {
 	storyId: number;
@@ -16,16 +17,18 @@ type CommentsProps = {
 type WrapperProps = {
 	height: string;
 	padding: string;
+	margin: string;
 };
 
 export function Comments({ storyId, showComment }: CommentsProps) {
-	const [comments, setComments] = useState<CommentType[]>([]);
-	const [updateComments, setUpdateComments] = useState(false);
 	const defaultHeight = "0px";
 	const autoHeight = "auto";
+	const [comments, setComments] = useState<CommentType[]>([]);
+	const [updateComments, setUpdateComments] = useState(false);
 	const [height, setHeight] = useState(defaultHeight);
-	const { theme } = useThemeContext();
+	const scrollToLast = useRef<HTMLDivElement>(null);
 	const navigate = useNavigate();
+	const { theme } = useThemeContext();
 
 	function goToSignIn() {
 		toast({
@@ -35,6 +38,13 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 		});
 		navigate("/sign-in");
 	}
+
+	useEffect(() => {
+		scrollToLast.current?.scrollIntoView({
+			behavior: "smooth",
+			block: "nearest",
+		});
+	}, [scrollToLast.current, storyId]);
 
 	useEffect(() => {
 		if (!showComment && height === autoHeight) {
@@ -63,15 +73,42 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 			});
 	}, [storyId, showComment, updateComments]);
 
+	useInterval(() => {
+		if (!showComment || comments.length === 0) return;
+
+		getComments(storyId)
+			.then((newComments) =>
+				newComments.length > comments.length
+					? setComments([...newComments])
+					: ""
+			)
+			.catch(({ response }) => {
+				if (response.status === 401) {
+					return goToSignIn();
+				}
+
+				toast({
+					theme: theme.name,
+					type: "error",
+					text:
+						response?.data?.message ||
+						"Não foi possível carregar os comentários. Tente novamente.",
+				});
+			});
+	}, 30000);
+
 	return (
 		<Wrapper
 			height={height}
 			padding={height === defaultHeight ? "0 15px" : "20px 15px"}
+			margin={height === defaultHeight ? "0" : "0 0 20px 0"}
 		>
 			<div>
 				{comments.map((comment, index) => (
 					<Comment key={index} comment={comment} />
 				))}
+
+				{comments.length > 0 && <div ref={scrollToLast} />}
 			</div>
 
 			<CreateComment storyId={storyId} setUpdateComments={setUpdateComments} />
@@ -85,13 +122,15 @@ const Wrapper = styled.div<WrapperProps>`
 	padding: ${(props) => props.padding};
 	max-height: 180px;
 	border-radius: 5px;
+	margin: ${(props) => props.margin};
 	background-color: ${(props) => props.theme.colors.lightGray};
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	overflow: scroll;
-	position: absolute;
+	position: relative;
 	left: 0;
+	bottom: 30px;
 	z-index: 0;
 	transition: all ease 0.1s;
 `;

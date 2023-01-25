@@ -68,6 +68,7 @@ export default function CreateComment({
 
 			<form onSubmit={handleComment}>
 				<input
+					required
 					type="text"
 					placeholder="Escrever..."
 					value={newComment}
@@ -127,6 +128,7 @@ const Wrapper = styled.div`
 			svg {
 				height: 18px;
 				width: auto;
+				color: ${(props) => props.theme.colors.darkGray};
 			}
 		}
 	}

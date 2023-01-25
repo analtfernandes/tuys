@@ -21,10 +21,6 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
 	const [showComment, setShowComment] = useState(false);
 	const { owner } = story;
-	const backgroundConfig = {
-		true: { margin: "0 0 180px 0" },
-		false: { margin: "20px 0" },
-	};
 
 	function compactNumber(number: number) {
 		return Intl.NumberFormat("pt-br", {
@@ -48,99 +44,101 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	}
 
 	return (
-		<Background config={backgroundConfig[`${showComment}`]}>
-			<Author>
-				<UserRank
-					background={owner.rankColor}
-					image={owner.avatar}
-					alt={owner.username}
-				/>
+		<>
+			<Background config={{ margin: "20px 0" }}>
+				<Author>
+					<UserRank
+						background={owner.rankColor}
+						image={owner.avatar}
+						alt={owner.username}
+					/>
 
-				<div>
-					<span>{owner.username}</span>
-					{showChannel && <Channel>#{story.channel.toUpperCase()}</Channel>}
-				</div>
+					<div>
+						<span>{owner.username}</span>
+						{showChannel && <Channel>#{story.channel.toUpperCase()}</Channel>}
+					</div>
 
-				{!owner.isOwner && story.followedByUser && (
-					<Following>
-						<span>Seguindo</span>
-					</Following>
-				)}
+					{!owner.isOwner && story.followedByUser && (
+						<Following>
+							<span>Seguindo</span>
+						</Following>
+					)}
 
-				{owner.isOwner && (
-					<OwnerOptions>
-						<Option iconColor="darkGray">
-							<div>
-								<Icons type="edit" />
-							</div>
-						</Option>
-						<Option iconColor="pink">
-							<div>
-								<Icons type="delete" />
-							</div>
-						</Option>
-					</OwnerOptions>
-				)}
-			</Author>
+					{owner.isOwner && (
+						<OwnerOptions>
+							<Option iconColor="darkGray">
+								<div>
+									<Icons type="edit" />
+								</div>
+							</Option>
+							<Option iconColor="pink">
+								<div>
+									<Icons type="delete" />
+								</div>
+							</Option>
+						</OwnerOptions>
+					)}
+				</Author>
 
-			<PublishedDate>
-				Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
-			</PublishedDate>
+				<PublishedDate>
+					Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
+				</PublishedDate>
 
-			<Background.Div />
+				<Background.Div />
 
-			<Form title={story.title} body={story.body} />
+				<Form title={story.title} body={story.body} />
 
-			<Background.Div />
+				<Background.Div />
 
-			<StoryOptions>
-				{owner.isOwner && (
-					<>
-						<Option iconColor="">
-							<span>{compactNumber(story.likes)} pessoas gostaram</span>
-						</Option>
+				<StoryOptions>
+					{owner.isOwner && (
+						<>
+							<Option iconColor="">
+								<span>{compactNumber(story.likes)} pessoas gostaram</span>
+							</Option>
 
-						<Option iconColor="pastelBlue">
-							<div onClick={() => setShowComment((prev) => !prev)}>
-								<Icons type="comment" options={{ color: "#70A4A2" }} />
-								<span>Comentários</span>
-							</div>
-							<span>{compactNumber(story.comments)}</span>
-						</Option>
-					</>
-				)}
+							<Option iconColor="pastelBlue">
+								<div onClick={() => setShowComment((prev) => !prev)}>
+									<Icons type="comment" options={{ color: "#70A4A2" }} />
+									<span>Comentários</span>
+								</div>
+								<span>{compactNumber(story.comments)}</span>
+							</Option>
+						</>
+					)}
 
-				{!owner.isOwner && (
-					<>
-						<Option iconColor="red">
-							<div>
-								{like && <Icons type="unlike" onClick={toggleLike} />}
-								{!like && <Icons type="like" onClick={toggleLike} />}
-								<span>Gostei</span>
-							</div>
-							<span>{compactNumber(story.likes)}</span>
-						</Option>
+					{!owner.isOwner && (
+						<>
+							<Option iconColor="red">
+								<div>
+									{like && <Icons type="unlike" onClick={toggleLike} />}
+									{!like && <Icons type="like" onClick={toggleLike} />}
+									<span>Gostei</span>
+								</div>
+								<span>{compactNumber(story.likes)}</span>
+							</Option>
 
-						<Option iconColor="pastelBlue">
-							<div onClick={() => setShowComment((prev) => !prev)}>
-								<Icons type="comment" options={{ color: "#70A4A2" }} />
-								<span>Comentar</span>
-							</div>
-							<span>{compactNumber(story.comments)}</span>
-						</Option>
+							<Option iconColor="pastelBlue">
+								<div onClick={() => setShowComment((prev) => !prev)}>
+									<Icons type="comment" options={{ color: "#70A4A2" }} />
+									<span>Comentar</span>
+								</div>
+								<span>{compactNumber(story.comments)}</span>
+							</Option>
 
-						<Option iconColor="pink">
-							<div>
-								<Icons type="denounce" options={{ color: "#A65353" }} />
-								<span>Denunciar</span>
-							</div>
-						</Option>
-					</>
-				)}
-			</StoryOptions>
+							<Option iconColor="pink">
+								<div>
+									<Icons type="denounce" options={{ color: "#A65353" }} />
+									<span>Denunciar</span>
+								</div>
+							</Option>
+						</>
+					)}
+				</StoryOptions>
+			</Background>
 
 			<Comments storyId={story.id} showComment={showComment} />
-		</Background>
+		</>
 	);
 }
 
