@@ -162,6 +162,15 @@ function deleteLike(id: number) {
   return prisma.likes.delete({ where: { id } });
 }
 
+async function deleteStory(id: number) {
+  await prisma.$transaction(async (pr) => {
+    await pr.likes.deleteMany({ where: { storyId: id } });
+    await pr.comments.deleteMany({ where: { storyId: id } });
+    await pr.denunciations.deleteMany({ where: { storyId: id } });
+    await pr.stories.delete({ where: { id } });
+  });
+}
+
 type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
 type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
@@ -179,4 +188,5 @@ export {
   createComment,
   createDenunciation,
   deleteLike,
+  deleteStory,
 };

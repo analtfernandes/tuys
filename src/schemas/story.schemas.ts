@@ -1,39 +1,41 @@
 import Joi from "joi";
 
-const getStoriesByChannelIdSchema = Joi.object({
+const getByChannelId = Joi.object({
   channelId: Joi.number().integer().min(1).required(),
 });
 
-const getStoriesAfterIdSchema = Joi.object({
+const getAfterId = Joi.object({
   storyId: Joi.number().integer().min(0).required(),
   channelId: Joi.number().integer().min(1).required(),
 });
 
-const postStorySchema = Joi.object({
+const postNew = Joi.object({
   title: Joi.string().min(3).max(30).required(),
   body: Joi.string().min(10).max(1000).required(),
   channelId: Joi.number().integer().min(1).required(),
 });
 
-const postLikeSchema = Joi.object({
+const postLike = Joi.object({
   storyId: Joi.number().integer().min(1).required(),
 });
 
-const postCommentSchema = Joi.object({
+const postComment = Joi.object({
   text: Joi.string().required(),
 });
 
-const allCommentsParamsSchema = postLikeSchema;
-const postDenounceParamsSchema = postLikeSchema;
-const postDenounceBodySchema = postCommentSchema;
+const allCommentsParams = postLike;
+const postDenounceParams = postLike;
+const deleteParams = postLike;
+const postDenounceBody = postComment;
 
 export {
-  getStoriesByChannelIdSchema,
-  getStoriesAfterIdSchema,
-  postStorySchema,
-  postLikeSchema,
-  postCommentSchema,
-  postDenounceParamsSchema,
-  postDenounceBodySchema,
-  allCommentsParamsSchema,
+  getByChannelId,
+  getAfterId,
+  postNew,
+  postLike,
+  postComment,
+  postDenounceParams,
+  postDenounceBody,
+  deleteParams,
+  allCommentsParams,
 };

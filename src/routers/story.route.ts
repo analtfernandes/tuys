@@ -1,17 +1,9 @@
 import { Router } from "express";
 import { authenticationMiddleware } from "../middlewares/authentication.middleware";
 import { validateSchema } from "../middlewares/validateSchema.middleware";
+import * as schema from "../schemas/story.schemas";
 import {
-  allCommentsParamsSchema,
-  getStoriesAfterIdSchema,
-  getStoriesByChannelIdSchema,
-  postCommentSchema,
-  postDenounceBodySchema,
-  postDenounceParamsSchema,
-  postLikeSchema,
-  postStorySchema,
-} from "../schemas/story.schemas";
-import {
+  deleteStory,
   getAfterId,
   getAllOfChannel,
   getComments,
@@ -26,23 +18,24 @@ const storyRoute = Router();
 
 storyRoute
   .all("/*", authenticationMiddleware)
-  .get("/:channelId", validateSchema(getStoriesByChannelIdSchema, "params"), getAllOfChannel)
-  .get("/:channelId/after/:storyId", validateSchema(getStoriesAfterIdSchema, "params"), getAfterId)
-  .get("/:storyId/comments", validateSchema(allCommentsParamsSchema, "params"), getComments)
-  .post("/", validateSchema(postStorySchema), postStory)
-  .post("/:storyId/like", validateSchema(postLikeSchema, "params"), postLikeStory)
-  .post("/:storyId/unlike", validateSchema(postLikeSchema, "params"), postUnlikeStory)
+  .get("/:channelId", validateSchema(schema.getByChannelId, "params"), getAllOfChannel)
+  .get("/:channelId/after/:storyId", validateSchema(schema.getAfterId, "params"), getAfterId)
+  .get("/:storyId/comments", validateSchema(schema.allCommentsParams, "params"), getComments)
+  .post("/", validateSchema(schema.postNew), postStory)
+  .post("/:storyId/like", validateSchema(schema.postLike, "params"), postLikeStory)
+  .post("/:storyId/unlike", validateSchema(schema.postLike, "params"), postUnlikeStory)
   .post(
     "/:storyId/comments",
-    validateSchema(allCommentsParamsSchema, "params"),
-    validateSchema(postCommentSchema),
+    validateSchema(schema.allCommentsParams, "params"),
+    validateSchema(schema.postComment),
     postComment,
   )
   .post(
     "/:storyId/denounce",
-    validateSchema(postDenounceParamsSchema, "params"),
-    validateSchema(postDenounceBodySchema),
+    validateSchema(schema.postDenounceParams, "params"),
+    validateSchema(schema.postDenounceBody),
     postDenounce,
-  );
+  )
+  .delete("/:storyId", validateSchema(schema.deleteParams, "params"), deleteStory);
 
 export { storyRoute };
