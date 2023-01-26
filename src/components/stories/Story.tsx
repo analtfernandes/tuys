@@ -30,6 +30,7 @@ type ModalConfig = {
 
 export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
+	const [editing, setEditing] = useState(false);
 	const [showComment, setShowComment] = useState(false);
 	const [modalConfig, setModalConfig] = useState({
 		isOpen: false,
@@ -152,7 +153,10 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 					{owner.isOwner && (
 						<OwnerOptions>
-							<Option iconColor="darkGray">
+							<Option
+								iconColor="darkGray"
+								onClick={() => (editing ? "" : setEditing(true))}
+							>
 								<div>
 									<Icons type="edit" />
 								</div>
@@ -175,7 +179,13 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 				<Background.Div />
 
-				<Form title={story.title} body={story.body} />
+				<Form
+					id={story.id}
+					story={story}
+					theme={theme.name}
+					editing={editing}
+					setEditing={setEditing}
+				/>
 
 				<Background.Div />
 
@@ -188,7 +198,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 							<Option iconColor="pastelBlue">
 								<div onClick={() => setShowComment((prev) => !prev)}>
-									<Icons type="comment" options={{ color: "#70A4A2" }} />
+									<Icons type="comment" />
 									<span>Comentários</span>
 								</div>
 								<span>{compactNumber(story.comments)}</span>
@@ -222,7 +232,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								}
 							>
 								<div>
-									<Icons type="denounce" options={{ color: "#A65353" }} />
+									<Icons type="denounce" />
 									<span>Denunciar</span>
 								</div>
 							</Option>
@@ -356,6 +366,10 @@ const OwnerOptions = styled.div`
 
 		svg {
 			font-size: 1.3rem;
+		}
+
+		> div {
+			margin: 0;
 		}
 
 		@media (max-width: 400px) {

@@ -1,19 +1,34 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import { SetState } from "../utils/Protocols";
+import { Button } from "../shared";
+import { putStory } from "../../services/tuys";
+import { toast } from "../utils/Toast";
 
 type WrapperProps = {
 	height: string;
 };
 
 type FormParams = {
-	title: string;
-	body: string;
+	id: number;
+	story: {
+		title: string;
+		body: string;
+	};
+	theme: string;
+	editing: boolean;
+	setEditing: SetState<boolean>;
 };
 
-export function Form({ title, body }: FormParams) {
+export function Form({ id, story, theme, editing, setEditing }: FormParams) {
 	const [bodyHeight, setBodyHeight] = useState("auto");
+	const [editStory, setEditStory] = useState({
+		title: story.title,
+		body: story.body,
+	});
 	const ref = useRef<HTMLTextAreaElement>(null);
 	const minimusHeight = "80px";
+	let disabled = !editing;
 
 	useEffect(() => {
 		if (ref.current) {
@@ -36,22 +51,97 @@ export function Form({ title, body }: FormParams) {
 		setBodyHeight(minimusHeight);
 	}
 
+	function handleChange(
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) {
+		setEditStory((prev) => ({
+			...prev,
+			[event.target.name]: event.target.value,
+		}));
+	}
+
+	function handleStory(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+
+		putStory(editStory, id)
+			.then(() => {
+				toast({
+					theme: theme,
+					type: "success",
+					text: "História atualizada com sucesso.",
+				});
+				story.title = editStory.title;
+				story.body = editStory.body;
+				setEditing(false);
+			})
+			.catch(() => {
+				toast({
+					theme: theme,
+					type: "error",
+					text: "Não foi atualizar a história. Tente novamente.",
+				});
+			});
+	}
+
+	function cancelEdit() {
+		setEditStory({
+			title: story.title,
+			body: story.body,
+		});
+		setEditing(false);
+	}
+
 	function isBodyBiggerThanMinimun() {
 		return ref.current?.scrollHeight && ref.current?.scrollHeight >= 90;
 	}
 
 	return (
-		<Wrapper onSubmit={toggleReadMore} height={bodyHeight}>
-			<input disabled={true} value={title} />
-			<textarea disabled={true} value={body} ref={ref} />
+		<Wrapper
+			onSubmit={editing ? handleStory : toggleReadMore}
+			height={bodyHeight}
+		>
+			<input
+				required
+				autoComplete="off"
+				disabled={disabled}
+				type="text"
+				name="title"
+				placeholder="Título"
+				minLength={3}
+				maxLength={30}
+				value={editStory.title}
+				onChange={handleChange}
+			/>
+			<textarea
+				required
+				ref={ref}
+				autoComplete="off"
+				disabled={disabled}
+				name="body"
+				placeholder="Corpo"
+				minLength={10}
+				maxLength={1000}
+				value={editStory.body}
+				onChange={handleChange}
+			/>
 
-			{isBodyBiggerThanMinimun() && bodyHeight === minimusHeight && (
-				<button>...ver mais</button>
+			{editing && (
+				<Buttons>
+					<Button config={{ type: "primary-invert" }} onClick={cancelEdit}>
+						Cancelar
+					</Button>
+
+					<Button config={{ type: "primary" }}>Atualizar</Button>
+				</Buttons>
 			)}
 
-			{isBodyBiggerThanMinimun() && bodyHeight !== minimusHeight && (
-				<button>...ver menos</button>
-			)}
+			{!editing &&
+				isBodyBiggerThanMinimun() &&
+				bodyHeight === minimusHeight && <button>...ver mais</button>}
+
+			{!editing &&
+				isBodyBiggerThanMinimun() &&
+				bodyHeight !== minimusHeight && <button>...ver menos</button>}
 		</Wrapper>
 	);
 }
@@ -65,27 +155,45 @@ const Wrapper = styled.form<WrapperProps>`
 
 	input {
 		width: 100%;
-		border: none;
+		border-radius: 5px;
+		padding: 6px;
+		outline: none;
+		border: 1px solid ${(props) => props.theme.colors.lightGray};
 		background-color: transparent;
 		font-family: "Roboto", sans-serif;
 		font-size: 0.9rem;
 		font-weight: 700;
 		color: ${(props) => props.theme.colors.black};
+
+		:disabled {
+			border: none;
+			padding: 0;
+		}
 	}
 
 	textarea {
 		width: 100%;
-		height: ${(props) => props.height};
+		height: 90px;
 		resize: none;
-		overflow: hidden;
-		border: none;
+		overflow: scroll;
+		border-radius: 5px;
+		padding: 6px;
+		outline: none;
+		border: 1px solid ${(props) => props.theme.colors.lightGray};
 		background-color: transparent;
 		font-family: "Roboto", sans-serif;
 		font-size: 0.9rem;
 		color: ${(props) => props.theme.colors.black};
+
+		:disabled {
+			border: none;
+			padding: 0;
+			height: ${(props) => props.height};
+			overflow: hidden;
+		}
 	}
 
-	button {
+	> button {
 		border: none;
 		align-self: flex-end;
 		background-color: transparent;
@@ -104,5 +212,23 @@ const Wrapper = styled.form<WrapperProps>`
 		textarea {
 			font-size: 0.99rem;
 		}
+	}
+`;
+
+const Buttons = styled.div`
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 10px auto 0;
+	width: 50%;
+	min-width: 300px;
+
+	@media (max-width: 450px) {
+		width: 100%;
+		min-width: 100%;
+		height: 90px;
+		flex-direction: column-reverse;
+		justify-content: space-between;
 	}
 `;

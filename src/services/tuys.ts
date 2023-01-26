@@ -103,6 +103,11 @@ function deleteStory(storyId: number) {
 	return axios.delete(`${BASE_URI}/stories/${storyId}`, config);
 }
 
+function putStory(body: PutStoryParams, storyId: number) {
+	const config = createHeader();
+	return axios.put(`${BASE_URI}/stories/${storyId}`, body, config);
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -113,6 +118,8 @@ export type PostCommentParams = {
 	body: { text: string };
 	storyId: number;
 };
+
+export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 
 export type PostDenounceParams = PostCommentParams;
 
@@ -127,4 +134,5 @@ export {
 	postComment,
 	postDenounce,
 	deleteStory,
+	putStory,
 };
