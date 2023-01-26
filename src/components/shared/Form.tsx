@@ -58,6 +58,14 @@ const Wrapper = styled.form`
 	height: 100%;
 	padding: 0;
 	margin: 0;
+
+	b {
+		font-weight: 700;
+	}
+
+	u {
+		text-decoration: underline;
+	}
 `;
 
 const Title = styled.h2`

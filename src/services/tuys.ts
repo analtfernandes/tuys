@@ -98,6 +98,11 @@ async function postDenounce(data: PostDenounceParams) {
 	);
 }
 
+function deleteStory(storyId: number) {
+	const config = createHeader();
+	return axios.delete(`${BASE_URI}/stories/${storyId}`, config);
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -121,4 +126,5 @@ export {
 	postUnlike,
 	postComment,
 	postDenounce,
+	deleteStory,
 };

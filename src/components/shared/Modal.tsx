@@ -9,20 +9,29 @@ ReactModal.setAppElement("#root");
 
 type ModalParams = {
 	modalIsOpen: boolean;
-	type: "denounceStory";
-	setModalIsOpen: SetState<boolean>;
+	type: "denounceStory" | "delete";
+	setModalIsOpen: SetState<SetStateType>;
 	callback?: (params: any) => any;
 	closeModalOnSubmit?: boolean;
+	storyData?: {
+		name?: string;
+	};
+};
+
+type SetStateType = {
+	isOpen: boolean;
+	type?: "denounceStory" | "delete";
 };
 
 type ModalForm = {
 	text?: string;
 };
 
-export default function Modal({
+export function Modal({
 	closeModalOnSubmit = true,
 	modalIsOpen,
 	type,
+	storyData,
 	setModalIsOpen,
 	callback,
 }: ModalParams) {
@@ -49,7 +58,21 @@ export default function Modal({
 				</Form.Section>
 			),
 			continueButtonText: "Denunciar",
-			continueButtonFunction: handleForm,
+		},
+		delete: {
+			title: "Apagar Estória",
+			content: (
+				<Form.Section>
+					<p>
+						Você tem certeza que deseja apagar
+						<b>{storyData?.name ? ` ${storyData?.name}` : ""}</b>?
+					</p>
+					<p>
+						<b>Atenção:</b> essa ação <u>não</u> pode ser desfeita!
+					</p>
+				</Form.Section>
+			),
+			continueButtonText: "Apagar",
 		},
 	};
 
@@ -71,17 +94,25 @@ export default function Modal({
 		setForm({});
 
 		if (closeModalOnSubmit) {
-			setModalIsOpen(false);
+			closeModal();
 		}
+	}
+
+	function closeModal() {
+		setModalIsOpen({
+			isOpen: false,
+			type: "delete",
+		});
 	}
 
 	return (
 		<Wrapper
 			isOpen={modalIsOpen}
-			onRequestClose={() => setModalIsOpen(false)}
+			onRequestClose={closeModal}
 			style={{ overlay: { zIndex: 15, backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
+			shouldCloseOnOverlayClick={false}
 		>
-			<FormStyle onSubmit={data.continueButtonFunction}>
+			<FormStyle onSubmit={handleForm}>
 				<Form.Title>{data.title}</Form.Title>
 
 				<Form.Division margin="15px 0" />
@@ -89,10 +120,7 @@ export default function Modal({
 				{data.content}
 
 				<Buttons>
-					<Button
-						config={{ type: "primary-invert" }}
-						onClick={() => setModalIsOpen(false)}
-					>
+					<Button config={{ type: "primary-invert" }} onClick={closeModal}>
 						Cancelar
 					</Button>
 

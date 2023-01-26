@@ -1,15 +1,18 @@
 import styled from "styled-components";
-import { Background } from "../shared";
-import { StoryType } from "../utils/Protocols";
-import { UserRank } from "../shared/UserRank";
-import { Icons } from "../utils/Icons";
-import { Form } from "./Form";
 import { useState } from "react";
-import { postDenounce, postLike, postUnlike } from "../../services/tuys";
-import { Comments } from "./comments/Comments";
-import Modal from "../shared/Modal";
-import { toast } from "../utils/Toast";
+import {
+	deleteStory,
+	postDenounce,
+	postLike,
+	postUnlike,
+} from "../../services/tuys";
 import { useThemeContext } from "../../contexts/ThemeContext";
+import { Background, Modal, UserRank } from "../shared";
+import { StoryType } from "../utils/Protocols";
+import { Icons } from "../utils/Icons";
+import { toast } from "../utils/Toast";
+import { Form } from "./Form";
+import { Comments } from "./comments/Comments";
 
 type StoryParams = {
 	story: StoryType;
@@ -20,10 +23,18 @@ type OptionProps = {
 	iconColor: string;
 };
 
+type ModalConfig = {
+	isOpen: boolean;
+	type?: "denounceStory" | "delete";
+};
+
 export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
 	const [showComment, setShowComment] = useState(false);
-	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const [modalConfig, setModalConfig] = useState({
+		isOpen: false,
+		type: "delete",
+	} as ModalConfig);
 	const { theme } = useThemeContext();
 	const { owner } = story;
 
@@ -79,14 +90,44 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			});
 	}
 
+	function deleteStoryFunction() {
+		deleteStory(story.id)
+			.then(() =>
+				toast({
+					theme: theme.name,
+					type: "success",
+					text: "História apagada com sucesso.",
+				})
+			)
+			.catch(({ response }) => {
+				toast({
+					theme: theme.name,
+					type: "error",
+					text:
+						response?.data?.message ||
+						"Não foi apagar a história. Tente novamente.",
+				});
+			});
+	}
+
 	return (
 		<>
-			{modalIsOpen && (
+			{modalConfig.isOpen && modalConfig.type === "denounceStory" && (
 				<Modal
 					type="denounceStory"
-					modalIsOpen={modalIsOpen}
-					setModalIsOpen={setModalIsOpen}
+					modalIsOpen={modalConfig.isOpen}
+					setModalIsOpen={setModalConfig}
 					callback={denounceStory}
+				/>
+			)}
+
+			{modalConfig.isOpen && modalConfig.type === "delete" && (
+				<Modal
+					type="delete"
+					modalIsOpen={modalConfig.isOpen}
+					setModalIsOpen={setModalConfig}
+					callback={deleteStoryFunction}
+					storyData={{ name: story.title }}
 				/>
 			)}
 
@@ -116,7 +157,10 @@ export function Story({ story, showChannel = true }: StoryParams) {
 									<Icons type="edit" />
 								</div>
 							</Option>
-							<Option iconColor="pink">
+							<Option
+								iconColor="pink"
+								onClick={() => setModalConfig({ isOpen: true, type: "delete" })}
+							>
 								<div>
 									<Icons type="delete" />
 								</div>
@@ -171,7 +215,12 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								<span>{compactNumber(story.comments)}</span>
 							</Option>
 
-							<Option iconColor="pink" onClick={() => setModalIsOpen(true)}>
+							<Option
+								iconColor="pink"
+								onClick={() =>
+									setModalConfig({ isOpen: true, type: "denounceStory" })
+								}
+							>
 								<div>
 									<Icons type="denounce" options={{ color: "#A65353" }} />
 									<span>Denunciar</span>
