@@ -6,7 +6,7 @@ type ButtonParams = {
 	config?: Partial<WrapperProps> & {
 		type?: "primary" | "secundary" | "primary-invert";
 	};
-	onClick?: () => void;
+	onClick?: (params: any) => any;
 };
 
 type WrapperProps = {

@@ -89,6 +89,15 @@ async function postComment(data: PostCommentParams) {
 	return response.data;
 }
 
+async function postDenounce(data: PostDenounceParams) {
+	const config = createHeader();
+	return axios.post(
+		`${BASE_URI}/stories/${data.storyId}/denounce`,
+		data.body,
+		config
+	);
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -100,6 +109,8 @@ export type PostCommentParams = {
 	storyId: number;
 };
 
+export type PostDenounceParams = PostCommentParams;
+
 export {
 	getChannels,
 	getStoriesFromChannel,
@@ -109,4 +120,5 @@ export {
 	postLike,
 	postUnlike,
 	postComment,
+	postDenounce,
 };

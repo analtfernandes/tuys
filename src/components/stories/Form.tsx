@@ -13,7 +13,7 @@ type FormParams = {
 export function Form({ title, body }: FormParams) {
 	const [bodyHeight, setBodyHeight] = useState("auto");
 	const ref = useRef<HTMLTextAreaElement>(null);
-	const minimusHeight = '80px'
+	const minimusHeight = "80px";
 
 	useEffect(() => {
 		if (ref.current) {

@@ -5,8 +5,11 @@ import { UserRank } from "../shared/UserRank";
 import { Icons } from "../utils/Icons";
 import { Form } from "./Form";
 import { useState } from "react";
-import { postLike, postUnlike } from "../../services/tuys";
+import { postDenounce, postLike, postUnlike } from "../../services/tuys";
 import { Comments } from "./comments/Comments";
+import Modal from "../shared/Modal";
+import { toast } from "../utils/Toast";
+import { useThemeContext } from "../../contexts/ThemeContext";
 
 type StoryParams = {
 	story: StoryType;
@@ -20,6 +23,8 @@ type OptionProps = {
 export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
 	const [showComment, setShowComment] = useState(false);
+	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const { theme } = useThemeContext();
 	const { owner } = story;
 
 	function compactNumber(number: number) {
@@ -43,8 +48,48 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			.catch(() => setLike(true));
 	}
 
+	function denounceStory({ text }: { text: string }) {
+		if (text.length < 3) {
+			toast({
+				theme: theme.name,
+				type: "error",
+				text: "A mensagem deve ter pelo menos 3 caracteres!",
+			});
+			return;
+		}
+
+		const param = { storyId: story.id, body: { text } };
+
+		postDenounce(param)
+			.then(() =>
+				toast({
+					theme: theme.name,
+					type: "success",
+					text: "Denuncia enviada com sucesso. Agradecemos pela contribuição.",
+				})
+			)
+			.catch(({ response }) => {
+				toast({
+					theme: theme.name,
+					type: "error",
+					text:
+						response?.data?.message ||
+						"Não foi enviar a denúncia. Tente novamente.",
+				});
+			});
+	}
+
 	return (
 		<>
+			{modalIsOpen && (
+				<Modal
+					type="denounceStory"
+					modalIsOpen={modalIsOpen}
+					setModalIsOpen={setModalIsOpen}
+					callback={denounceStory}
+				/>
+			)}
+
 			<Background config={{ margin: "20px 0" }}>
 				<Author>
 					<UserRank
@@ -126,7 +171,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								<span>{compactNumber(story.comments)}</span>
 							</Option>
 
-							<Option iconColor="pink">
+							<Option iconColor="pink" onClick={() => setModalIsOpen(true)}>
 								<div>
 									<Icons type="denounce" options={{ color: "#A65353" }} />
 									<span>Denunciar</span>

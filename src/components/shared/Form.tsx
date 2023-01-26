@@ -25,6 +25,10 @@ type SectionProps = {
 	textarea?: { min?: string; max?: string };
 };
 
+type DivisionProps = {
+	margin: string;
+};
+
 export function Form({ children, onSubmit }: FormParams) {
 	return (
 		<Background config={{ margin: "0 0 20px 0" }}>
@@ -43,6 +47,10 @@ Form.Section = ({ children, margin = "10px 0", textarea }: SectionParams) => {
 			{children}
 		</Section>
 	);
+};
+
+Form.Division = ({ margin = "10px 0" }) => {
+	return <Division margin={margin}></Division>;
 };
 
 const Wrapper = styled.form`
@@ -167,4 +175,11 @@ const Section = styled.div<SectionProps>`
 			}
 		}
 	}
+`;
+
+const Division = styled.div<DivisionProps>`
+	width: 100%;
+	height: 1px;
+	background-color: ${(props) => props.theme.colors.darkGray};
+	margin: ${(props) => props.margin};
 `;
