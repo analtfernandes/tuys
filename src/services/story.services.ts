@@ -81,6 +81,15 @@ async function deleteStory(data: DeleteStoryParams) {
   await storyRepository.deleteStory(data.id);
 }
 
+async function putStory(data: PutStoryParams) {
+  const story = await storyRepository.findById(data.storyId);
+  if (!story) throw notFoundError();
+
+  if (story.userId !== data.userId) throw unauthorizedError();
+
+  await storyRepository.updateStory(data);
+}
+
 async function validateChannelId(id: number) {
   const channel = await channelRepository.findById(id);
 
@@ -124,9 +133,10 @@ type GetAllOfChannelParams = { channelId: number; userId: number };
 type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
 type GetCommentsParams = Omit<Comments, "id" | "text">;
 type PostCommentParams = Omit<Comments, "id">;
-type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
+type PostStoryParams = Omit<Stories, "id" | "date" | "status">;
 type PostDenounceParams = Omit<Denunciations, "id">;
 type DeleteStoryParams = { id: number; userId: number };
+type PutStoryParams = Omit<Stories, "id" | "date" | "status"> & { storyId: number; userId: number };
 
 type FormatStoriesParams = Partial<Stories> &
   {
@@ -176,4 +186,5 @@ export {
   postComment,
   postDenounce,
   deleteStory,
+  putStory,
 };

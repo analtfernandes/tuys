@@ -27,7 +27,7 @@ function createBannedStoryOfChannel(userId: number, channelId: number) {
   return prisma.stories.create({
     data: {
       title: faker.lorem.word(10),
-      body: faker.lorem.paragraph(),
+      body: faker.lorem.words(5),
       userId,
       channelId,
       status: StorieStatus.BANNED,
@@ -40,7 +40,7 @@ function createStoryOfChannel(userId: number, channelId: number) {
   return prisma.stories.create({
     data: {
       title: faker.lorem.word(10),
-      body: faker.lorem.paragraph(),
+      body: faker.lorem.words(5),
       userId,
       channelId,
     },

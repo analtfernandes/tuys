@@ -23,10 +23,16 @@ const postComment = Joi.object({
   text: Joi.string().required(),
 });
 
-const allCommentsParams = postLike;
-const postDenounceParams = postLike;
-const deleteParams = postLike;
+const putBody = Joi.object({
+  title: Joi.string().min(3).max(30).required(),
+  body: Joi.string().min(10).max(1000).required(),
+});
+
 const postDenounceBody = postComment;
+const postDenounceParams = postLike;
+const allCommentsParams = postLike;
+const deleteParams = postLike;
+const putParams = postLike;
 
 export {
   getByChannelId,
@@ -38,4 +44,6 @@ export {
   postDenounceBody,
   deleteParams,
   allCommentsParams,
+  putBody,
+  putParams,
 };

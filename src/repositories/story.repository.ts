@@ -171,11 +171,16 @@ async function deleteStory(id: number) {
   });
 }
 
+function updateStory(data: UpdateStoryParams) {
+  return prisma.stories.update({ where: { id: data.storyId }, data: { title: data.title, body: data.body } });
+}
+
 type FindAllByChannelIdParams = { channelId: number; userId: number };
 type FindAllAfterIdIdParams = FindAllByChannelIdParams & { storyId: number };
-type CreateStoryParams = Omit<Stories, "id" | "data" | "status">;
+type CreateStoryParams = Omit<Stories, "id" | "date" | "status">;
 type CreateCommentParams = Omit<Comments, "id">;
 type PostDenounceParams = Omit<Denunciations, "id">;
+type UpdateStoryParams = CreateStoryParams & { storyId: number };
 
 export {
   findAllByChannelId,
@@ -189,4 +194,5 @@ export {
   createDenunciation,
   deleteLike,
   deleteStory,
+  updateStory,
 };

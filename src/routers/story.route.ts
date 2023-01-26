@@ -12,6 +12,7 @@ import {
   postLikeStory,
   postStory,
   postUnlikeStory,
+  putStory,
 } from "../controllers/story.controller";
 
 const storyRoute = Router();
@@ -36,6 +37,7 @@ storyRoute
     validateSchema(schema.postDenounceBody),
     postDenounce,
   )
-  .delete("/:storyId", validateSchema(schema.deleteParams, "params"), deleteStory);
+  .delete("/:storyId", validateSchema(schema.deleteParams, "params"), deleteStory)
+  .put("/:storyId", validateSchema(schema.putParams, "params"), validateSchema(schema.putBody), putStory);
 
 export { storyRoute };

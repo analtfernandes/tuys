@@ -848,3 +848,91 @@ describe("DELETE /stories/:storyId", () => {
     });
   });
 });
+
+describe("PUT /stories/:storyId", () => {
+  const route = "/stories";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.put(`${route}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.put(`${route}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'storyId' is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.put(`${route}/0`).set("Authorization", authorization).send({});
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if no body is sent", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if the sent body is invalid", async () => {
+      const authorization = await generateValidToken();
+      const body = { [faker.lorem.word()]: faker.lorem.word() };
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    describe("when body is valid", () => {
+      const body = {
+        title: faker.lorem.word(10),
+        body: faker.lorem.words(10),
+      };
+
+      it("should return status 404 if story does not exist", async () => {
+        const authorization = await generateValidToken();
+
+        const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NOT_FOUND);
+      });
+
+      it("should return status 401 if user is not the owner of story", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const otherUser = await generateValidUser();
+        const { Stories } = await createStory(otherUser.id);
+
+        const response = await app.put(`${route}/${Stories[0].id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+      });
+
+      it("should return status 204", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const { Stories } = await createStory(user.id);
+
+        const response = await app.put(`${route}/${Stories[0].id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NO_CONTENT);
+      });
+    });
+  });
+});
