@@ -5,8 +5,17 @@ import { faker } from "@faker-js/faker";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createChannel, createComment, createStory, createStoryOfChannel, likeStory } from "../factories";
+import {
+  createBannedStoryOfChannel,
+  createChannel,
+  createComment,
+  createStory,
+  createStoryOfChannel,
+  denounceStory,
+  likeStory,
+} from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
+import { StorieStatus, UserStatus } from "@prisma/client";
 
 const app = supertest(server);
 
@@ -629,6 +638,134 @@ describe("POST /stories/:storyId/comments", () => {
         const afterCount = await prisma.comments.count();
 
         expect(afterCount).toBe(beforeCount + 1);
+      });
+    });
+  });
+});
+
+describe("POST /stories/:storyId/denounce", () => {
+  const route = "/stories";
+  const subRoute = "denounce";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.post(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if story id is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if no body is sent", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if the sent body is invalid", async () => {
+      const authorization = await generateValidToken();
+      const body = { [faker.lorem.word()]: faker.lorem.word() };
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    describe("when body is valid", () => {
+      const body = {
+        text: faker.lorem.word(10),
+      };
+
+      it("should return status 404 if story does not exist", async () => {
+        const authorization = await generateValidToken();
+
+        const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NOT_FOUND);
+      });
+
+      it("should return status 204", async () => {
+        const user = await generateValidUser();
+        const channelWithStory = await createStory(user.id);
+        const authorization = await generateValidToken(user);
+
+        const response = await app
+          .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+          .set("Authorization", authorization)
+          .send(body);
+
+        expect(response.status).toBe(httpStatus.NO_CONTENT);
+      });
+
+      it("should save a new denounce in database", async () => {
+        const user = await generateValidUser();
+        const channelWithStory = await createStory(user.id);
+        const authorization = await generateValidToken(user);
+
+        const beforeCount = await prisma.denunciations.count();
+
+        await app
+          .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+          .set("Authorization", authorization)
+          .send(body);
+
+        const afterCount = await prisma.denunciations.count();
+
+        expect(afterCount).toBe(beforeCount + 1);
+      });
+
+      it(`should set the story status to '${StorieStatus.BANNED}' if there is three denounces to it`, async () => {
+        const user = await generateValidUser();
+        const { Stories } = await createStory(user.id);
+        const authorization = await generateValidToken(user);
+        await denounceStory(Stories[0].id, user.id);
+        await denounceStory(Stories[0].id, user.id);
+
+        await app.post(`${route}/${Stories[0].id}/${subRoute}`).set("Authorization", authorization).send(body);
+
+        const story = await prisma.stories.findUnique({ where: { id: Stories[0].id } });
+
+        expect(story?.status).toBe(StorieStatus.BANNED);
+      });
+
+      it(`should set the user status to '${UserStatus.BANNED}' if user have five banned stories`, async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const channel = await createChannel();
+        await createBannedStoryOfChannel(user.id, channel.id);
+        await createBannedStoryOfChannel(user.id, channel.id);
+        await createBannedStoryOfChannel(user.id, channel.id);
+        await createBannedStoryOfChannel(user.id, channel.id);
+        const lastStory = await createStoryOfChannel(user.id, channel.id);
+
+        await app.post(`${route}/${lastStory.id}/${subRoute}`).set("Authorization", authorization).send(body);
+
+        const bannedUser = await prisma.users.findUnique({ where: { id: user.id } });
+
+        expect(bannedUser?.status).toBe(UserStatus.BANNED);
       });
     });
   });

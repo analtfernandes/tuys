@@ -1,4 +1,4 @@
-import { Comments, Follows, Likes, Stories, UserStatus } from "@prisma/client";
+import { Comments, Denunciations, Follows, Likes, Stories, UserStatus } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
 import { badRequestError, notFoundError } from "../helpers/errors.helper";
@@ -65,6 +65,13 @@ async function postComment(data: PostCommentParams) {
   return { id: comment.id };
 }
 
+async function postDenounce(data: PostDenounceParams) {
+  const story = await storyRepository.findById(data.storyId);
+  if (!story) throw notFoundError();
+
+  await storyRepository.createDenunciation(data);
+}
+
 async function validateChannelId(id: number) {
   const channel = await channelRepository.findById(id);
 
@@ -108,8 +115,8 @@ type GetAllOfChannelParams = { channelId: number; userId: number };
 type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
 type GetCommentsParams = Omit<Comments, "id" | "text">;
 type PostCommentParams = Omit<Comments, "id">;
-
 type PostStoryParams = Omit<Stories, "id" | "data" | "status">;
+type PostDenounceParams = Omit<Denunciations, "id">;
 
 type FormatStoriesParams = Partial<Stories> &
   {
@@ -149,4 +156,13 @@ type FormartCommentsParams = (Comments & {
   };
 })[];
 
-export { getAllOfChannel, getComments, getAfterId, postStory, postLikeStory, postUnlikeStory, postComment };
+export {
+  getAllOfChannel,
+  getComments,
+  getAfterId,
+  postStory,
+  postLikeStory,
+  postUnlikeStory,
+  postComment,
+  postDenounce,
+};

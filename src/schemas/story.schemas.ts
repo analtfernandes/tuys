@@ -24,6 +24,8 @@ const postCommentSchema = Joi.object({
 });
 
 const allCommentsParamsSchema = postLikeSchema;
+const postDenounceParamsSchema = postLikeSchema;
+const postDenounceBodySchema = postCommentSchema;
 
 export {
   getStoriesByChannelIdSchema,
@@ -31,5 +33,7 @@ export {
   postStorySchema,
   postLikeSchema,
   postCommentSchema,
+  postDenounceParamsSchema,
+  postDenounceBodySchema,
   allCommentsParamsSchema,
 };

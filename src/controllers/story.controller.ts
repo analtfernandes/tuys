@@ -122,4 +122,29 @@ async function postComment(req: Request, res: Response) {
   }
 }
 
-export { getAllOfChannel, getAfterId, getComments, postStory, postLikeStory, postUnlikeStory, postComment };
+async function postDenounce(req: Request, res: Response) {
+  const storyId = Number(req.params.storyId);
+  const userId: number = res.locals.userId;
+
+  try {
+    await storyService.postDenounce({ userId, storyId, ...req.body });
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Essa história não existe!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export {
+  getAllOfChannel,
+  getAfterId,
+  getComments,
+  postStory,
+  postLikeStory,
+  postUnlikeStory,
+  postComment,
+  postDenounce,
+};

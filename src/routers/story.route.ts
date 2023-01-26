@@ -6,6 +6,8 @@ import {
   getStoriesAfterIdSchema,
   getStoriesByChannelIdSchema,
   postCommentSchema,
+  postDenounceBodySchema,
+  postDenounceParamsSchema,
   postLikeSchema,
   postStorySchema,
 } from "../schemas/story.schemas";
@@ -14,6 +16,7 @@ import {
   getAllOfChannel,
   getComments,
   postComment,
+  postDenounce,
   postLikeStory,
   postStory,
   postUnlikeStory,
@@ -34,6 +37,12 @@ storyRoute
     validateSchema(allCommentsParamsSchema, "params"),
     validateSchema(postCommentSchema),
     postComment,
+  )
+  .post(
+    "/:storyId/denounce",
+    validateSchema(postDenounceParamsSchema, "params"),
+    validateSchema(postDenounceBodySchema),
+    postDenounce,
   );
 
 export { storyRoute };

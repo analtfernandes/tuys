@@ -1,4 +1,4 @@
-import { Comments } from "@prisma/client";
+import { Comments, StorieStatus } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { prisma } from "../../src/database";
 
@@ -23,6 +23,19 @@ function createStory(userId: number) {
   });
 }
 
+function createBannedStoryOfChannel(userId: number, channelId: number) {
+  return prisma.stories.create({
+    data: {
+      title: faker.lorem.word(10),
+      body: faker.lorem.paragraph(),
+      userId,
+      channelId,
+      status: StorieStatus.BANNED,
+    },
+    include: { Users: true },
+  });
+}
+
 function createStoryOfChannel(userId: number, channelId: number) {
   return prisma.stories.create({
     data: {
@@ -35,15 +48,6 @@ function createStoryOfChannel(userId: number, channelId: number) {
   });
 }
 
-function likeStory(storyId: number, userId: number) {
-  return prisma.likes.create({
-    data: {
-      storyId,
-      userId,
-    },
-  });
-}
-
 function createComment(data: CreateCommentParams) {
   return prisma.comments.create({
     data: {
@@ -53,6 +57,25 @@ function createComment(data: CreateCommentParams) {
   });
 }
 
+function likeStory(storyId: number, userId: number) {
+  return prisma.likes.create({
+    data: {
+      storyId,
+      userId,
+    },
+  });
+}
+
+function denounceStory(storyId: number, userId: number) {
+  return prisma.denunciations.create({
+    data: {
+      storyId,
+      userId,
+      text: faker.lorem.words(),
+    },
+  });
+}
+
 type CreateCommentParams = Omit<Comments, "id" | "text">;
 
-export { createStory, createStoryOfChannel, likeStory, createComment };
+export { createStory, createStoryOfChannel, createBannedStoryOfChannel, createComment, likeStory, denounceStory };
