@@ -1,6 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useThemeContext } from "../../contexts/ThemeContext";
+import { useNavigateSignIn } from "../hooks";
 import { getMyStories } from "../../services/tuys";
 import { toast } from "../utils/Toast";
 import { StoryType } from "../utils/Protocols";
@@ -13,16 +14,7 @@ export function UserStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const { theme } = useThemeContext();
 	const { state: location } = useLocation();
-	const navigate = useNavigate();
-
-	function goToSignIn() {
-		toast({
-			theme: theme.name,
-			type: "warning",
-			text: "Sessão encerrada.",
-		});
-		navigate("/sign-in");
-	}
+	const goSignIn = useNavigateSignIn();
 
 	useEffect(() => {
 		if (!location?.userId) {
@@ -30,7 +22,7 @@ export function UserStories() {
 				.then((stories) => setStories(stories))
 				.catch(({ response }) => {
 					if (response.status === 401) {
-						return goToSignIn();
+						return goSignIn();
 					}
 
 					toast({

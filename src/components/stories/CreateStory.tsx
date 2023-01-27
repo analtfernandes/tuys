@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { postStory, PostStoryParams } from "../../services/tuys";
+import { useNavigateSignIn } from "../hooks";
 import { Button, Form } from "../shared";
 import { toast } from "../utils/Toast";
 import { ThemeType } from "../../styles/palettes";
@@ -9,18 +10,17 @@ type CreateStoryParams = {
 	channelId: number;
 	theme: ThemeType;
 	setUpdateStories: SetState<boolean>;
-	goToSignIn: () => void;
 };
 
 export function CreateStory({
 	channelId,
 	theme,
 	setUpdateStories,
-	goToSignIn,
 }: CreateStoryParams) {
-	const [story, setStory] = useState<PostStoryParams>({
+	const [story, setStory] = useState({
 		channelId,
 	} as PostStoryParams);
+	const goSignIn = useNavigateSignIn();
 
 	function handleChange(
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -79,7 +79,7 @@ export function CreateStory({
 				})
 				.catch(({ response }) => {
 					if (response.status === 401) {
-						return goToSignIn();
+						return goSignIn();
 					}
 
 					toast({

@@ -13,23 +13,15 @@ import { Story } from "./Story";
 import { CreateStory } from "./CreateStory";
 import { Icons } from "../utils/Icons";
 import { Wrapper } from "./Stories";
+import { useNavigateSignIn } from "../hooks";
 
 export function ChannelStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const [updateStories, setUpdateStories] = useState(false);
 	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
-	const { theme } = useThemeContext();
 	const { state: location } = useLocation();
-	const navigate = useNavigate();
-
-	function goToSignIn() {
-		toast({
-			theme: theme.name,
-			type: "warning",
-			text: "Sessão encerrada.",
-		});
-		navigate("/sign-in");
-	}
+	const goSignIn = useNavigateSignIn();
+	const { theme } = useThemeContext();
 
 	function updateStoriesFunction() {
 		setStories((prev) => [...haveMoreStories, ...prev]);
@@ -41,7 +33,7 @@ export function ChannelStories() {
 			.then((stories) => setStories(stories))
 			.catch(({ response }) => {
 				if (response.status === 401) {
-					return goToSignIn();
+					return goSignIn();
 				}
 
 				toast({
@@ -62,7 +54,7 @@ export function ChannelStories() {
 				})
 				.catch(({ response }) => {
 					if (response.status === 401) {
-						return goToSignIn();
+						return goSignIn();
 					}
 				});
 		}
@@ -78,7 +70,6 @@ export function ChannelStories() {
 						channelId={location.channelId}
 						theme={theme}
 						setUpdateStories={setUpdateStories}
-						goToSignIn={goToSignIn}
 					/>
 
 					{haveMoreStories.length > 0 && (
