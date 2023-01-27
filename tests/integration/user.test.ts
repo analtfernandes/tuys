@@ -69,3 +69,63 @@ describe("GET /users/me", () => {
     });
   });
 });
+
+describe("GET /users/me/stories", () => {
+  const route = "/users/me/stories";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(route);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(route).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return 200 and a stories array", async () => {
+      const user = await generateValidUser();
+      const channelWithStory = await createStory(user.id);
+      const otherUser = await generateValidUser();
+      await createStory(otherUser.id);
+      const authorization = await generateValidToken(user);
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: channelWithStory.Stories[0].id,
+          title: channelWithStory.Stories[0].title,
+          body: channelWithStory.Stories[0].body,
+          userId: channelWithStory.Stories[0].Users.id,
+          date: channelWithStory.Stories[0].date.toISOString(),
+          owner: {
+            isOwner: true,
+            status: channelWithStory.Stories[0].Users.status,
+            username: channelWithStory.Stories[0].Users.username,
+            avatar: channelWithStory.Stories[0].Users.avatar,
+            rankColor: expect.any(String),
+          },
+          likedByUser: false,
+          followedByUser: false,
+          likes: 0,
+          comments: 0,
+          channel: channelWithStory.name,
+        },
+      ]);
+    });
+  });
+});

@@ -1,6 +1,8 @@
 import { Stories, UserStatus } from "@prisma/client";
 import { notFoundError } from "../helpers/errors.helper";
 import * as userRepository from "../repositories/user.repository";
+import * as storyRepository from "../repositories/story.repository";
+import { formatStories } from "./story.services";
 
 async function getUserData(userId: number) {
   const user = await userRepository.findUserData(userId);
@@ -8,6 +10,14 @@ async function getUserData(userId: number) {
   if (!user) throw notFoundError();
 
   return formatUser(user);
+}
+
+async function getUserStories(userId: number) {
+  const stories = await storyRepository.findAllByUser(userId);
+
+  if (!stories) throw notFoundError();
+
+  return formatStories(stories, userId);
 }
 
 function formatUser(user: FormatUserParams) {
@@ -44,4 +54,4 @@ type FormatUserParams = {
   };
 };
 
-export { getUserData };
+export { getUserData, getUserStories };

@@ -130,6 +130,49 @@ function findAllAfterId({ channelId, userId, storyId }: FindAllAfterIdIdParams) 
   });
 }
 
+function findAllByUser(userId: number) {
+  return prisma.stories.findMany({
+    where: { status: StorieStatus.ACTIVE, userId },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      userId: true,
+      date: true,
+      Users: {
+        select: {
+          id: true,
+          username: true,
+          avatar: true,
+          status: true,
+          Ranks: { select: { color: true } },
+          Follower: {
+            where: {
+              followerId: userId,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          Comments: true,
+          Likes: true,
+        },
+      },
+      Likes: {
+        where: { userId },
+      },
+      Channels: {
+        select: {
+          name: true,
+        },
+      },
+    },
+
+    orderBy: { id: "desc" },
+  });
+}
+
 function findById(id: number) {
   return prisma.stories.findUnique({ where: { id } });
 }
@@ -228,8 +271,9 @@ type UpdateStoryParams = CreateStoryParams & { storyId: number };
 export {
   findAll,
   findAllByChannelId,
-  findComments,
+  findAllByUser,
   findAllAfterId,
+  findComments,
   findById,
   findStoryLikedByUser,
   createStory,

@@ -101,7 +101,22 @@ async function validateChannelId(id: number) {
   if (!channel) throw notFoundError();
 }
 
-function formatStories(stories: FormatStoriesParams, userId: number) {
+function formatComments(comments: FormartCommentsParams, userId: number) {
+  return comments.map(({ Users, Stories, ...comment }) => ({
+    owner: {
+      isOwner: Users.id === userId,
+      username: Users.username,
+      avatar: Users.avatar,
+      rankColor: Users.Ranks.color,
+      status: Users.status,
+    },
+    isOwnerFollower: Users.Follower.length === 0 ? false : true,
+    commentedByAuthor: Users.id === Stories.userId,
+    ...comment,
+  }));
+}
+
+export function formatStories(stories: FormatStoriesParams, userId: number) {
   return stories.map(({ Users, Likes, Channels, _count, ...story }) => ({
     owner: {
       isOwner: Users.id === userId,
@@ -116,21 +131,6 @@ function formatStories(stories: FormatStoriesParams, userId: number) {
     comments: _count.Comments,
     channel: Channels.name,
     ...story,
-  }));
-}
-
-function formatComments(comments: FormartCommentsParams, userId: number) {
-  return comments.map(({ Users, Stories, ...comment }) => ({
-    owner: {
-      isOwner: Users.id === userId,
-      username: Users.username,
-      avatar: Users.avatar,
-      rankColor: Users.Ranks.color,
-      status: Users.status,
-    },
-    isOwnerFollower: Users.Follower.length === 0 ? false : true,
-    commentedByAuthor: Users.id === Stories.userId,
-    ...comment,
   }));
 }
 
