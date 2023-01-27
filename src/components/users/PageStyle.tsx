@@ -111,10 +111,10 @@ const User = styled.div`
 			font-weight: 700;
 			margin: 0 3px 0 10px;
 		}
+	}
 
-		span {
-			line-height: 1.3rem;
-		}
+	span {
+		line-height: 1.4rem;
 	}
 
 	@media (max-width: 500px) {
