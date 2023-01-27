@@ -3,6 +3,11 @@ import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
 import { badRequestError, notFoundError, unauthorizedError } from "../helpers/errors.helper";
 
+async function getFromUserAndFollowed(userId: number) {
+  const stories = await storyRepository.findAll(userId);
+  return formatStories(stories, userId);
+}
+
 async function getAllOfChannel({ channelId, userId }: GetAllOfChannelParams) {
   await validateChannelId(channelId);
 
@@ -177,6 +182,7 @@ type FormartCommentsParams = (Comments & {
 })[];
 
 export {
+  getFromUserAndFollowed,
   getAllOfChannel,
   getComments,
   getAfterId,

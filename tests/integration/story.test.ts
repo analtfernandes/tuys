@@ -16,6 +16,7 @@ import {
 } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 import { StorieStatus, UserStatus } from "@prisma/client";
+import { createFollow } from "../factories/follow.factory";
 
 const app = supertest(server);
 
@@ -933,6 +934,93 @@ describe("PUT /stories/:storyId", () => {
 
         expect(response.status).toBe(httpStatus.NO_CONTENT);
       });
+    });
+  });
+});
+
+describe("GET /stories", () => {
+  const route = "/stories";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(route).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return 200 and an stories array", async () => {
+      const channel = await createChannel();
+      const firstUser = await generateValidUser();
+      const firstStory = await createStoryOfChannel(firstUser.id, channel.id);
+      const secondUser = await generateValidUser();
+      const secondStory = await createStoryOfChannel(secondUser.id, channel.id);
+      const thirdUser = await generateValidUser();
+      await createStoryOfChannel(thirdUser.id, channel.id);
+
+      await createFollow({ followedId: secondUser.id, followerId: firstUser.id });
+
+      const authorization = await generateValidToken(firstUser);
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body.length).toBe(2);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          {
+            id: firstStory.id,
+            title: firstStory.title,
+            body: firstStory.body,
+            userId: firstStory.Users.id,
+            date: firstStory.date.toISOString(),
+            owner: {
+              isOwner: true,
+              status: firstStory.Users.status,
+              username: firstStory.Users.username,
+              avatar: firstStory.Users.avatar,
+              rankColor: expect.any(String),
+            },
+            likedByUser: false,
+            followedByUser: false,
+            likes: 0,
+            comments: 0,
+            channel: channel.name,
+          },
+          {
+            id: secondStory.id,
+            title: secondStory.title,
+            body: secondStory.body,
+            userId: secondStory.Users.id,
+            date: secondStory.date.toISOString(),
+            owner: {
+              isOwner: false,
+              status: secondStory.Users.status,
+              username: secondStory.Users.username,
+              avatar: secondStory.Users.avatar,
+              rankColor: expect.any(String),
+            },
+            likedByUser: false,
+            followedByUser: true,
+            likes: 0,
+            comments: 0,
+            channel: channel.name,
+          },
+        ]),
+      );
     });
   });
 });

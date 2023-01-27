@@ -2,6 +2,17 @@ import { Request, Response } from "express";
 import * as responseHelper from "../helpers/response.helper";
 import * as storyService from "../services/story.services";
 
+async function getFromUserAndFollowed(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+
+  try {
+    const stories = await storyService.getFromUserAndFollowed(userId);
+    return responseHelper.OK({ res, body: stories });
+  } catch (error: any) {
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function getAllOfChannel(req: Request, res: Response) {
   const channelId = Number(req.params.channelId);
   const userId: number = res.locals.userId;
@@ -177,6 +188,7 @@ async function putStory(req: Request, res: Response) {
 }
 
 export {
+  getFromUserAndFollowed,
   getAllOfChannel,
   getAfterId,
   getComments,

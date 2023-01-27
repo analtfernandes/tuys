@@ -7,6 +7,7 @@ import {
   getAfterId,
   getAllOfChannel,
   getComments,
+  getFromUserAndFollowed,
   postComment,
   postDenounce,
   postLikeStory,
@@ -19,6 +20,7 @@ const storyRoute = Router();
 
 storyRoute
   .all("/*", authenticationMiddleware)
+  .get("/", getFromUserAndFollowed)
   .get("/:channelId", validateSchema(schema.getByChannelId, "params"), getAllOfChannel)
   .get("/:channelId/after/:storyId", validateSchema(schema.getAfterId, "params"), getAfterId)
   .get("/:storyId/comments", validateSchema(schema.allCommentsParams, "params"), getComments)
