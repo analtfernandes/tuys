@@ -28,6 +28,10 @@ PageStyle.User = ({ children }: React.PropsWithChildren) => {
 	return <User>{children}</User>;
 };
 
+PageStyle.Title = ({ children }: React.PropsWithChildren) => {
+	return <Title>{children}</Title>;
+};
+
 const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
@@ -66,9 +70,26 @@ const Sections = styled.div`
 	padding: 0 20px;
 	color: ${(props) => props.theme.colors.text};
 
-	@media (max-width: 500px) {
+	> main {
+		padding: 0;
+
+		> section {
+			width: 90%;
+			max-width: 700px;
+		}
+	}
+
+	@media (max-width: 800px) {
 		height: calc(100% - 120px);
 		flex-direction: column;
+
+		> main {
+			margin-top: 20px;
+		}
+	}
+
+	@media (min-width: 700px) {
+		width: fit-content;
 	}
 `;
 
@@ -92,7 +113,7 @@ const User = styled.div`
 		}
 
 		span {
-			line-height: 1.2rem;
+			line-height: 1.3rem;
 		}
 	}
 
@@ -108,6 +129,30 @@ const User = styled.div`
 				width: auto;
 				height: 1rem;
 			}
+		}
+	}
+`;
+
+const Title = styled.h3`
+	margin: 20px 0 0 30px;
+	font-size: 1.3rem;
+	font-weight: 700;
+	display: flex;
+	align-items: end;
+	font-family: "Roboto", sans-serif;
+
+	svg {
+		width: auto;
+		height: 1.4rem;
+		margin-right: 10px;
+	}
+
+	@media (max-width: 500px) {
+		font-size: 1.1rem;
+
+		svg {
+			width: auto;
+			height: 1.2rem;
 		}
 	}
 `;

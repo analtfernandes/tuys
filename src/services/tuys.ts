@@ -72,6 +72,12 @@ async function getMyData() {
 	return response.data;
 }
 
+async function getMyStories() {
+	const config = createHeader();
+	const response = await axios.get<StoryType[]>(`${BASE_URI}/users/me/stories`, config);
+	return response.data;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await axios.post<{ id: number }>(
@@ -143,6 +149,7 @@ export {
 	getStoriesFromChannelAfterId,
 	getComments,
 	getMyData,
+	getMyStories,
 	postStory,
 	postLike,
 	postUnlike,

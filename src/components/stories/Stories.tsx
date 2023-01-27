@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useInterval } from "use-interval";
 import { useThemeContext } from "../../contexts/ThemeContext";
 import {
+	getMyStories,
 	getStories,
 	getStoriesFromChannel,
 	getStoriesFromChannelAfterId,
@@ -24,7 +25,7 @@ export function Stories({ path }: StoriesParams) {
 	const [updateStories, setUpdateStories] = useState(false);
 	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
 	const { theme } = useThemeContext();
-	const { state: location, ...r } = useLocation();
+	const { state: location } = useLocation();
 	const navigate = useNavigate();
 
 	function goToSignIn() {
@@ -40,7 +41,7 @@ export function Stories({ path }: StoriesParams) {
 		setStories((prev) => [...haveMoreStories, ...prev]);
 		setHaveMoreStories([]);
 	}
-
+	console.log(stories);
 	useEffect(() => {
 		if (path === "channel") {
 			getStoriesFromChannel(location.channelId)
@@ -56,9 +57,10 @@ export function Stories({ path }: StoriesParams) {
 						text: response?.data?.message,
 					});
 				});
+			return;
 		}
-		if (path === "home") {
-			getStories()
+		if (path === "user" && !location?.userId) {
+			getMyStories()
 				.then((stories) => setStories(stories))
 				.catch(({ response }) => {
 					if (response.status === 401) {
@@ -71,8 +73,25 @@ export function Stories({ path }: StoriesParams) {
 						text: response?.data?.message,
 					});
 				});
+			return;
 		}
-	}, [updateStories]);
+		if (path === "user" && location?.userId) {
+			return;
+		}
+		getStories()
+			.then((stories) => setStories(stories))
+			.catch(({ response }) => {
+				if (response.status === 401) {
+					return goToSignIn();
+				}
+
+				toast({
+					theme: theme.name,
+					type: "error",
+					text: response?.data?.message,
+				});
+			});
+	}, [updateStories, location?.channelId, location?.userId, path]);
 
 	useInterval(() => {
 		if (stories.length > 0 && path === "channel") {
@@ -130,6 +149,19 @@ export function Stories({ path }: StoriesParams) {
 							<Story key={index} story={story} showChannel={true} />
 						))}
 					</div>
+				)}
+
+				{path === "user" && stories[0] && (
+					<>
+						<Title>
+							<Icons type="stories" /> Contos
+						</Title>
+						<div>
+							{stories.map((story, index) => (
+								<Story key={index} story={story} showChannel={true} />
+							))}
+						</div>
+					</>
 				)}
 			</Wrapper>
 		</main>

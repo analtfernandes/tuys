@@ -5,6 +5,7 @@ import { MyDataType } from "../utils/Protocols";
 import { toast } from "../utils/Toast";
 import { PageStyle } from "./PageStyle";
 import { Icons } from "../utils/Icons";
+import { Stories } from "../stories/Stories";
 
 export function Me() {
 	const [user, setUser] = useState({} as MyDataType);
@@ -76,6 +77,8 @@ export function Me() {
 						</span>
 					</p>
 				</PageStyle.User>
+
+				<Stories path="user" />
 			</PageStyle.Sections>
 		</PageStyle>
 	);
