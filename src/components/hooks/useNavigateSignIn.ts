@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useThemeContext } from "../../contexts/ThemeContext";
-import { toast } from "../utils/Toast";
+import { useThemeContext } from "../../contexts";
+import { toast } from "../utils";
 
 function useNavigateSignIn() {
 	const { theme } = useThemeContext();

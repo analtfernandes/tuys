@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import ReactModal from "react-modal";
+import { useState } from "react";
 import { SetState } from "../utils/Protocols";
 import { Button } from "./Button";
 import { Form } from "./Form";
-import { useState } from "react";
 
 ReactModal.setAppElement("#root");
 

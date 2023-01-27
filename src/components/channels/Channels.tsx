@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useThemeContext } from "../../contexts/ThemeContext";
-import { getChannels } from "../../services/tuys";
-import { toast } from "../utils/Toast";
+import { useNavigate } from "react-router-dom";
+import api from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
+import { ChannelType } from "../utils/Protocols";
+import { toast } from "../utils";
 import { Subtitle, Title } from "../shared";
 import { Channel } from "./Channel";
-import { ChannelType } from "../utils/Protocols";
-import { useNavigate } from "react-router-dom";
 
 export function Channels() {
 	const [channels, setChannels] = useState<ChannelType[]>([]);
@@ -23,7 +23,8 @@ export function Channels() {
 	}
 
 	useEffect(() => {
-		getChannels()
+		api
+			.getChannels()
 			.then((channels) => setChannels(channels))
 			.catch(({ response }) => {
 				if (response.status === 401) {

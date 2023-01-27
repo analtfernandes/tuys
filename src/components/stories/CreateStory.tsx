@@ -1,26 +1,25 @@
 import { useState } from "react";
-import { postStory, PostStoryParams } from "../../services/tuys";
+import api, { PostStoryParams } from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
 import { useNavigateSignIn } from "../hooks";
 import { Button, Form } from "../shared";
-import { toast } from "../utils/Toast";
-import { ThemeType } from "../../styles/palettes";
+import { toast } from "../utils";
 import { SetState } from "../utils/Protocols";
 
 type CreateStoryParams = {
 	channelId: number;
-	theme: ThemeType;
 	setUpdateStories: SetState<boolean>;
 };
 
 export function CreateStory({
 	channelId,
-	theme,
 	setUpdateStories,
 }: CreateStoryParams) {
 	const [story, setStory] = useState({
 		channelId,
 	} as PostStoryParams);
 	const goSignIn = useNavigateSignIn();
+	const { theme } = useThemeContext();
 
 	function handleChange(
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -72,7 +71,8 @@ export function CreateStory({
 		event.preventDefault();
 
 		if (isValidFields()) {
-			postStory(story)
+			api
+				.postStory(story)
 				.then(() => {
 					setStory({ channelId, title: "", body: "" });
 					setUpdateStories((prev) => !prev);

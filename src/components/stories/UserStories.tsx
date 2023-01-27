@@ -1,11 +1,10 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useThemeContext } from "../../contexts/ThemeContext";
+import { useThemeContext } from "../../contexts";
+import api from "../../services/tuys";
 import { useNavigateSignIn } from "../hooks";
-import { getMyStories } from "../../services/tuys";
-import { toast } from "../utils/Toast";
 import { StoryType } from "../utils/Protocols";
-import { Icons } from "../utils/Icons";
+import { Icons, toast } from "../utils";
 import { Title } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
@@ -18,7 +17,8 @@ export function UserStories() {
 
 	useEffect(() => {
 		if (!location?.userId) {
-			getMyStories()
+			api
+				.getMyStories()
 				.then((stories) => setStories(stories))
 				.catch(({ response }) => {
 					if (response.status === 401) {

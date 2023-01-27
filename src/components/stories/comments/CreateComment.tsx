@@ -1,19 +1,18 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useThemeContext } from "../../../contexts/ThemeContext";
+import api from "../../../services/tuys";
+import { useThemeContext } from "../../../contexts";
 import { SetState, UserType } from "../../utils/Protocols";
-import { toast } from "../../utils/Toast";
-import { Icons } from "../../utils/Icons";
-import { postComment } from "../../../services/tuys";
-import { UserRank } from "../../shared/UserRank";
+import { Icons, toast } from "../../utils";
+import { UserRank } from "../../shared";
 
 type CreateCommentParams = {
 	storyId: number;
 	setUpdateComments: SetState<boolean>;
 };
 
-export default function CreateComment({
+export function CreateComment({
 	storyId,
 	setUpdateComments,
 }: CreateCommentParams) {
@@ -41,7 +40,8 @@ export default function CreateComment({
 		event.preventDefault();
 
 		const data = { storyId, body: { text: newComment } };
-		postComment(data)
+		api
+			.postComment(data)
 			.then(() => {
 				setNewComment("");
 				setUpdateComments((prev) => !prev);

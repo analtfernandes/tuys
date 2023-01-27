@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Icons } from "../utils/Icons";
+import { Icons } from "../utils";
 import logo from "../images/logo.png";
 
 export function Header() {

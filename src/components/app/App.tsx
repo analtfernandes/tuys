@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeContextProvider } from "../../contexts/ThemeContext";
-import { ToastContainer } from "../utils/Toast";
+import { ThemeContextProvider } from "../../contexts";
+import { ToastContainer } from "../utils";
 
 import { PrivatePage } from "../privatePage/PrivatePage";
 import { Header } from "../header/Header";

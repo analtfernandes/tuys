@@ -74,7 +74,10 @@ async function getMyData() {
 
 async function getMyStories() {
 	const config = createHeader();
-	const response = await axios.get<StoryType[]>(`${BASE_URI}/users/me/stories`, config);
+	const response = await axios.get<StoryType[]>(
+		`${BASE_URI}/users/me/stories`,
+		config
+	);
 	return response.data;
 }
 
@@ -142,7 +145,7 @@ export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 
 export type PostDenounceParams = PostCommentParams;
 
-export {
+export default {
 	getChannels,
 	getStories,
 	getStoriesFromChannel,

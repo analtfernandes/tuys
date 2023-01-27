@@ -1,19 +1,15 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useInterval } from "use-interval";
-import { useThemeContext } from "../../contexts/ThemeContext";
-import {
-	getStoriesFromChannel,
-	getStoriesFromChannelAfterId,
-} from "../../services/tuys";
-import { toast } from "../utils/Toast";
-import { StoryType } from "../utils/Protocols";
-import { Button, Title } from "../shared";
-import { Story } from "./Story";
-import { CreateStory } from "./CreateStory";
-import { Icons } from "../utils/Icons";
-import { Wrapper } from "./Stories";
+import api from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
 import { useNavigateSignIn } from "../hooks";
+import { StoryType } from "../utils/Protocols";
+import { toast, Icons } from "../utils";
+import { Button, Title } from "../shared";
+import { CreateStory } from "./CreateStory";
+import { Wrapper } from "./Stories";
+import { Story } from "./Story";
 
 export function ChannelStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
@@ -29,7 +25,8 @@ export function ChannelStories() {
 	}
 
 	useEffect(() => {
-		getStoriesFromChannel(location.channelId)
+		api
+			.getStoriesFromChannel(location.channelId)
 			.then((stories) => setStories(stories))
 			.catch(({ response }) => {
 				if (response.status === 401) {
@@ -46,7 +43,8 @@ export function ChannelStories() {
 
 	useInterval(() => {
 		if (stories.length > 0) {
-			getStoriesFromChannelAfterId(location.channelId, stories[0].id)
+			api
+				.getStoriesFromChannelAfterId(location.channelId, stories[0].id)
 				.then((newStories) => {
 					if (newStories.length > haveMoreStories.length) {
 						setHaveMoreStories([...newStories]);
@@ -68,7 +66,6 @@ export function ChannelStories() {
 
 					<CreateStory
 						channelId={location.channelId}
-						theme={theme}
 						setUpdateStories={setUpdateStories}
 					/>
 

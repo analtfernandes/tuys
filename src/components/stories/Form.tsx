@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import api from "../../services/tuys";
 import { SetState } from "../utils/Protocols";
+import { toast } from "../utils";
 import { Button } from "../shared";
-import { putStory } from "../../services/tuys";
-import { toast } from "../utils/Toast";
 
 type WrapperProps = {
 	height: string;
@@ -63,7 +63,8 @@ export function Form({ id, story, theme, editing, setEditing }: FormParams) {
 	function handleStory(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-		putStory(editStory, id)
+		api
+			.putStory(editStory, id)
 			.then(() => {
 				toast({
 					theme: theme,

@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { ChannelType } from "../utils/Protocols";
 
 type WrapperProps = {
 	background: string;
 };
 
-export function Channel({ id, name, background, editable }: ChannelType) {
+export function Channel({ id, name, background }: ChannelType) {
 	const navigate = useNavigate();
 
 	function goToChannel() {

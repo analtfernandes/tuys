@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useThemeContext } from "../../contexts/ThemeContext";
-import { getMyData } from "../../services/tuys";
+import api from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
 import { MyDataType } from "../utils/Protocols";
-import { toast } from "../utils/Toast";
+import { Icons, toast } from "../utils";
 import { PageStyle } from "./PageStyle";
-import { Icons } from "../utils/Icons";
 import { Stories } from "../stories/Stories";
 
 export function Me() {
@@ -12,7 +11,8 @@ export function Me() {
 	const { theme } = useThemeContext();
 
 	useEffect(() => {
-		getMyData()
+		api
+			.getMyData()
 			.then((user) => setUser(user))
 			.catch(({ response }) => {
 				toast({

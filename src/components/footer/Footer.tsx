@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Icons } from "../utils/Icons";
+import { Icons } from "../utils";
 
 export function Footer() {
 	return (
@@ -44,12 +44,12 @@ const Wrapper = styled.section`
 	left: 0;
 	z-index: 2;
 	box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.25);
-	background-color: ${props => props.theme.colors.background};
+	background-color: ${(props) => props.theme.colors.background};
 
 	svg {
 		height: 23px;
 		width: 23px;
-        color: ${props => props.theme.colors.secundary};
+		color: ${(props) => props.theme.colors.secundary};
 		cursor: pointer;
 	}
 

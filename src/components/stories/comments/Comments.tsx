@@ -1,13 +1,13 @@
 import styled from "styled-components";
+import useInterval from "use-interval";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useThemeContext } from "../../../contexts/ThemeContext";
+import api from "../../../services/tuys";
+import { useThemeContext } from "../../../contexts";
 import { CommentType } from "../../utils/Protocols";
-import { toast } from "../../utils/Toast";
-import { getComments } from "../../../services/tuys";
+import { toast } from "../../utils";
 import { Comment } from "./Comment";
-import CreateComment from "./CreateComment";
-import useInterval from "use-interval";
+import { CreateComment } from "./CreateComment";
 
 type CommentsProps = {
 	storyId: number;
@@ -53,7 +53,8 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 		}
 		if (!showComment) return;
 
-		getComments(storyId)
+		api
+			.getComments(storyId)
 			.then((comments) => {
 				setTimeout(() => setHeight(autoHeight), 100);
 				setComments(comments);
@@ -76,7 +77,8 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 	useInterval(() => {
 		if (!showComment || comments.length === 0) return;
 
-		getComments(storyId)
+		api
+			.getComments(storyId)
 			.then((newComments) =>
 				newComments.length > comments.length
 					? setComments([...newComments])

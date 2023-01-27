@@ -1,21 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getStories } from "../../services/tuys";
-import { useThemeContext } from "../../contexts/ThemeContext";
+import api from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
 import { useNavigateSignIn } from "../hooks";
-import { toast } from "../utils/Toast";
 import { StoryType } from "../utils/Protocols";
+import { toast } from "../utils";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 
 export function HomeStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const { theme } = useThemeContext();
-	const navigate = useNavigate();
 	const goSignIn = useNavigateSignIn();
 
 	useEffect(() => {
-		getStories()
+		api
+			.getStories()
 			.then((stories) => setStories(stories))
 			.catch(({ response }) => {
 				if (response.status === 401) {

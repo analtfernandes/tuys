@@ -1,16 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import {
-	deleteStory,
-	postDenounce,
-	postLike,
-	postUnlike,
-} from "../../services/tuys";
-import { useThemeContext } from "../../contexts/ThemeContext";
-import { Background, Modal, UserRank } from "../shared";
+import api from "../../services/tuys";
+import { useThemeContext } from "../../contexts";
 import { StoryType } from "../utils/Protocols";
-import { Icons } from "../utils/Icons";
-import { toast } from "../utils/Toast";
+import { Icons, toast } from "../utils";
+import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "./comments/Comments";
 
@@ -48,14 +42,16 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	function toggleLike() {
 		if (!like) {
 			setLike(true);
-			postLike(story.id)
+			api
+				.postLike(story.id)
 				.then()
 				.catch(() => setLike(false));
 			return;
 		}
 
 		setLike(false);
-		postUnlike(story.id)
+		api
+			.postUnlike(story.id)
 			.then()
 			.catch(() => setLike(true));
 	}
@@ -72,7 +68,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 		const param = { storyId: story.id, body: { text } };
 
-		postDenounce(param)
+		api
+			.postDenounce(param)
 			.then(() =>
 				toast({
 					theme: theme.name,
@@ -92,7 +89,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	}
 
 	function deleteStoryFunction() {
-		deleteStory(story.id)
+		api
+			.deleteStory(story.id)
 			.then(() =>
 				toast({
 					theme: theme.name,
