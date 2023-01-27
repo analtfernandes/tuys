@@ -49,6 +49,27 @@ type UserType = {
 	rankColor: string;
 };
 
+type MyDataType = {
+	id: number;
+	username: string;
+	avatar: string;
+	about: string;
+	status: "ACTIVE" | "BANNED";
+	rankName: string;
+	rankColor: string;
+	bannedStories: number;
+	createdStories: number;
+	followers: number;
+	following: number;
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 
-export type { ChannelType, StoryType, CommentType, UserType, SetState };
+export type {
+	ChannelType,
+	StoryType,
+	CommentType,
+	UserType,
+	MyDataType,
+	SetState,
+};

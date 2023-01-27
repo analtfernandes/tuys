@@ -1,10 +1,13 @@
-import { AiFillBook, AiOutlineEdit } from "react-icons/ai";
-import { FaRegCommentDots } from "react-icons/fa";
+import { TbBookOff } from "react-icons/tb";
+import { GrStatusInfo } from "react-icons/gr";
+import { FaRegCommentDots, FaBook, FaAward } from "react-icons/fa";
+import { AiFillBook, AiOutlineEdit, AiOutlinePlusCircle } from "react-icons/ai";
 import {
 	BsBellFill,
 	BsPeopleFill,
 	BsFlagFill,
 	BsTrashFill,
+	BsBookFill,
 } from "react-icons/bs";
 import {
 	IoHome,
@@ -27,7 +30,7 @@ type IconsParams<Type> = {
 		| "ranking"
 		| "settings"
 		| "notification"
-		| "people"
+		| "follower"
 		| "channels"
 		| "me"
 		| "like"
@@ -37,7 +40,13 @@ type IconsParams<Type> = {
 		| "delete"
 		| "edit"
 		| "reload"
-		| "send";
+		| "send"
+		| "createdStories"
+		| "stories"
+		| "following"
+		| "rank"
+		| "bannedBooks"
+		| "status";
 };
 
 const IconsTypes = Object.freeze({
@@ -46,7 +55,7 @@ const IconsTypes = Object.freeze({
 	ranking: IoStar,
 	settings: IoMenuSharp,
 	notification: BsBellFill,
-	people: BsPeopleFill,
+	follower: BsPeopleFill,
 	channels: AiFillBook,
 	me: IoPerson,
 	like: IoHeartOutline,
@@ -57,6 +66,12 @@ const IconsTypes = Object.freeze({
 	edit: AiOutlineEdit,
 	reload: IoReload,
 	send: IoPaperPlaneSharp,
+	createdStories: FaBook,
+	bannedBooks: TbBookOff,
+	stories: BsBookFill,
+	following: AiOutlinePlusCircle,
+	rank: FaAward,
+	status: GrStatusInfo,
 });
 
 export function Icons<Type>({ type, options, onClick }: IconsParams<Type>) {

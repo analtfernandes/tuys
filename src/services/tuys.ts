@@ -2,6 +2,7 @@ import axios from "axios";
 import {
 	ChannelType,
 	CommentType,
+	MyDataType,
 	StoryType,
 } from "../components/utils/Protocols";
 
@@ -62,6 +63,12 @@ async function getComments(storyId: number) {
 		`${BASE_URI}/stories/${storyId}/comments`,
 		config
 	);
+	return response.data;
+}
+
+async function getMyData() {
+	const config = createHeader();
+	const response = await axios.get<MyDataType>(`${BASE_URI}/users/me`, config);
 	return response.data;
 }
 
@@ -135,6 +142,7 @@ export {
 	getStoriesFromChannel,
 	getStoriesFromChannelAfterId,
 	getComments,
+	getMyData,
 	postStory,
 	postLike,
 	postUnlike,
