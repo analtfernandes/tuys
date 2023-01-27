@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useInterval } from "use-interval";
 import { useThemeContext } from "../../contexts/ThemeContext";
 import {
+	getStories,
 	getStoriesFromChannel,
 	getStoriesFromChannelAfterId,
 } from "../../services/tuys";
@@ -14,12 +15,16 @@ import { Story } from "./Story";
 import { CreateStory } from "./CreateStory";
 import { Icons } from "../utils/Icons";
 
-export function Stories() {
+type StoriesParams = {
+	path: "home" | "channel" | "user";
+};
+
+export function Stories({ path }: StoriesParams) {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const [updateStories, setUpdateStories] = useState(false);
 	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
 	const { theme } = useThemeContext();
-	const { state: location } = useLocation();
+	const { state: location, ...r } = useLocation();
 	const navigate = useNavigate();
 
 	function goToSignIn() {
@@ -37,8 +42,23 @@ export function Stories() {
 	}
 
 	useEffect(() => {
-		if (location.channelId) {
+		if (path === "channel") {
 			getStoriesFromChannel(location.channelId)
+				.then((stories) => setStories(stories))
+				.catch(({ response }) => {
+					if (response.status === 401) {
+						return goToSignIn();
+					}
+
+					toast({
+						theme: theme.name,
+						type: "error",
+						text: response?.data?.message,
+					});
+				});
+		}
+		if (path === "home") {
+			getStories()
 				.then((stories) => setStories(stories))
 				.catch(({ response }) => {
 					if (response.status === 401) {
@@ -55,7 +75,7 @@ export function Stories() {
 	}, [updateStories]);
 
 	useInterval(() => {
-		if (stories.length > 0 && location.channelId) {
+		if (stories.length > 0 && path === "channel") {
 			getStoriesFromChannelAfterId(location.channelId, stories[0].id)
 				.then((newStories) => {
 					if (newStories.length > haveMoreStories.length) {
@@ -73,7 +93,7 @@ export function Stories() {
 	return (
 		<main>
 			<Wrapper>
-				{location.channelId && stories[0] && (
+				{path === "channel" && stories[0] && (
 					<>
 						<Title>{stories[0].channel}</Title>
 
@@ -102,6 +122,14 @@ export function Stories() {
 							))}
 						</div>
 					</>
+				)}
+
+				{path === "home" && stories[0] && (
+					<div>
+						{stories.map((story, index) => (
+							<Story key={index} story={story} showChannel={true} />
+						))}
+					</div>
 				)}
 			</Wrapper>
 		</main>

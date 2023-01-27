@@ -1,7 +1,5 @@
+import { Stories } from "../../components/stories/Stories";
+
 export function HomePage() {
-	return (
-		<main>
-			<span>Em breve!</span>
-		</main>
-	);
+	return <Stories path="home" />;
 }

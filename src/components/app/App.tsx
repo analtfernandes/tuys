@@ -26,7 +26,10 @@ function App() {
 					<Routes>
 						<Route path="/" element={<HomePage />} />
 						<Route path="/channels" element={<ChannelsPage />} />
-						<Route path="/channels/:channelName" element={<Stories />} />
+						<Route
+							path="/channels/:channelName"
+							element={<Stories path="channel" />}
+						/>
 						<Route path="/ranking" element={<RankingPage />} />
 						<Route path="/notifications" element={<NotificationsPage />} />
 						<Route path="/me" element={<MePage />} />

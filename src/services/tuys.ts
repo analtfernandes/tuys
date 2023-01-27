@@ -29,6 +29,12 @@ async function getChannels() {
 	return response.data;
 }
 
+async function getStories() {
+	const config = createHeader();
+	const response = await axios.get<StoryType[]>(`${BASE_URI}/stories`, config);
+	return response.data;
+}
+
 async function getStoriesFromChannel(channelId: number) {
 	const config = createHeader();
 	const response = await axios.get<StoryType[]>(
@@ -125,6 +131,7 @@ export type PostDenounceParams = PostCommentParams;
 
 export {
 	getChannels,
+	getStories,
 	getStoriesFromChannel,
 	getStoriesFromChannelAfterId,
 	getComments,
