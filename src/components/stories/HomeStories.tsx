@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
-import { useNavigateSignIn } from "../hooks";
+import { useNavigateSignIn, useToast } from "../hooks";
 import { StoryType } from "../utils/Protocols";
-import { toast } from "../utils";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 
 export function HomeStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
-	const { theme } = useThemeContext();
 	const goSignIn = useNavigateSignIn();
+	const toast = useToast();
 
 	useEffect(() => {
 		api
@@ -22,7 +20,6 @@ export function HomeStories() {
 				}
 
 				toast({
-					theme: theme.name,
 					type: "error",
 					text: response?.data?.message,
 				});

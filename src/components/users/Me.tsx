@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
 import { MyDataType } from "../utils/Protocols";
-import { Icons, toast } from "../utils";
+import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
+import { useToast } from "../hooks";
 
 export function Me() {
 	const [user, setUser] = useState({} as MyDataType);
-	const { theme } = useThemeContext();
+	const toast = useToast();
 
 	useEffect(() => {
 		api
@@ -16,14 +16,13 @@ export function Me() {
 			.then((user) => setUser(user))
 			.catch(({ response }) => {
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||
 						"Não foi possível buscar os dados. Por favor, recarregue a página",
 				});
 			});
-	}, [theme.name]);
+	}, []);
 
 	return (
 		<PageStyle>

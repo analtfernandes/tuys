@@ -64,6 +64,7 @@ type MyDataType = {
 };
 
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
+type CallbackType = (...params: any) => any;
 
 export type {
 	ChannelType,
@@ -72,4 +73,5 @@ export type {
 	UserType,
 	MyDataType,
 	SetState,
+	CallbackType,
 };

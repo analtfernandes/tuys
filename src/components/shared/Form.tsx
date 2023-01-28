@@ -1,10 +1,11 @@
 import styled from "styled-components";
+import { CallbackType } from "../utils/Protocols";
 import { Background } from "./Background";
 
 type FormParams = {
 	children: React.ReactNode;
-	onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 	config?: Partial<WrapperProps>;
+	[key: string]: any;
 };
 
 type SectionParams = {
@@ -17,7 +18,7 @@ type WrapperProps = {
 	width: string;
 	padding: string;
 	margin: string;
-	getBorderColor: (hex: string, alpha: number) => string;
+	getBorderColor: CallbackType;
 };
 
 type SectionProps = {
@@ -29,10 +30,12 @@ type DivisionProps = {
 	margin: string;
 };
 
-export function Form({ children, onSubmit }: FormParams) {
+export function Form({ children, onSubmit, ...otherProps }: FormParams) {
 	return (
 		<Background config={{ margin: "0 0 20px 0" }}>
-			<Wrapper onSubmit={onSubmit}>{children}</Wrapper>
+			<Wrapper onSubmit={onSubmit} {...otherProps}>
+				{children}
+			</Wrapper>
 		</Background>
 	);
 }

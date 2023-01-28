@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { CallbackType } from "../utils/Protocols";
 
 type BackgroundParams = {
 	children: React.ReactNode;
@@ -8,7 +9,7 @@ type BackgroundParams = {
 type WrapperProps = {
 	width: string;
 	margin: string;
-	getBorderColor: (hex: string, alpha: number) => string;
+	getBorderColor: CallbackType;
 };
 
 type DivisionProps = {

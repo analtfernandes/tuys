@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../services/tuys";
-import { useThemeContext } from "../../../contexts";
 import { SetState, UserType } from "../../utils/Protocols";
-import { Icons, toast } from "../../utils";
+import { Icons } from "../../utils";
 import { UserRank } from "../../shared";
+import { useToast } from "../../hooks";
 
 type CreateCommentParams = {
 	storyId: number;
@@ -18,8 +18,8 @@ export function CreateComment({
 }: CreateCommentParams) {
 	const [newComment, setNewComment] = useState("");
 	const [user, setUser] = useState({} as UserType);
-	const { theme } = useThemeContext();
 	const navigate = useNavigate();
+	const toast = useToast();
 
 	useEffect(() => {
 		const localData = localStorage.getItem("tuys.com");
@@ -28,7 +28,6 @@ export function CreateComment({
 			setUser(JSON.parse(localData));
 		} else {
 			toast({
-				theme: theme.name,
 				type: "warning",
 				text: "Sessão encerrada.",
 			});
@@ -48,7 +47,6 @@ export function CreateComment({
 			})
 			.catch(({ response }) => {
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||

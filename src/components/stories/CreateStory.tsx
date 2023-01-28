@@ -1,9 +1,7 @@
 import { useState } from "react";
 import api, { PostStoryParams } from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
-import { useNavigateSignIn } from "../hooks";
+import { useNavigateSignIn, useToast } from "../hooks";
 import { Button, Form } from "../shared";
-import { toast } from "../utils";
 import { SetState } from "../utils/Protocols";
 
 type CreateStoryParams = {
@@ -19,7 +17,7 @@ export function CreateStory({
 		channelId,
 	} as PostStoryParams);
 	const goSignIn = useNavigateSignIn();
-	const { theme } = useThemeContext();
+	const toast = useToast();
 
 	function handleChange(
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,7 +28,6 @@ export function CreateStory({
 	function isValidFields() {
 		if (!story.title || story.title.length < 3) {
 			toast({
-				theme: theme.name,
 				type: "warning",
 				text: "O título deve ter no mínimo 3 caracteres!",
 			});
@@ -39,7 +36,6 @@ export function CreateStory({
 
 		if (!story.body || story.body.length < 10) {
 			toast({
-				theme: theme.name,
 				type: "warning",
 				text: "O corpo deve ter no mínimo 10 caracteres!",
 			});
@@ -48,7 +44,6 @@ export function CreateStory({
 
 		if (!story.title || story.title.length > 30) {
 			toast({
-				theme: theme.name,
 				type: "warning",
 				text: "O título deve ter no máximo 30 caracteres!",
 			});
@@ -57,7 +52,6 @@ export function CreateStory({
 
 		if (!story.body || story.body.length > 1000) {
 			toast({
-				theme: theme.name,
 				type: "warning",
 				text: "O corpo deve ter no máximo 1000 caracteres!",
 			});
@@ -83,7 +77,6 @@ export function CreateStory({
 					}
 
 					toast({
-						theme: theme.name,
 						type: "error",
 						text:
 							response?.data?.message ||

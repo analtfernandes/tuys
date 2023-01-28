@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import api from "../../services/tuys";
 import { SetState } from "../utils/Protocols";
-import { toast } from "../utils";
 import { Button } from "../shared";
+import { useToast } from "../hooks";
 
 type WrapperProps = {
 	height: string;
@@ -15,18 +15,18 @@ type FormParams = {
 		title: string;
 		body: string;
 	};
-	theme: string;
 	editing: boolean;
 	setEditing: SetState<boolean>;
 };
 
-export function Form({ id, story, theme, editing, setEditing }: FormParams) {
+export function Form({ id, story, editing, setEditing }: FormParams) {
 	const [bodyHeight, setBodyHeight] = useState("auto");
 	const [editStory, setEditStory] = useState({
 		title: story.title,
 		body: story.body,
 	});
 	const ref = useRef<HTMLTextAreaElement>(null);
+	const toast = useToast();
 	const minimusHeight = "80px";
 	let disabled = !editing;
 
@@ -67,7 +67,6 @@ export function Form({ id, story, theme, editing, setEditing }: FormParams) {
 			.putStory(editStory, id)
 			.then(() => {
 				toast({
-					theme: theme,
 					type: "success",
 					text: "História atualizada com sucesso.",
 				});
@@ -77,7 +76,6 @@ export function Form({ id, story, theme, editing, setEditing }: FormParams) {
 			})
 			.catch(() => {
 				toast({
-					theme: theme,
 					type: "error",
 					text: "Não foi atualizar a história. Tente novamente.",
 				});

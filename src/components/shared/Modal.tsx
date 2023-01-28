@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ReactModal from "react-modal";
 import { useState } from "react";
-import { SetState } from "../utils/Protocols";
+import { CallbackType, SetState } from "../utils/Protocols";
 import { Button } from "./Button";
 import { Form } from "./Form";
 
@@ -11,10 +11,10 @@ type ModalParams = {
 	modalIsOpen: boolean;
 	type: "denounceStory" | "delete";
 	setModalIsOpen: SetState<SetStateType>;
-	callback?: (params: any) => any;
+	callback?: CallbackType;
 	closeModalOnSubmit?: boolean;
 	storyData?: {
-		name?: string;
+		name: string;
 	};
 };
 

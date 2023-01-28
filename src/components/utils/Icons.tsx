@@ -21,9 +21,8 @@ import {
 	IoPaperPlaneSharp,
 } from "react-icons/io5";
 
-type IconsParams<Type> = {
-	onClick?: () => void;
-	options?: Type;
+type IconsParams = {
+	[key: string]: any;
 	type:
 		| "home"
 		| "search"
@@ -74,8 +73,8 @@ const IconsTypes = Object.freeze({
 	status: GrStatusInfo,
 });
 
-export function Icons<Type>({ type, options, onClick }: IconsParams<Type>) {
+export function Icons({ type, ...otherProps }: IconsParams) {
 	const Icon = IconsTypes[type];
 
-	return <Icon title={type} {...options} onClick={onClick} />;
+	return <Icon title={type} {...otherProps} />;
 }

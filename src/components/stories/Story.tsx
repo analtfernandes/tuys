@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 import api from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
+import { useToast } from "../hooks";
 import { StoryType } from "../utils/Protocols";
-import { Icons, toast } from "../utils";
+import { Icons } from "../utils";
 import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "./comments/Comments";
@@ -30,7 +30,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 		isOpen: false,
 		type: "delete",
 	} as ModalConfig);
-	const { theme } = useThemeContext();
+	const toast = useToast();
 	const { owner } = story;
 
 	function compactNumber(number: number) {
@@ -59,7 +59,6 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	function denounceStory({ text }: { text: string }) {
 		if (text.length < 3) {
 			toast({
-				theme: theme.name,
 				type: "error",
 				text: "A mensagem deve ter pelo menos 3 caracteres!",
 			});
@@ -72,14 +71,12 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			.postDenounce(param)
 			.then(() =>
 				toast({
-					theme: theme.name,
 					type: "success",
 					text: "Denuncia enviada com sucesso. Agradecemos pela contribuição.",
 				})
 			)
 			.catch(({ response }) => {
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||
@@ -93,14 +90,12 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			.deleteStory(story.id)
 			.then(() =>
 				toast({
-					theme: theme.name,
 					type: "success",
 					text: "História apagada com sucesso.",
 				})
 			)
 			.catch(({ response }) => {
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||
@@ -180,7 +175,6 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				<Form
 					id={story.id}
 					story={story}
-					theme={theme.name}
 					editing={editing}
 					setEditing={setEditing}
 				/>
@@ -217,7 +211,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 							<Option iconColor="pastelBlue">
 								<div onClick={() => setShowComment((prev) => !prev)}>
-									<Icons type="comment" options={{ color: "#70A4A2" }} />
+									<Icons type="comment" />
 									<span>Comentar</span>
 								</div>
 								<span>{compactNumber(story.comments)}</span>

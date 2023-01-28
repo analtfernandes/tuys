@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import useInterval from "use-interval";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import api from "../../../services/tuys";
-import { useThemeContext } from "../../../contexts";
 import { CommentType } from "../../utils/Protocols";
-import { toast } from "../../utils";
+import { useNavigateSignIn, useToast } from "../../hooks";
 import { Comment } from "./Comment";
 import { CreateComment } from "./CreateComment";
 
@@ -27,17 +25,8 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 	const [updateComments, setUpdateComments] = useState(false);
 	const [height, setHeight] = useState(defaultHeight);
 	const scrollToLast = useRef<HTMLDivElement>(null);
-	const navigate = useNavigate();
-	const { theme } = useThemeContext();
-
-	function goToSignIn() {
-		toast({
-			theme: theme.name,
-			type: "warning",
-			text: "Sessão encerrada.",
-		});
-		navigate("/sign-in");
-	}
+	const goSignIn = useNavigateSignIn();
+	const toast = useToast();
 
 	useEffect(() => {
 		scrollToLast.current?.scrollIntoView({
@@ -61,11 +50,10 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 			})
 			.catch(({ response }) => {
 				if (response.status === 401) {
-					return goToSignIn();
+					return goSignIn();
 				}
 
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||
@@ -86,11 +74,10 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 			)
 			.catch(({ response }) => {
 				if (response.status === 401) {
-					return goToSignIn();
+					return goSignIn();
 				}
 
 				toast({
-					theme: theme.name,
 					type: "error",
 					text:
 						response?.data?.message ||

@@ -1,19 +1,18 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useThemeContext } from "../../contexts";
 import api from "../../services/tuys";
-import { useNavigateSignIn } from "../hooks";
+import { useNavigateSignIn, useToast } from "../hooks";
 import { StoryType } from "../utils/Protocols";
-import { Icons, toast } from "../utils";
+import { Icons } from "../utils";
 import { Title } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 
 export function UserStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
-	const { theme } = useThemeContext();
 	const { state: location } = useLocation();
 	const goSignIn = useNavigateSignIn();
+	const toast = useToast();
 
 	useEffect(() => {
 		if (!location?.userId) {
@@ -26,7 +25,6 @@ export function UserStories() {
 					}
 
 					toast({
-						theme: theme.name,
 						type: "error",
 						text: response?.data?.message,
 					});

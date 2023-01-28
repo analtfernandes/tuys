@@ -1,12 +1,12 @@
 import styled from "styled-components";
+import { CallbackType } from "../utils/Protocols";
 
 type ButtonParams = {
 	children: React.ReactNode;
-	disabled?: boolean;
 	config?: Partial<WrapperProps> & {
 		type?: "primary" | "secundary" | "primary-invert";
 	};
-	onClick?: (params: any) => any;
+	[key: string]: any;
 };
 
 type WrapperProps = {
@@ -20,20 +20,18 @@ type WrapperProps = {
 
 export function Button({
 	children,
-	disabled = false,
 	config = {},
-	onClick,
+	...otherProps
 }: ButtonParams) {
 	return (
 		<Wrapper
-			disabled={disabled}
 			width={config.width || config.type === "secundary" ? "100%" : "111px"}
 			margin={config.margin || "0 auto"}
 			height={config.height || "40px"}
 			radius={config.radius || ""}
 			padding={config.padding || "0"}
 			buttonType={config.type || "primary"}
-			onClick={onClick}
+			{...otherProps}
 		>
 			{children}
 		</Wrapper>

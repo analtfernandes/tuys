@@ -8,10 +8,11 @@ import { ThemeProvider } from "styled-components";
 import { contextError } from "./contextErros";
 import GlobalStyle from "../styles/globalStyles";
 import { palette, ThemeType } from "../styles/palettes";
+import { CallbackType } from "../components/utils/Protocols";
 
 type ThemeContextType = {
 	theme: ThemeType;
-	changeTheme: (theme: string) => void;
+	changeTheme: CallbackType;
 } | null;
 
 type ReducerAction = {

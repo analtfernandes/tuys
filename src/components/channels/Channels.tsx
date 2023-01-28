@@ -1,26 +1,15 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
+import { useNavigateSignIn, useToast } from "../hooks";
 import { ChannelType } from "../utils/Protocols";
-import { toast } from "../utils";
 import { Subtitle, Title } from "../shared";
 import { Channel } from "./Channel";
 
 export function Channels() {
 	const [channels, setChannels] = useState<ChannelType[]>([]);
-	const { theme } = useThemeContext();
-	const navigate = useNavigate();
-
-	function goToSignIn() {
-		toast({
-			theme: theme.name,
-			type: "warning",
-			text: "Sessão encerrada.",
-		});
-		navigate("/sign-in");
-	}
+	const toast = useToast();
+	const goSignIn = useNavigateSignIn();
 
 	useEffect(() => {
 		api
@@ -28,11 +17,10 @@ export function Channels() {
 			.then((channels) => setChannels(channels))
 			.catch(({ response }) => {
 				if (response.status === 401) {
-					return goToSignIn();
+					return goSignIn();
 				}
 
 				toast({
-					theme: theme.name,
 					type: "error",
 					text: response?.data?.message,
 				});

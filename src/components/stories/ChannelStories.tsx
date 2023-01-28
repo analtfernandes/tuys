@@ -2,10 +2,9 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useInterval } from "use-interval";
 import api from "../../services/tuys";
-import { useThemeContext } from "../../contexts";
-import { useNavigateSignIn } from "../hooks";
+import { useNavigateSignIn, useToast } from "../hooks";
 import { StoryType } from "../utils/Protocols";
-import { toast, Icons } from "../utils";
+import { Icons } from "../utils";
 import { Button, Title } from "../shared";
 import { CreateStory } from "./CreateStory";
 import { Wrapper } from "./Stories";
@@ -17,7 +16,7 @@ export function ChannelStories() {
 	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
 	const { state: location } = useLocation();
 	const goSignIn = useNavigateSignIn();
-	const { theme } = useThemeContext();
+	const toast = useToast();
 
 	function updateStoriesFunction() {
 		setStories((prev) => [...haveMoreStories, ...prev]);
@@ -34,7 +33,6 @@ export function ChannelStories() {
 				}
 
 				toast({
-					theme: theme.name,
 					type: "error",
 					text: response?.data?.message,
 				});

@@ -1,14 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useThemeContext } from "../../contexts";
-import { toast } from "../utils";
+import { useToast } from "./useToast";
 
 function useNavigateSignIn() {
-	const { theme } = useThemeContext();
 	const navigate = useNavigate();
+	const toast = useToast();
 
 	return () => {
 		toast({
-			theme: theme.name,
 			type: "warning",
 			text: "Sessão encerrada.",
 		});
