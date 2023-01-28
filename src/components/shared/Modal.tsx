@@ -148,7 +148,6 @@ const Wrapper = styled(ReactModal)`
 const FormStyle = styled(Form)`
 	&& {
 		width: 100%;
-		max-width: 200px;
 	}
 `;
 

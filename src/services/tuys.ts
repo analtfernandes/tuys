@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
 	ChannelType,
 	CommentType,
@@ -15,6 +14,7 @@ function createHeader() {
 	const config = {
 		headers: {
 			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
 		},
 	};
 
@@ -23,26 +23,32 @@ function createHeader() {
 
 async function getChannels() {
 	const config = createHeader();
-	const response = await axios.get<ChannelType[]>(
-		`${BASE_URI}/channels`,
-		config
-	);
-	return response.data;
+	const response: ChannelType[] = await fetch(`${BASE_URI}/channels`, {
+		method: "GET",
+		...config,
+	}).then((response) => response.json());
+	return response;
 }
 
 async function getStories() {
 	const config = createHeader();
-	const response = await axios.get<StoryType[]>(`${BASE_URI}/stories`, config);
-	return response.data;
+	const response: StoryType[] = await fetch(`${BASE_URI}/stories`, {
+		method: "GET",
+		...config,
+	}).then((response) => response.json());
+	return response;
 }
 
 async function getStoriesFromChannel(channelId: number) {
 	const config = createHeader();
-	const response = await axios.get<StoryType[]>(
+	const response: StoryType[] = await fetch(
 		`${BASE_URI}/stories/${channelId}`,
-		config
-	);
-	return response.data;
+		{
+			method: "GET",
+			...config,
+		}
+	).then((response) => response.json());
+	return response;
 }
 
 async function getStoriesFromChannelAfterId(
@@ -50,84 +56,104 @@ async function getStoriesFromChannelAfterId(
 	storyId: number
 ) {
 	const config = createHeader();
-	const response = await axios.get<StoryType[]>(
+	const response: StoryType[] = await fetch(
 		`${BASE_URI}/stories/${channelId}/after/${storyId}`,
-		config
-	);
-	return response.data;
+		{
+			method: "GET",
+			...config,
+		}
+	).then((response) => response.json());
+	return response;
 }
 
 async function getComments(storyId: number) {
 	const config = createHeader();
-	const response = await axios.get<CommentType[]>(
+	const response: CommentType[] = await fetch(
 		`${BASE_URI}/stories/${storyId}/comments`,
-		config
-	);
-	return response.data;
+		{
+			method: "GET",
+			...config,
+		}
+	).then((response) => response.json());
+	return response;
 }
 
 async function getMyData() {
 	const config = createHeader();
-	const response = await axios.get<MyDataType>(`${BASE_URI}/users/me`, config);
-	return response.data;
+	const response: MyDataType = await fetch(`${BASE_URI}/users/me`, {
+		method: "GET",
+		...config,
+	}).then((response) => response.json());
+	return response;
 }
 
 async function getMyStories() {
 	const config = createHeader();
-	const response = await axios.get<StoryType[]>(
-		`${BASE_URI}/users/me/stories`,
-		config
-	);
-	return response.data;
+	const response: StoryType[] = await fetch(`${BASE_URI}/users/me/stories`, {
+		method: "GET",
+		...config,
+	}).then((response) => response.json());
+	return response;
 }
 
-async function postStory(body: PostStoryParams) {
+function postStory(body: PostStoryParams) {
 	const config = createHeader();
-	const response = await axios.post<{ id: number }>(
-		`${BASE_URI}/stories`,
-		body,
-		config
-	);
-	return response.data;
+	return fetch(`${BASE_URI}/stories`, {
+		method: "POST",
+		body: JSON.stringify(body),
+		...config,
+	});
 }
 
-async function postLike(storyId: number) {
+function postLike(storyId: number) {
 	const config = createHeader();
-	await axios.post(`${BASE_URI}/stories/${storyId}/like`, {}, config);
+	return fetch(`${BASE_URI}/stories/${storyId}/like`, {
+		method: "POST",
+		...config,
+	});
 }
 
-async function postUnlike(storyId: number) {
+function postUnlike(storyId: number) {
 	const config = createHeader();
-	await axios.post(`${BASE_URI}/stories/${storyId}/unlike`, {}, config);
+	return fetch(`${BASE_URI}/stories/${storyId}/unlike`, {
+		method: "POST",
+		...config,
+	});
 }
 
-async function postComment(data: PostCommentParams) {
+function postComment(data: PostCommentParams) {
 	const config = createHeader();
-	const response = await axios.post<{ id: number }>(
-		`${BASE_URI}/stories/${data.storyId}/comments`,
-		data.body,
-		config
-	);
-	return response.data;
+	return fetch(`${BASE_URI}/stories/${data.storyId}/comments`, {
+		method: "POST",
+		body: JSON.stringify(data.body),
+		...config,
+	});
 }
 
-async function postDenounce(data: PostDenounceParams) {
+function postDenounce(data: PostDenounceParams) {
 	const config = createHeader();
-	return axios.post(
-		`${BASE_URI}/stories/${data.storyId}/denounce`,
-		data.body,
-		config
-	);
+	return fetch(`${BASE_URI}/stories/${data.storyId}/denounce`, {
+		method: "POST",
+		body: JSON.stringify(data.body),
+		...config,
+	});
 }
 
 function deleteStory(storyId: number) {
 	const config = createHeader();
-	return axios.delete(`${BASE_URI}/stories/${storyId}`, config);
+	return fetch(`${BASE_URI}/stories/${storyId}`, {
+		method: "DELETE",
+		...config,
+	});
 }
 
 function putStory(body: PutStoryParams, storyId: number) {
 	const config = createHeader();
-	return axios.put(`${BASE_URI}/stories/${storyId}`, body, config);
+	return fetch(`${BASE_URI}/stories/${storyId}`, {
+		method: "PUT",
+		body: JSON.stringify(body),
+		...config,
+	});
 }
 
 export type PostStoryParams = {
