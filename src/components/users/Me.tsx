@@ -4,9 +4,10 @@ import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
 import { useRequestQuery, useToast } from "../hooks";
 import { RequestKeyEnum } from "../utils/enums";
+import { useUserContext } from "../../contexts/UserContext";
 
 export function Me() {
-	const data = JSON.parse(localStorage.getItem("tuys.com") || "");
+	const { user: userData } = useUserContext();
 	const toast = useToast();
 
 	const {
@@ -14,9 +15,8 @@ export function Me() {
 		isSuccess,
 		data: user,
 		...request
-	} = useRequestQuery(
-		[RequestKeyEnum.user, data?.username],
-		() => api.getMyData()
+	} = useRequestQuery([RequestKeyEnum.user, userData.username], () =>
+		api.getMyData()
 	);
 
 	if (isError) {

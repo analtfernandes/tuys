@@ -42,7 +42,6 @@ type CommentType = {
 };
 
 type UserType = {
-	id: number;
 	username: string;
 	avatar: string;
 	token: string;

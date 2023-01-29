@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import api from "../../../services/tuys";
 import { useToast, useRequestMutation } from "../../hooks";
-import { UserType } from "../../utils/Protocols";
 import { RequestKeyEnum } from "../../utils/enums";
 import { Icons } from "../../utils";
 import { UserRank } from "../../shared";
+import { useUserContext } from "../../../contexts/UserContext";
 
 type CreateCommentParams = {
 	storyId: number;
@@ -14,28 +13,13 @@ type CreateCommentParams = {
 
 export function CreateComment({ storyId }: CreateCommentParams) {
 	const [newComment, setNewComment] = useState("");
-	const [user, setUser] = useState({} as UserType);
-	const navigate = useNavigate();
+	const { user } = useUserContext();
 	const toast = useToast();
 
 	const { isError, isSuccess, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories, RequestKeyEnum.comments, storyId],
 		(data) => api.postComment(data)
 	);
-
-	useEffect(() => {
-		const localData = localStorage.getItem("tuys.com");
-
-		if (localData) {
-			setUser(JSON.parse(localData));
-		} else {
-			toast({
-				type: "warning",
-				text: "Sessão encerrada.",
-			});
-			navigate("/sign-in");
-		}
-	}, [storyId]);
 
 	function handleComment(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();

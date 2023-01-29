@@ -5,9 +5,10 @@ import { Title } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 import { RequestKeyEnum } from "../utils/enums";
+import { useUserContext } from "../../contexts/UserContext";
 
 export function UserStories() {
-	const data = JSON.parse(localStorage.getItem("tuys.com") || "");
+	const { user } = useUserContext();
 	const toast = useToast();
 
 	const {
@@ -16,7 +17,7 @@ export function UserStories() {
 		data: stories,
 		...request
 	} = useRequestQuery(
-		[RequestKeyEnum.stories, RequestKeyEnum.user, data?.username],
+		[RequestKeyEnum.stories, RequestKeyEnum.user, user.username],
 		() => api.getMyStories()
 	);
 

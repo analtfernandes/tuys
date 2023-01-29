@@ -1,17 +1,21 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../../contexts/UserContext";
 
 export function PrivatePage({ children }: React.PropsWithChildren) {
+	const { user } = useUserContext();
 	const navigate = useNavigate();
-	const localData = localStorage.getItem("tuys.com");
 
 	useEffect(() => {
-		if (!localData || !JSON.parse(localData).token) {
+		if (!user.token) {
 			navigate("/sign-in");
 		}
-	}, [localData]);
+		if (user.token) {
+			navigate("/");
+		}
+	}, [user]);
 
-	if (localData && JSON.parse(localData).token) {
+	if (user.token) {
 		return <>{children}</>;
 	}
 
