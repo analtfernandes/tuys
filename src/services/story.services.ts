@@ -16,14 +16,6 @@ async function getAllOfChannel({ channelId, userId }: GetAllOfChannelParams) {
   return formatStories(stories, userId);
 }
 
-async function getAfterId({ channelId, userId, storyId }: GetAfterIdParams) {
-  await validateChannelId(channelId);
-
-  const stories = await storyRepository.findAllAfterId({ channelId, userId, storyId });
-
-  return formatStories(stories, userId);
-}
-
 async function getComments({ storyId, userId }: GetCommentsParams) {
   const story = await storyRepository.findById(storyId);
   if (!story) throw notFoundError();
@@ -135,7 +127,6 @@ export function formatStories(stories: FormatStoriesParams, userId: number) {
 }
 
 type GetAllOfChannelParams = { channelId: number; userId: number };
-type GetAfterIdParams = GetAllOfChannelParams & { storyId: number };
 type GetCommentsParams = Omit<Comments, "id" | "text">;
 type PostCommentParams = Omit<Comments, "id">;
 type PostStoryParams = Omit<Stories, "id" | "date" | "status">;
@@ -185,7 +176,6 @@ export {
   getFromUserAndFollowed,
   getAllOfChannel,
   getComments,
-  getAfterId,
   postStory,
   postLikeStory,
   postUnlikeStory,
