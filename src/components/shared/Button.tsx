@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { CallbackType } from "../utils/Protocols";
 
 type ButtonParams = {
 	children: React.ReactNode;
@@ -18,11 +17,7 @@ type WrapperProps = {
 	buttonType: string;
 };
 
-export function Button({
-	children,
-	config = {},
-	...otherProps
-}: ButtonParams) {
+export function Button({ children, config = {}, ...otherProps }: ButtonParams) {
 	return (
 		<Wrapper
 			width={config.width || config.type === "secundary" ? "100%" : "111px"}

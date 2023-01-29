@@ -2,24 +2,26 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../services/tuys";
-import { SetState, UserType } from "../../utils/Protocols";
+import { useToast, useRequestMutation } from "../../hooks";
+import { UserType } from "../../utils/Protocols";
+import { RequestKeyEnum } from "../../utils/enums";
 import { Icons } from "../../utils";
 import { UserRank } from "../../shared";
-import { useToast } from "../../hooks";
 
 type CreateCommentParams = {
 	storyId: number;
-	setUpdateComments: SetState<boolean>;
 };
 
-export function CreateComment({
-	storyId,
-	setUpdateComments,
-}: CreateCommentParams) {
+export function CreateComment({ storyId }: CreateCommentParams) {
 	const [newComment, setNewComment] = useState("");
 	const [user, setUser] = useState({} as UserType);
 	const navigate = useNavigate();
 	const toast = useToast();
+
+	const { isError, isSuccess, ...request } = useRequestMutation(
+		[RequestKeyEnum.stories, RequestKeyEnum.comments, storyId],
+		(data) => api.postComment(data)
+	);
 
 	useEffect(() => {
 		const localData = localStorage.getItem("tuys.com");
@@ -39,20 +41,24 @@ export function CreateComment({
 		event.preventDefault();
 
 		const data = { storyId, body: { text: newComment } };
-		api
-			.postComment(data)
-			.then(() => {
-				setNewComment("");
-				setUpdateComments((prev) => !prev);
-			})
-			.catch(({ response }) => {
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi possível enviar o comentários. Tente novamente.",
-				});
-			});
+
+		request.mutate(data);
+	}
+
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível enviar o comentários. Tente novamente.",
+		});
+		request.reset();
+		return null;
+	}
+
+	if (isSuccess) {
+		setNewComment("");
+		request.reset();
 	}
 
 	return (

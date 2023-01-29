@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../services/tuys";
 import { SetState } from "../utils/Protocols";
 import { Button } from "../shared";
-import { useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../hooks";
+import { RequestKeyEnum } from "../utils/enums";
 
 type WrapperProps = {
 	height: string;
@@ -20,15 +21,27 @@ type FormParams = {
 };
 
 export function Form({ id, story, editing, setEditing }: FormParams) {
+	const { isError, isSuccess, ...request } = useRequestMutation(
+		[RequestKeyEnum.stories, id],
+		() => api.putStory(editStory, id)
+	);
+
 	const [bodyHeight, setBodyHeight] = useState("auto");
 	const [editStory, setEditStory] = useState({
-		title: story.title,
-		body: story.body,
+		title: "",
+		body: "",
 	});
 	const ref = useRef<HTMLTextAreaElement>(null);
 	const toast = useToast();
 	const minimusHeight = "80px";
 	let disabled = !editing;
+
+	useEffect(() => {
+		setEditStory({
+			title: story.title,
+			body: story.body,
+		});
+	}, [id, story]);
 
 	useEffect(() => {
 		if (ref.current) {
@@ -63,23 +76,7 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 	function handleStory(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-		api
-			.putStory(editStory, id)
-			.then(() => {
-				toast({
-					type: "success",
-					text: "História atualizada com sucesso.",
-				});
-				story.title = editStory.title;
-				story.body = editStory.body;
-				setEditing(false);
-			})
-			.catch(() => {
-				toast({
-					type: "error",
-					text: "Não foi atualizar a história. Tente novamente.",
-				});
-			});
+		request.mutate(editStory);
 	}
 
 	function cancelEdit() {
@@ -92,6 +89,28 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 
 	function isBodyBiggerThanMinimun() {
 		return ref.current?.scrollHeight && ref.current?.scrollHeight >= 90;
+	}
+
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível atualizar a história. Tente novamente.",
+		});
+		request.reset();
+		return null;
+	}
+
+	if (isSuccess) {
+		toast({
+			type: "success",
+			text: "História atualizada com sucesso.",
+		});
+		story.title = editStory.title;
+		story.body = editStory.body;
+		setEditing(false);
+		request.reset();
 	}
 
 	return (

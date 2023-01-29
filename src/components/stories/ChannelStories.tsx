@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useInterval } from "use-interval";
+import { useState } from "react";
 import api from "../../services/tuys";
-import { useNavigateSignIn, useToast } from "../hooks";
+import { useToast, useRequestQuery } from "../hooks";
 import { StoryType } from "../utils/Protocols";
+import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Button, Title } from "../shared";
 import { CreateStory } from "./CreateStory";
@@ -12,78 +12,71 @@ import { Story } from "./Story";
 
 export function ChannelStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
-	const [updateStories, setUpdateStories] = useState(false);
-	const [haveMoreStories, setHaveMoreStories] = useState<StoryType[]>([]);
 	const { state: location } = useLocation();
-	const goSignIn = useNavigateSignIn();
 	const toast = useToast();
 
+	const {
+		isError,
+		isSuccess,
+		data: haveMoreStories,
+		...request
+	} = useRequestQuery([RequestKeyEnum.stories, location.channelId], () =>
+		api.getStoriesFromChannel(location.channelId)
+	);
+
 	function updateStoriesFunction() {
-		setStories((prev) => [...haveMoreStories, ...prev]);
-		setHaveMoreStories([]);
+		if (haveMoreStories) setStories([...haveMoreStories]);
 	}
 
-	useEffect(() => {
-		api
-			.getStoriesFromChannel(location.channelId)
-			.then((stories) => setStories(stories))
-			.catch(({ response }) => {
-				if (response.status === 401) {
-					return goSignIn();
-				}
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
+		});
+		return null;
+	}
 
-				toast({
-					type: "error",
-					text: response?.data?.message,
-				});
-			});
-	}, [updateStories, location.channelId]);
-
-	useInterval(() => {
-		if (stories.length > 0) {
-			api
-				.getStoriesFromChannelAfterId(location.channelId, stories[0].id)
-				.then((newStories) => {
-					if (newStories.length > haveMoreStories.length) {
-						setHaveMoreStories([...newStories]);
-					}
-				})
-				.catch(({ response }) => {
-					if (response.status === 401) {
-						return goSignIn();
-					}
-				});
-		}
-	}, 30000);
+	if (isSuccess && haveMoreStories && stories.length === 0) {
+		setStories([...haveMoreStories]);
+	}
 
 	return (
 		<Wrapper>
-			{stories[0] && (
+			{stories.length > 0 && (
 				<>
 					<Title>{stories[0].channel}</Title>
 
-					<CreateStory
-						channelId={location.channelId}
-						setUpdateStories={setUpdateStories}
-					/>
+					<CreateStory channelId={location.channelId} />
 
-					{haveMoreStories.length > 0 && (
-						<Button
-							config={{ type: "secundary" }}
-							onClick={updateStoriesFunction}
-						>
-							<span style={{ marginRight: "10px" }}>
-								Há novas estórias para ler
-							</span>
-							<Icons type="reload" />
-						</Button>
+					{haveMoreStories && haveMoreStories.length > stories.length && (
+						<>
+							<Button
+								config={{ type: "secundary" }}
+								onClick={updateStoriesFunction}
+							>
+								<span style={{ marginRight: "10px" }}>
+									Há novas estórias para ler
+								</span>
+								<Icons type="reload" />
+							</Button>
+
+							<div>
+								{stories?.map((story, index) => (
+									<Story key={index} story={story} showChannel={false} />
+								))}
+							</div>
+						</>
 					)}
 
-					<div>
-						{stories.map((story, index) => (
-							<Story key={index} story={story} showChannel={false} />
-						))}
-					</div>
+					{haveMoreStories && haveMoreStories.length <= stories.length && (
+						<div>
+							{haveMoreStories?.map((story, index) => (
+								<Story key={index} story={story} showChannel={false} />
+							))}
+						</div>
+					)}
 				</>
 			)}
 		</Wrapper>

@@ -10,7 +10,10 @@ export function Channel({ id, name, background }: ChannelType) {
 	const navigate = useNavigate();
 
 	function goToChannel() {
-		const route = name.replaceAll("/", "-").toLocaleLowerCase();
+		const route = name
+			.replaceAll("/", "-")
+			.replaceAll("?", "-")
+			.toLocaleLowerCase();
 		navigate(`/channels/${route}`, { state: { channelId: id } });
 	}
 

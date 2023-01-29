@@ -9,7 +9,7 @@ export function PrivatePage({ children }: React.PropsWithChildren) {
 		if (!localData || !JSON.parse(localData).token) {
 			navigate("/sign-in");
 		}
-	}, []);
+	}, [localData]);
 
 	if (localData && JSON.parse(localData).token) {
 		return <>{children}</>;

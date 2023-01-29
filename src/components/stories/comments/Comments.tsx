@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import useInterval from "use-interval";
 import { useEffect, useRef, useState } from "react";
 import api from "../../../services/tuys";
-import { CommentType } from "../../utils/Protocols";
-import { useNavigateSignIn, useToast } from "../../hooks";
+import { useToast, useRequestQuery } from "../../hooks";
 import { Comment } from "./Comment";
 import { CreateComment } from "./CreateComment";
+import { RequestKeyEnum } from "../../utils/enums";
 
 type CommentsProps = {
 	storyId: number;
@@ -21,70 +20,50 @@ type WrapperProps = {
 export function Comments({ storyId, showComment }: CommentsProps) {
 	const defaultHeight = "0px";
 	const autoHeight = "auto";
-	const [comments, setComments] = useState<CommentType[]>([]);
-	const [updateComments, setUpdateComments] = useState(false);
 	const [height, setHeight] = useState(defaultHeight);
 	const scrollToLast = useRef<HTMLDivElement>(null);
-	const goSignIn = useNavigateSignIn();
 	const toast = useToast();
+
+	const {
+		isError,
+		data: comments,
+		...request
+	} = useRequestQuery(
+		[RequestKeyEnum.stories, RequestKeyEnum.comments, storyId],
+		() => api.getComments(storyId)
+	);
 
 	useEffect(() => {
 		scrollToLast.current?.scrollIntoView({
 			behavior: "smooth",
 			block: "nearest",
 		});
-	}, [scrollToLast.current, storyId]);
+	}, [scrollToLast, storyId]);
 
-	useEffect(() => {
-		if (!showComment && height === autoHeight) {
-			setHeight(defaultHeight);
-			return;
-		}
-		if (!showComment) return;
+	if (!showComment && height === autoHeight) {
+		setHeight(defaultHeight);
+		return null;
+	}
 
-		api
-			.getComments(storyId)
-			.then((comments) => {
-				setTimeout(() => setHeight(autoHeight), 100);
-				setComments(comments);
-			})
-			.catch(({ response }) => {
-				if (response.status === 401) {
-					return goSignIn();
-				}
+	if (!showComment) return null;
 
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi possível carregar os comentários. Tente novamente.",
-				});
-			});
-	}, [storyId, showComment, updateComments]);
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível carregar os comentários. Tente novamente.",
+		});
+		return null;
+	}
 
-	useInterval(() => {
-		if (!showComment || comments.length === 0) return;
+	if (height === defaultHeight) {
+		setTimeout(() => setHeight(autoHeight), 100);
+	}
 
-		api
-			.getComments(storyId)
-			.then((newComments) =>
-				newComments.length > comments.length
-					? setComments([...newComments])
-					: ""
-			)
-			.catch(({ response }) => {
-				if (response.status === 401) {
-					return goSignIn();
-				}
-
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi possível carregar os comentários. Tente novamente.",
-				});
-			});
-	}, 30000);
+	if (typeof comments !== "object") {
+		return <></>;
+	}
 
 	return (
 		<Wrapper
@@ -100,7 +79,7 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 				{comments.length > 0 && <div ref={scrollToLast} />}
 			</div>
 
-			<CreateComment storyId={storyId} setUpdateComments={setUpdateComments} />
+			<CreateComment storyId={storyId} />
 		</Wrapper>
 	);
 }

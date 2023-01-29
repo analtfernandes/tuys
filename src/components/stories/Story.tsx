@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 import api from "../../services/tuys";
-import { useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../hooks";
 import { StoryType } from "../utils/Protocols";
+import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
@@ -23,6 +24,20 @@ type ModalConfig = {
 };
 
 export function Story({ story, showChannel = true }: StoryParams) {
+	const requestKey = [RequestKeyEnum.stories, RequestKeyEnum.story, story.id, RequestKeyEnum.user];
+	const requestLike = useRequestMutation(requestKey, () =>
+		api.postLike(story.id)
+	);
+	const requestUnlike = useRequestMutation(requestKey, () =>
+		api.postUnlike(story.id)
+	);
+	const requestDenounce = useRequestMutation(requestKey, (param) =>
+		api.postDenounce(param)
+	);
+	const requestDelete = useRequestMutation(requestKey, () =>
+		api.deleteStory(story.id)
+	);
+
 	const [like, setLike] = useState(story.likedByUser);
 	const [editing, setEditing] = useState(false);
 	const [showComment, setShowComment] = useState(false);
@@ -42,18 +57,22 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	function toggleLike() {
 		if (!like) {
 			setLike(true);
-			api
-				.postLike(story.id)
-				.then()
-				.catch(() => setLike(false));
+			requestLike.mutate(story.id);
 			return;
 		}
 
 		setLike(false);
-		api
-			.postUnlike(story.id)
-			.then()
-			.catch(() => setLike(true));
+		requestUnlike.mutate(story.id);
+	}
+
+	if (requestLike.isError) {
+		setLike(false);
+		requestLike.reset();
+	}
+
+	if (requestUnlike.isError) {
+		setLike(true);
+		requestUnlike.reset();
 	}
 
 	function denounceStory({ text }: { text: string }) {
@@ -66,42 +85,44 @@ export function Story({ story, showChannel = true }: StoryParams) {
 		}
 
 		const param = { storyId: story.id, body: { text } };
+		requestDenounce.mutate(param);
+	}
 
-		api
-			.postDenounce(param)
-			.then(() =>
-				toast({
-					type: "success",
-					text: "Denuncia enviada com sucesso. Agradecemos pela contribuição.",
-				})
-			)
-			.catch(({ response }) => {
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi enviar a denúncia. Tente novamente.",
-				});
-			});
+	if (requestDenounce.isSuccess) {
+		toast({
+			type: "success",
+			text: "Denuncia enviada com sucesso. Agradecemos pela contribuição.",
+		});
+		requestDenounce.reset();
+	}
+
+	if (requestDenounce.isError) {
+		toast({
+			type: "error",
+			text: "Não foi enviar a denúncia. Tente novamente.",
+		});
+		requestDenounce.reset();
 	}
 
 	function deleteStoryFunction() {
-		api
-			.deleteStory(story.id)
-			.then(() =>
-				toast({
-					type: "success",
-					text: "História apagada com sucesso.",
-				})
-			)
-			.catch(({ response }) => {
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi apagar a história. Tente novamente.",
-				});
-			});
+		requestDelete.mutate(story.id);
+	}
+
+	if (requestDelete.isSuccess) {
+		toast({
+			type: "success",
+			text: "História apagada com sucesso.",
+		});
+		requestDelete.reset();
+	}
+
+	if (requestDelete.isError) {
+		toast({
+			type: "error",
+			text:
+				requestDelete.error || "Não foi apagar a história. Tente novamente.",
+		});
+		requestDelete.reset();
 	}
 
 	return (
@@ -201,9 +222,9 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					{!owner.isOwner && (
 						<>
 							<Option iconColor="red">
-								<div>
-									{like && <Icons type="unlike" onClick={toggleLike} />}
-									{!like && <Icons type="like" onClick={toggleLike} />}
+								<div onClick={toggleLike}>
+									{like && <Icons type="unlike" />}
+									{!like && <Icons type="like" />}
 									<span>Gostei</span>
 								</div>
 								<span>{compactNumber(story.likes)}</span>

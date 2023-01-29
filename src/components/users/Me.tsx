@@ -1,28 +1,37 @@
-import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { MyDataType } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
-import { useToast } from "../hooks";
+import { useRequestQuery, useToast } from "../hooks";
+import { RequestKeyEnum } from "../utils/enums";
 
 export function Me() {
-	const [user, setUser] = useState({} as MyDataType);
+	const data = JSON.parse(localStorage.getItem("tuys.com") || "");
 	const toast = useToast();
 
-	useEffect(() => {
-		api
-			.getMyData()
-			.then((user) => setUser(user))
-			.catch(({ response }) => {
-				toast({
-					type: "error",
-					text:
-						response?.data?.message ||
-						"Não foi possível buscar os dados. Por favor, recarregue a página",
-				});
-			});
-	}, []);
+	const {
+		isError,
+		isSuccess,
+		data: user,
+		...request
+	} = useRequestQuery(
+		[RequestKeyEnum.user, data?.username],
+		() => api.getMyData()
+	);
+
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível buscar os dados. Por favor, recarregue a página",
+		});
+		return null;
+	}
+
+	if (!user) {
+		return null;
+	}
 
 	return (
 		<PageStyle>

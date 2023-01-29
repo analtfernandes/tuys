@@ -1,23 +1,23 @@
 import { useState } from "react";
 import api, { PostStoryParams } from "../../services/tuys";
-import { useNavigateSignIn, useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../hooks";
+import { RequestKeyEnum } from "../utils/enums";
 import { Button, Form } from "../shared";
-import { SetState } from "../utils/Protocols";
 
 type CreateStoryParams = {
 	channelId: number;
-	setUpdateStories: SetState<boolean>;
 };
 
-export function CreateStory({
-	channelId,
-	setUpdateStories,
-}: CreateStoryParams) {
+export function CreateStory({ channelId }: CreateStoryParams) {
 	const [story, setStory] = useState({
 		channelId,
 	} as PostStoryParams);
-	const goSignIn = useNavigateSignIn();
 	const toast = useToast();
+
+	const { isError, isSuccess, ...request } = useRequestMutation(
+		[RequestKeyEnum.stories],
+		() => api.postStory(story)
+	);
 
 	function handleChange(
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,34 +26,28 @@ export function CreateStory({
 	}
 
 	function isValidFields() {
+		let message = "";
+
 		if (!story.title || story.title.length < 3) {
-			toast({
-				type: "warning",
-				text: "O título deve ter no mínimo 3 caracteres!",
-			});
-			return false;
+			message = "O título deve ter no mínimo 3 caracteres!";
 		}
 
 		if (!story.body || story.body.length < 10) {
-			toast({
-				type: "warning",
-				text: "O corpo deve ter no mínimo 10 caracteres!",
-			});
-			return false;
+			message = "O corpo deve ter no mínimo 10 caracteres!";
 		}
 
 		if (!story.title || story.title.length > 30) {
-			toast({
-				type: "warning",
-				text: "O título deve ter no máximo 30 caracteres!",
-			});
-			return false;
+			message = "O título deve ter no máximo 30 caracteres!";
 		}
 
 		if (!story.body || story.body.length > 1000) {
+			message = "O corpo deve ter no máximo 1000 caracteres!";
+		}
+
+		if (message.length > 0) {
 			toast({
 				type: "warning",
-				text: "O corpo deve ter no máximo 1000 caracteres!",
+				text: message,
 			});
 			return false;
 		}
@@ -64,26 +58,24 @@ export function CreateStory({
 	function handleStory(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-		if (isValidFields()) {
-			api
-				.postStory(story)
-				.then(() => {
-					setStory({ channelId, title: "", body: "" });
-					setUpdateStories((prev) => !prev);
-				})
-				.catch(({ response }) => {
-					if (response.status === 401) {
-						return goSignIn();
-					}
+		if (!isValidFields()) return;
 
-					toast({
-						type: "error",
-						text:
-							response?.data?.message ||
-							"Ocorreu um erro ao enviar história, tente novamente.",
-					});
-				});
-		}
+		request.mutate(story);
+	}
+
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error || "Ocorreu um erro ao enviar história, tente novamente.",
+		});
+		request.reset();
+		return null;
+	}
+
+	if (isSuccess) {
+		setStory({ channelId, title: "", body: "" });
+		request.reset();
 	}
 
 	return (
@@ -102,7 +94,7 @@ export function CreateStory({
 					maxLength={30}
 					placeholder="O jardim"
 					name="title"
-					value={story.title}
+					value={story.title || ""}
 					onChange={handleChange}
 				/>
 			</Form.Section>
@@ -117,7 +109,7 @@ export function CreateStory({
 					maxLength={1000}
 					placeholder="O jardim estava quieto naquele verão..."
 					name="body"
-					value={story.body}
+					value={story.body || ""}
 					onChange={handleChange}
 				/>
 			</Form.Section>

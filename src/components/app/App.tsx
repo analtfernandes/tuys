@@ -12,30 +12,33 @@ import { NotificationsPage } from "../../pages/notifications/Notifications";
 import { MePage } from "../../pages/me/Me";
 import { SettingsPage } from "../../pages/settings/Settings";
 import { Stories } from "../stories/Stories";
+import { QueryClientContextProvider } from "../../contexts/QueryClientContext";
 
 function App() {
 	return (
 		<BrowserRouter>
 			<ThemeContextProvider>
-				<ToastContainer />
+				<QueryClientContextProvider>
+					<ToastContainer />
 
-				<PrivatePage>
-					<Header />
-					<Footer />
+					<PrivatePage>
+						<Header />
+						<Footer />
 
-					<Routes>
-						<Route path="/" element={<HomePage />} />
-						<Route path="/channels" element={<ChannelsPage />} />
-						<Route
-							path="/channels/:channelName"
-							element={<Stories path="channel" />}
-						/>
-						<Route path="/ranking" element={<RankingPage />} />
-						<Route path="/notifications" element={<NotificationsPage />} />
-						<Route path="/me" element={<MePage />} />
-						<Route path="/settings" element={<SettingsPage />} />
-					</Routes>
-				</PrivatePage>
+						<Routes>
+							<Route path="/" element={<HomePage />} />
+							<Route path="/channels" element={<ChannelsPage />} />
+							<Route
+								path="/channels/:channelName"
+								element={<Stories path="channel" />}
+							/>
+							<Route path="/ranking" element={<RankingPage />} />
+							<Route path="/notifications" element={<NotificationsPage />} />
+							<Route path="/me" element={<MePage />} />
+							<Route path="/settings" element={<SettingsPage />} />
+						</Routes>
+					</PrivatePage>
+				</QueryClientContextProvider>
 			</ThemeContextProvider>
 		</BrowserRouter>
 	);

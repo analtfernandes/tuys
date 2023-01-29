@@ -1,37 +1,38 @@
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useNavigateSignIn, useToast } from "../hooks";
-import { StoryType } from "../utils/Protocols";
+import { useRequestQuery, useToast } from "../hooks";
 import { Icons } from "../utils";
 import { Title } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
+import { RequestKeyEnum } from "../utils/enums";
 
 export function UserStories() {
-	const [stories, setStories] = useState<StoryType[]>([]);
-	const { state: location } = useLocation();
-	const goSignIn = useNavigateSignIn();
+	const data = JSON.parse(localStorage.getItem("tuys.com") || "");
 	const toast = useToast();
 
-	useEffect(() => {
-		if (!location?.userId) {
-			api
-				.getMyStories()
-				.then((stories) => setStories(stories))
-				.catch(({ response }) => {
-					if (response.status === 401) {
-						return goSignIn();
-					}
+	const {
+		isError,
+		isSuccess,
+		data: stories,
+		...request
+	} = useRequestQuery(
+		[RequestKeyEnum.stories, RequestKeyEnum.user, data?.username],
+		() => api.getMyStories()
+	);
 
-					toast({
-						type: "error",
-						text: response?.data?.message,
-					});
-				});
-			return;
-		}
-	}, [location?.userId]);
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
+		});
+		return null;
+	}
+
+	if (!stories) {
+		return null;
+	}
 
 	return (
 		<Wrapper>

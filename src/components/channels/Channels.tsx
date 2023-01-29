@@ -1,31 +1,31 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useNavigateSignIn, useToast } from "../hooks";
-import { ChannelType } from "../utils/Protocols";
+import { useToast, useRequestQuery } from "../hooks";
 import { Subtitle, Title } from "../shared";
+import { RequestKeyEnum } from "../utils/enums";
 import { Channel } from "./Channel";
 
 export function Channels() {
-	const [channels, setChannels] = useState<ChannelType[]>([]);
 	const toast = useToast();
-	const goSignIn = useNavigateSignIn();
+	const {
+		isError,
+		data: channels,
+		...request
+	} = useRequestQuery([RequestKeyEnum.channels], () => api.getChannels());
 
-	useEffect(() => {
-		api
-			.getChannels()
-			.then((channels) => setChannels(channels))
-			.catch(({ response }) => {
-				if (response.status === 401) {
-					return goSignIn();
-				}
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível carregar os canais. Por favor, recarregue a página.",
+		});
+		return null;
+	}
 
-				toast({
-					type: "error",
-					text: response?.data?.message,
-				});
-			});
-	}, []);
+	if (typeof channels !== "object") {
+		return <></>;
+	}
 
 	return (
 		<Wrapper>

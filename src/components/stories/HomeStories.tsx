@@ -1,30 +1,32 @@
-import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useNavigateSignIn, useToast } from "../hooks";
-import { StoryType } from "../utils/Protocols";
+import { useRequestQuery, useToast } from "../hooks";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
+import { RequestKeyEnum } from "../utils/enums";
 
 export function HomeStories() {
-	const [stories, setStories] = useState<StoryType[]>([]);
-	const goSignIn = useNavigateSignIn();
 	const toast = useToast();
 
-	useEffect(() => {
-		api
-			.getStories()
-			.then((stories) => setStories(stories))
-			.catch(({ response }) => {
-				if (response.status === 401) {
-					return goSignIn();
-				}
+	const {
+		isError,
+		isSuccess,
+		data: stories,
+		...request
+	} = useRequestQuery([RequestKeyEnum.stories, RequestKeyEnum.home], () => api.getStories());
 
-				toast({
-					type: "error",
-					text: response?.data?.message,
-				});
-			});
-	}, []);
+	if (isError) {
+		toast({
+			type: "error",
+			text:
+				request.error ||
+				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
+		});
+		return null;
+	}
+
+	if (!stories) {
+		return null;
+	}
 
 	return (
 		<Wrapper>

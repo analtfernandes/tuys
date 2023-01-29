@@ -21,139 +21,204 @@ function createHeader() {
 	return config;
 }
 
+async function throwError(response: Response) {
+	const error = await response
+		.json()
+		.then((response) => response)
+		.catch((error) => "");
+
+	const errorString = JSON.stringify({
+		message: error,
+		status: response.status,
+	});
+
+	throw new Error(errorString);
+}
+
 async function getChannels() {
 	const config = createHeader();
-	const response: ChannelType[] = await fetch(`${BASE_URI}/channels`, {
+	const response = await fetch(`${BASE_URI}/channels`, {
 		method: "GET",
 		...config,
-	}).then((response) => response.json());
-	return response;
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<ChannelType[]>;
 }
 
 async function getStories() {
 	const config = createHeader();
-	const response: StoryType[] = await fetch(`${BASE_URI}/stories`, {
+	const response = await fetch(`${BASE_URI}/stories`, {
 		method: "GET",
 		...config,
-	}).then((response) => response.json());
-	return response;
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<StoryType[]>;
 }
 
 async function getStoriesFromChannel(channelId: number) {
 	const config = createHeader();
-	const response: StoryType[] = await fetch(
-		`${BASE_URI}/stories/${channelId}`,
-		{
-			method: "GET",
-			...config,
-		}
-	).then((response) => response.json());
-	return response;
-}
+	const response = await fetch(`${BASE_URI}/stories/${channelId}`, {
+		method: "GET",
+		...config,
+	});
 
-async function getStoriesFromChannelAfterId(
-	channelId: number,
-	storyId: number
-) {
-	const config = createHeader();
-	const response: StoryType[] = await fetch(
-		`${BASE_URI}/stories/${channelId}/after/${storyId}`,
-		{
-			method: "GET",
-			...config,
-		}
-	).then((response) => response.json());
-	return response;
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<StoryType[]>;
 }
 
 async function getComments(storyId: number) {
 	const config = createHeader();
-	const response: CommentType[] = await fetch(
-		`${BASE_URI}/stories/${storyId}/comments`,
-		{
-			method: "GET",
-			...config,
-		}
-	).then((response) => response.json());
-	return response;
+	const response = await fetch(`${BASE_URI}/stories/${storyId}/comments`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<CommentType[]>;
 }
 
 async function getMyData() {
 	const config = createHeader();
-	const response: MyDataType = await fetch(`${BASE_URI}/users/me`, {
+	const response = await fetch(`${BASE_URI}/users/me`, {
 		method: "GET",
 		...config,
-	}).then((response) => response.json());
-	return response;
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<MyDataType>;
 }
 
 async function getMyStories() {
 	const config = createHeader();
-	const response: StoryType[] = await fetch(`${BASE_URI}/users/me/stories`, {
+	const response = await fetch(`${BASE_URI}/users/me/stories`, {
 		method: "GET",
 		...config,
-	}).then((response) => response.json());
-	return response;
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<StoryType[]>;
 }
 
-function postStory(body: PostStoryParams) {
+async function postStory(body: PostStoryParams) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories`, {
+	const response = await fetch(`${BASE_URI}/stories`, {
 		method: "POST",
 		body: JSON.stringify(body),
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
-function postLike(storyId: number) {
+async function postLike(storyId: number) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${storyId}/like`, {
+	const response = await fetch(`${BASE_URI}/stories/${storyId}/like`, {
 		method: "POST",
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
-function postUnlike(storyId: number) {
+async function postUnlike(storyId: number) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${storyId}/unlike`, {
+	const response = await fetch(`${BASE_URI}/stories/${storyId}/unlike`, {
 		method: "POST",
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
-function postComment(data: PostCommentParams) {
+async function postComment(data: PostCommentParams) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${data.storyId}/comments`, {
+	const response = await fetch(`${BASE_URI}/stories/${data.storyId}/comments`, {
 		method: "POST",
 		body: JSON.stringify(data.body),
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json();
 }
 
-function postDenounce(data: PostDenounceParams) {
+async function postDenounce(data: PostDenounceParams) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${data.storyId}/denounce`, {
+	const response = await fetch(`${BASE_URI}/stories/${data.storyId}/denounce`, {
 		method: "POST",
 		body: JSON.stringify(data.body),
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
-function deleteStory(storyId: number) {
+async function deleteStory(storyId: number) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${storyId}`, {
+	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
 		method: "DELETE",
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
-function putStory(body: PutStoryParams, storyId: number) {
+async function putStory(body: PutStoryParams, storyId: number) {
 	const config = createHeader();
-	return fetch(`${BASE_URI}/stories/${storyId}`, {
+	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
 		method: "PUT",
 		body: JSON.stringify(body),
 		...config,
 	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
 }
 
 export type PostStoryParams = {
@@ -171,11 +236,10 @@ export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 
 export type PostDenounceParams = PostCommentParams;
 
-export default {
+const service = {
 	getChannels,
 	getStories,
 	getStoriesFromChannel,
-	getStoriesFromChannelAfterId,
 	getComments,
 	getMyData,
 	getMyStories,
@@ -187,3 +251,5 @@ export default {
 	deleteStory,
 	putStory,
 };
+
+export default service;
