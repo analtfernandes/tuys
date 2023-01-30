@@ -8,6 +8,7 @@ import {
   getUserStories,
   getUserStoriesByUserId,
   postFollow,
+  postUnfollow,
 } from "../controllers/user.controller";
 
 const userRoute = Router();
@@ -19,6 +20,7 @@ userRoute
   .get("/:username", getUsersByUsername)
   .get("/user/:userId", validateSchema(schema.allUserIdParams, "params"), getUserDataByUserId)
   .get("/:userId/stories", validateSchema(schema.allUserIdParams, "params"), getUserStoriesByUserId)
-  .post("/:userId/follow", validateSchema(schema.allUserIdParams, "params"), postFollow);
+  .post("/:userId/follow", validateSchema(schema.allUserIdParams, "params"), postFollow)
+  .post("/:userId/unfollow", validateSchema(schema.allUserIdParams, "params"), postUnfollow);
 
 export { userRoute };

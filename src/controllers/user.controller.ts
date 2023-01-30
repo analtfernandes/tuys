@@ -102,4 +102,34 @@ async function postFollow(req: Request, res: Response) {
   }
 }
 
-export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId, postFollow };
+async function postUnfollow(req: Request, res: Response) {
+  const followerId: number = res.locals.userId;
+  const followedId = Number(req.params.userId);
+
+  if (followerId === followedId) return responseHelper.BAD_REQUEST({ res, body: { message: "Ação proibida!" } });
+
+  try {
+    await userService.postUnfollow({ followerId, followedId });
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não encontrado!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário não é seguido!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export {
+  getUserData,
+  getUserStories,
+  getUsersByUsername,
+  getUserDataByUserId,
+  getUserStoriesByUserId,
+  postFollow,
+  postUnfollow,
+};

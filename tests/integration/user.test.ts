@@ -170,7 +170,7 @@ describe("GET /users/:username", () => {
       const user = await generateValidUser();
       const authorization = await generateValidToken(user);
 
-      const response = await app.get(`${route}/${user.username.slice(1, 3)}`).set("Authorization", authorization);
+      const response = await app.get(`${route}/${user.username.slice(0, 3)}`).set("Authorization", authorization);
 
       expect(response.status).toBe(httpStatus.OK);
       expect(response.body).toEqual([
@@ -430,6 +430,95 @@ describe("POST /users/:userId/follow", () => {
       const afterCount = await prisma.follows.count();
 
       expect(afterCount).toBe(beforeCount + 1);
+    });
+  });
+});
+
+describe("POST /users/:userId/unfollow", () => {
+  const route = "/users";
+  const subRoute = "unfollow";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.post(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if user does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 400 if user don't follow the other user", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if params 'userId' and the requester id are the same", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+
+      const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 204", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NO_CONTENT);
+    });
+
+    it("should delete the follow from database", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+
+      const beforeCount = await prisma.follows.count();
+
+      await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.follows.count();
+
+      expect(afterCount).toBe(beforeCount - 1);
     });
   });
 });

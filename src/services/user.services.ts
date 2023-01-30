@@ -89,6 +89,24 @@ async function postFollow({ followedId, followerId }: PostFollowParams) {
   await userRepository.createFollow({ followedId, followerId });
 }
 
+async function postUnfollow({ followedId, followerId }: PostFollowParams) {
+  const followed = await userRepository.findUserById(followedId);
+  if (!followed) throw notFoundError();
+
+  const userAlreadyFollow = await userRepository.findFollow({ followedId, followerId });
+  if (!userAlreadyFollow) throw badRequestError();
+
+  await userRepository.deleteFollow({ followedId, followerId });
+}
+
 type PostFollowParams = Omit<Follows, "id">;
 
-export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId, postFollow };
+export {
+  getUserData,
+  getUserStories,
+  getUsersByUsername,
+  getUserDataByUserId,
+  getUserStoriesByUserId,
+  postFollow,
+  postUnfollow,
+};
