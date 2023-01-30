@@ -50,7 +50,7 @@ async function getUserDataByUserId(userId: number, wantedUser: number) {
 }
 
 async function getUserStories(userId: number) {
-  const stories = await storyRepository.findAllByUser(userId);
+  const stories = await storyRepository.findAllByUser(userId, userId);
 
   if (!stories) throw notFoundError();
 
@@ -61,7 +61,7 @@ async function getUserStoriesByUserId(userId: number, wantedUser: number) {
   const user = await userRepository.findUserById(wantedUser);
   if (!user) throw notFoundError();
 
-  const stories = await storyRepository.findAllByUser(wantedUser);
+  const stories = await storyRepository.findAllByUser(wantedUser, userId);
 
   return formatStories(stories, userId);
 }

@@ -87,9 +87,9 @@ function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
   });
 }
 
-function findAllByUser(userId: number) {
+function findAllByUser(ownerId: number, userId: number) {
   return prisma.stories.findMany({
-    where: { status: StorieStatus.ACTIVE, userId },
+    where: { status: StorieStatus.ACTIVE, userId: ownerId },
     select: {
       id: true,
       title: true,
