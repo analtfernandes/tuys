@@ -1,7 +1,8 @@
-import { notFoundError } from "../helpers/errors.helper";
+import { badRequestError, notFoundError } from "../helpers/errors.helper";
 import * as userRepository from "../repositories/user.repository";
 import * as storyRepository from "../repositories/story.repository";
 import { formatStories } from "./story.services";
+import { Follows } from "@prisma/client";
 
 async function getUserData(userId: number) {
   const user = await userRepository.findUserData(userId);
@@ -78,4 +79,16 @@ async function getUsersByUsername(userId: number, username: string) {
   return formatedUsers;
 }
 
-export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId };
+async function postFollow({ followedId, followerId }: PostFollowParams) {
+  const followed = await userRepository.findUserById(followedId);
+  if (!followed) throw notFoundError();
+
+  const userAlreadyFollow = await userRepository.findFollow({ followedId, followerId });
+  if (userAlreadyFollow) throw badRequestError();
+
+  await userRepository.createFollow({ followedId, followerId });
+}
+
+type PostFollowParams = Omit<Follows, "id">;
+
+export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId, postFollow };

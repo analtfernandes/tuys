@@ -50,11 +50,7 @@ async function getUsersByUsername(req: Request, res: Response) {
 
 async function getUserDataByUserId(req: Request, res: Response) {
   const userId: number = res.locals.userId;
-  const wantedUser = Number(req.params.userId) || null;
-
-  if (!wantedUser || wantedUser <= 0) {
-    return responseHelper.BAD_REQUEST({ res, body: { message: "Id de usuário inválido!" } });
-  }
+  const wantedUser = Number(req.params.userId);
 
   try {
     const user = await userService.getUserDataByUserId(userId, wantedUser);
@@ -70,11 +66,7 @@ async function getUserDataByUserId(req: Request, res: Response) {
 
 async function getUserStoriesByUserId(req: Request, res: Response) {
   const userId: number = res.locals.userId;
-  const wantedUser = Number(req.params.userId) || null;
-
-  if (!wantedUser || wantedUser <= 0) {
-    return responseHelper.BAD_REQUEST({ res, body: { message: "Id de usuário inválido!" } });
-  }
+  const wantedUser = Number(req.params.userId);
 
   try {
     const stories = await userService.getUserStoriesByUserId(userId, wantedUser);
@@ -88,4 +80,26 @@ async function getUserStoriesByUserId(req: Request, res: Response) {
   }
 }
 
-export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId };
+async function postFollow(req: Request, res: Response) {
+  const followerId: number = res.locals.userId;
+  const followedId = Number(req.params.userId);
+
+  if (followerId === followedId) return responseHelper.BAD_REQUEST({ res, body: { message: "Ação proibida!" } });
+
+  try {
+    await userService.postFollow({ followerId, followedId });
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não encontrado!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já é seguido!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId, getUserStoriesByUserId, postFollow };

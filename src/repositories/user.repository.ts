@@ -1,3 +1,4 @@
+import { Follows } from "@prisma/client";
 import { prisma } from "../database";
 
 function findUserData(id: number) {
@@ -77,4 +78,14 @@ function findUserById(id: number) {
   return prisma.users.findUnique({ where: { id } });
 }
 
-export { findUserData, findUsers, findUserDataByUserId, findUserById };
+function findFollow(data: FollowParams) {
+  return prisma.follows.findFirst({ where: { ...data } });
+}
+
+function createFollow(data: FollowParams) {
+  return prisma.follows.create({ data: { ...data } });
+}
+
+type FollowParams = Omit<Follows, "id">;
+
+export { findUserData, findUsers, findUserDataByUserId, findUserById, findFollow, createFollow };

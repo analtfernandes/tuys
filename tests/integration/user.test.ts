@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
 import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
+import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
 import { createStory, createFollow } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
@@ -341,6 +342,94 @@ describe("GET /users/:userId/stories", () => {
           channel: channelWithStory.name,
         },
       ]);
+    });
+  });
+});
+
+describe("POST /users/:userId/follow", () => {
+  const route = "/users";
+  const subRoute = "follow";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.post(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if user does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 400 if user already follow the other user", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if params 'userId' and the requester id are the same", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+
+      const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 204", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NO_CONTENT);
+    });
+
+    it("should add a new follow on database", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const beforeCount = await prisma.follows.count();
+
+      await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.follows.count();
+
+      expect(afterCount).toBe(beforeCount + 1);
     });
   });
 });
