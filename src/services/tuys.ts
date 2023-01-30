@@ -3,6 +3,7 @@ import {
 	CommentType,
 	MyDataType,
 	StoryType,
+	UsersType,
 } from "../components/utils/Protocols";
 
 const BASE_URI = process.env.REACT_APP_API_URI;
@@ -117,6 +118,20 @@ async function getMyStories() {
 	}
 
 	return response.json() as Promise<StoryType[]>;
+}
+
+async function getUsers(usename: string) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/${usename}`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<UsersType[]>;
 }
 
 async function postStory(body: PostStoryParams) {
@@ -243,6 +258,7 @@ const service = {
 	getComments,
 	getMyData,
 	getMyStories,
+	getUsers,
 	postStory,
 	postLike,
 	postUnlike,

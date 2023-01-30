@@ -48,6 +48,15 @@ type UserType = {
 	rankColor: string;
 };
 
+type UsersType = {
+	id: number;
+	username: string;
+	avatar: string;
+	rankColor: string;
+	isUser: boolean;
+	following: boolean;
+};
+
 type MyDataType = {
 	id: number;
 	username: string;
@@ -71,6 +80,7 @@ export type {
 	CommentType,
 	UserType,
 	MyDataType,
+	UsersType,
 	SetState,
 	CallbackType,
 };

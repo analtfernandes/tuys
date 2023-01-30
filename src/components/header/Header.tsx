@@ -2,40 +2,50 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Icons } from "../utils";
 import logo from "../images/logo.png";
+import { useState } from "react";
+import { Search } from "./Search";
 
 export function Header() {
+	const [isSearching, setIsSearching] = useState(false);
+
 	return (
-		<Wrapper>
-			<img src={logo} alt="TUYS" />
+		<>
+			<Wrapper>
+				<img src={logo} alt="TUYS" />
 
-			<div>
-				<Icons type="search" />
+				<div>
+					{isSearching && <Search />}
+					<Icons
+						type="search"
+						onClick={() => setIsSearching((prev) => !prev)}
+					/>
 
-				<Link to="/">
-					<Icons type="home" />
-				</Link>
+					<Link to="/">
+						<Icons type="home" />
+					</Link>
 
-				<Link to="/channels">
-					<Icons type="channels" />
-				</Link>
+					<Link to="/channels">
+						<Icons type="channels" />
+					</Link>
 
-				<Link to="/ranking">
-					<Icons type="ranking" />
-				</Link>
+					<Link to="/ranking">
+						<Icons type="ranking" />
+					</Link>
 
-				<Link to="/notifications">
-					<Icons type="notification" />
-				</Link>
+					<Link to="/notifications">
+						<Icons type="notification" />
+					</Link>
 
-				<Link to="/me">
-					<Icons type="me" />
-				</Link>
+					<Link to="/me">
+						<Icons type="me" />
+					</Link>
 
-				<Link to="/settings">
-					<Icons type="settings" />
-				</Link>
-			</div>
-		</Wrapper>
+					<Link to="/settings">
+						<Icons type="settings" />
+					</Link>
+				</div>
+			</Wrapper>
+		</>
 	);
 }
 
@@ -58,6 +68,9 @@ const Wrapper = styled.section`
 	}
 
 	> div {
+		display: flex;
+		align-items: center;
+
 		svg {
 			height: 23px;
 			width: 23px;
