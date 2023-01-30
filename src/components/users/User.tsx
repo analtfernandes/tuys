@@ -19,6 +19,9 @@ export function User() {
 	const requestFollow = useRequestMutation([RequestKeyEnum.user], () =>
 		api.postFollow(user?.id || 0)
 	);
+	const requestUnfollow = useRequestMutation([RequestKeyEnum.user], () =>
+		api.postUnfollow(user?.id || 0)
+	);
 
 	if (requestUser.isError) {
 		toast({
@@ -52,6 +55,7 @@ export function User() {
 				requestFollow.mutate(user.id);
 				return;
 			}
+			requestUnfollow.mutate(user.id);
 		}
 	}
 
@@ -61,6 +65,14 @@ export function User() {
 			text: `Não foi possível seguir ${user.username}. Tente novamente.`,
 		});
 		requestFollow.reset();
+	}
+
+	if (requestUnfollow.isError) {
+		toast({
+			type: "error",
+			text: `Não foi possível parar de seguir ${user.username}. Tente novamente.`,
+		});
+		requestUnfollow.reset();
 	}
 
 	return (
@@ -136,7 +148,7 @@ const Follow = styled.div`
 		width: fit-content;
 		display: flex;
 		align-items: center;
-		margin-top: 10px;
+		margin-top: 20px;
 		color: ${(props) => props.theme.colors.blue};
 		font-weight: 700;
 		cursor: pointer;

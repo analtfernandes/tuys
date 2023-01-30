@@ -250,6 +250,20 @@ async function postFollow(userId: number) {
 	return response;
 }
 
+async function postUnfollow(userId: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/${userId}/unfollow`, {
+		method: "POST",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -309,6 +323,7 @@ const service = {
 	postComment,
 	postDenounce,
 	postFollow,
+	postUnfollow,
 	deleteStory,
 	putStory,
 };

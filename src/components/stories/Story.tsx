@@ -24,7 +24,12 @@ type ModalConfig = {
 };
 
 export function Story({ story, showChannel = true }: StoryParams) {
-	const requestKey = [RequestKeyEnum.stories, RequestKeyEnum.story, story.id, RequestKeyEnum.user];
+	const requestKey = [
+		RequestKeyEnum.stories,
+		RequestKeyEnum.story,
+		story.id,
+		RequestKeyEnum.user,
+	];
 	const requestLike = useRequestMutation(requestKey, () =>
 		api.postLike(story.id)
 	);
