@@ -71,6 +71,11 @@ type MyDataType = {
 	following: number;
 };
 
+type UserDataType = Omit<MyDataType, "bannedStories"> & {
+	isFollowing: boolean;
+	isUser: boolean;
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 type CallbackType = (...params: any) => any;
 
@@ -80,6 +85,7 @@ export type {
 	CommentType,
 	UserType,
 	MyDataType,
+	UserDataType,
 	UsersType,
 	SetState,
 	CallbackType,

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
@@ -9,10 +10,16 @@ import { Icons } from "../utils";
 export function Search() {
 	const { user } = useUserContext();
 	const [search, setSearch] = useState("");
+	const navigate = useNavigate();
 	const { data: users } = useRequestQuery(
 		["users", search, user.username],
 		() => api.getUsers(search)
 	);
+
+	function goToUserPage(id: number) {
+		setSearch("");
+		navigate(`/user/${id}`);
+	}
 
 	return (
 		<Wrapper>
@@ -21,6 +28,7 @@ export function Search() {
 				autoComplete="off"
 				type="text"
 				placeholder="Pesquisar..."
+				value={search || ""}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
 			<Icons type="search" />
@@ -29,8 +37,8 @@ export function Search() {
 				<Users>
 					<>
 						{users &&
-							users.map((user, id) => (
-								<User>
+							users.map((user, index) => (
+								<User key={index} onClick={() => goToUserPage(user.id)}>
 									<UserRank
 										background={user.rankColor}
 										image={user.avatar}

@@ -1,7 +1,13 @@
 import { TbBookOff } from "react-icons/tb";
 import { GrStatusInfo } from "react-icons/gr";
 import { FaRegCommentDots, FaBook, FaAward } from "react-icons/fa";
-import { AiFillBook, AiOutlineEdit, AiOutlinePlusCircle } from "react-icons/ai";
+import {
+	AiFillBook,
+	AiOutlineEdit,
+	AiOutlinePlusCircle,
+	AiOutlineMinus,
+	AiOutlinePlus,
+} from "react-icons/ai";
 import {
 	BsBellFill,
 	BsPeopleFill,
@@ -45,7 +51,9 @@ type IconsParams = {
 		| "following"
 		| "rank"
 		| "bannedBooks"
-		| "status";
+		| "status"
+		| "unfollow"
+		| "follow";
 };
 
 const IconsTypes = Object.freeze({
@@ -71,6 +79,8 @@ const IconsTypes = Object.freeze({
 	following: AiOutlinePlusCircle,
 	rank: FaAward,
 	status: GrStatusInfo,
+	unfollow: AiOutlineMinus,
+	follow: AiOutlinePlus,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {

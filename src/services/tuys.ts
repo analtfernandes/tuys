@@ -3,6 +3,7 @@ import {
 	CommentType,
 	MyDataType,
 	StoryType,
+	UserDataType,
 	UsersType,
 } from "../components/utils/Protocols";
 
@@ -134,6 +135,20 @@ async function getUsers(usename: string) {
 	return response.json() as Promise<UsersType[]>;
 }
 
+async function getUserData(userId: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/user/${userId}`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<UserDataType>;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories`, {
@@ -259,6 +274,7 @@ const service = {
 	getMyData,
 	getMyStories,
 	getUsers,
+	getUserData,
 	postStory,
 	postLike,
 	postUnlike,

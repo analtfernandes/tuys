@@ -24,7 +24,7 @@ type MutationResponse = {
 
 function useRequestQuery<Type>(
 	key: any[] | string,
-	callback: (...params: any) => Promise<Type>
+	callback: (...params: any) => Promise<Type | null>
 ) {
 	const navigateSignIn = useNavigateSignIn();
 	let returnedError: string | null = null;
@@ -42,7 +42,7 @@ function useRequestQuery<Type>(
 			navigateSignIn();
 		}
 
-		if (typeof errorParsed.message === "object") {
+		if (Array.isArray(errorParsed.message)) {
 			const messages: string[] = errorParsed.message;
 			returnedError = messages.join(", ");
 		}
@@ -64,7 +64,7 @@ function useRequestMutation(
 				queryClient.invalidateQueries({
 					predicate: (mutation) =>
 						key.includes(`${mutation.queryKey[0]}`) ||
-						key.includes(`${mutation.queryKey[1]}`)
+						key.includes(`${mutation.queryKey[1]}`),
 				});
 				queryClient.invalidateQueries(key);
 			},
