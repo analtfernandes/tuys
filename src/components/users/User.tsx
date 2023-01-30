@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../../services/tuys";
-import { useRequestQuery, useToast } from "../hooks";
+import { useRequestMutation, useRequestQuery, useToast } from "../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";
@@ -12,24 +12,21 @@ export function User() {
 	const params = useParams();
 	const userId = Number(params.userId) || null;
 
-	const {
-		isError,
-		isSuccess,
-		data: user,
-		...request
-	} = useRequestQuery([RequestKeyEnum.user, userId], getUserData);
+	const { data: user, ...requestUser } = useRequestQuery(
+		[RequestKeyEnum.user, userId],
+		getUserData
+	);
+	const requestFollow = useRequestMutation([RequestKeyEnum.user], () =>
+		api.postFollow(user?.id || 0)
+	);
 
-	if (isError) {
+	if (requestUser.isError) {
 		toast({
 			type: "error",
 			text:
-				request.error ||
+				requestUser.error ||
 				"Não foi possível buscar os dados. Por favor, recarregue a página",
 		});
-		return null;
-	}
-
-	if (!user) {
 		return null;
 	}
 
@@ -45,6 +42,27 @@ export function User() {
 		return api.getUserData(userId);
 	}
 
+	if (!user) {
+		return null;
+	}
+
+	function toggleFollow() {
+		if (user) {
+			if (!user.isFollowing) {
+				requestFollow.mutate(user.id);
+				return;
+			}
+		}
+	}
+
+	if (requestFollow.isError) {
+		toast({
+			type: "error",
+			text: `Não foi possível seguir ${user.username}. Tente novamente.`,
+		});
+		requestFollow.reset();
+	}
+
 	return (
 		<PageStyle>
 			<PageStyle.Header
@@ -56,14 +74,14 @@ export function User() {
 			<PageStyle.Sections>
 				<PageStyle.User>
 					{!user.isUser && user.isFollowing && (
-						<Follow>
+						<Follow onClick={toggleFollow}>
 							<Icons type="unfollow" />
 							<span>Parar de seguir</span>
 						</Follow>
 					)}
 
 					{!user.isUser && !user.isFollowing && (
-						<Follow>
+						<Follow onClick={toggleFollow}>
 							<Icons type="follow" />
 							<span>Seguir</span>
 						</Follow>
@@ -115,19 +133,16 @@ export function User() {
 
 const Follow = styled.div`
 	&& {
+		width: fit-content;
 		display: flex;
 		align-items: center;
 		margin-top: 10px;
 		color: ${(props) => props.theme.colors.blue};
 		font-weight: 700;
+		cursor: pointer;
 
 		svg {
 			margin-right: 10px;
-			cursor: pointer;
-		}
-
-		span {
-			cursor: pointer;
 		}
 	}
 `;

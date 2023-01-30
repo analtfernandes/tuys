@@ -236,6 +236,20 @@ async function postDenounce(data: PostDenounceParams) {
 	return response;
 }
 
+async function postFollow(userId: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/${userId}/follow`, {
+		method: "POST",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -277,7 +291,6 @@ export type PostCommentParams = {
 };
 
 export type PutStoryParams = Omit<PostStoryParams, "channelId">;
-
 export type PostDenounceParams = PostCommentParams;
 
 const service = {
@@ -295,6 +308,7 @@ const service = {
 	postUnlike,
 	postComment,
 	postDenounce,
+	postFollow,
 	deleteStory,
 	putStory,
 };
