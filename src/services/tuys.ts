@@ -121,6 +121,20 @@ async function getMyStories() {
 	return response.json() as Promise<StoryType[]>;
 }
 
+async function getUserStories(userId: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/${userId}/stories`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<StoryType[]>;
+}
+
 async function getUsers(usename: string) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/users/${usename}`, {
@@ -275,6 +289,7 @@ const service = {
 	getMyStories,
 	getUsers,
 	getUserData,
+	getUserStories,
 	postStory,
 	postLike,
 	postUnlike,

@@ -6,9 +6,12 @@ import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 import { RequestKeyEnum } from "../utils/enums";
 import { useUserContext } from "../../contexts/UserContext";
+import { useParams } from "react-router-dom";
 
 export function UserStories() {
 	const { user } = useUserContext();
+	const params = useParams();
+	const userId = Number(params.userId) || null;
 	const toast = useToast();
 
 	const {
@@ -17,8 +20,8 @@ export function UserStories() {
 		data: stories,
 		...request
 	} = useRequestQuery(
-		[RequestKeyEnum.stories, RequestKeyEnum.user, user.username],
-		() => api.getMyStories()
+		[RequestKeyEnum.stories, RequestKeyEnum.user, userId || user.username],
+		getUserStories
 	);
 
 	if (isError) {
@@ -33,6 +36,21 @@ export function UserStories() {
 
 	if (!stories) {
 		return null;
+	}
+
+	function getUserStories() {
+		if (userId && (isNaN(userId) || userId <= 0)) {
+			throw new Error(
+				JSON.stringify({
+					message: "Id de usuário inválido!",
+					status: 400,
+				})
+			);
+		}
+		if (!userId) {
+			return api.getMyStories();
+		}
+		return api.getUserStories(userId);
 	}
 
 	return (
