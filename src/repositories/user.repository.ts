@@ -73,4 +73,8 @@ function findUsers(userId: number, username: string) {
   });
 }
 
-export { findUserData, findUsers, findUserDataByUserId };
+function findUserById(id: number) {
+  return prisma.users.findUnique({ where: { id } });
+}
+
+export { findUserData, findUsers, findUserDataByUserId, findUserById };

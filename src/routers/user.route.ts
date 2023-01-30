@@ -1,6 +1,12 @@
 import { Router } from "express";
 import { authenticationMiddleware } from "../middlewares/authentication.middleware";
-import { getUserData, getUserDataByUserId, getUsersByUsername, getUserStories } from "../controllers/user.controller";
+import {
+  getUserData,
+  getUserDataByUserId,
+  getUsersByUsername,
+  getUserStories,
+  getUserStoriesByUserId,
+} from "../controllers/user.controller";
 
 const userRoute = Router();
 
@@ -9,6 +15,7 @@ userRoute
   .get("/me", getUserData)
   .get("/me/stories", getUserStories)
   .get("/:username", getUsersByUsername)
-  .get("/user/:userId", getUserDataByUserId);
+  .get("/user/:userId", getUserDataByUserId)
+  .get("/:userId/stories", getUserStoriesByUserId);
 
 export { userRoute };
