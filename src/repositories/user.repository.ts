@@ -26,4 +26,25 @@ function findUserData(id: number) {
   });
 }
 
-export { findUserData };
+function findUsers(userId: number, username: string) {
+  return prisma.users.findMany({
+    where: { username: { contains: username } },
+    select: {
+      id: true,
+      username: true,
+      avatar: true,
+      Ranks: {
+        select: {
+          color: true,
+        },
+      },
+      Follower: {
+        where: {
+          followerId: userId,
+        },
+      },
+    },
+  });
+}
+
+export { findUserData, findUsers };

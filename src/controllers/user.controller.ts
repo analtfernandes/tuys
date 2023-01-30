@@ -32,4 +32,20 @@ async function getUserStories(req: Request, res: Response) {
   }
 }
 
-export { getUserData, getUserStories };
+async function getUsersByUsername(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+  const username: string = req.params.username;
+
+  try {
+    const users = await userService.getUsersByUsername(userId, username);
+    return responseHelper.OK({ res, body: users });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getUserData, getUserStories, getUsersByUsername };

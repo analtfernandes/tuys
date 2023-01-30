@@ -20,6 +20,19 @@ async function getUserStories(userId: number) {
   return formatStories(stories, userId);
 }
 
+async function getUsersByUsername(userId: number, username: string) {
+  const users = await userRepository.findUsers(userId, username);
+
+  const formatedUsers = users.map(({ Follower, Ranks, ...user }) => ({
+    following: Follower.length > 0 ? true : false,
+    rankColor: Ranks.color,
+    isUser: user.id === userId,
+    ...user,
+  }));
+
+  return formatedUsers;
+}
+
 function formatUser(user: FormatUserParams) {
   return {
     id: user.id,
@@ -54,4 +67,4 @@ type FormatUserParams = {
   };
 };
 
-export { getUserData, getUserStories };
+export { getUserData, getUserStories, getUsersByUsername };

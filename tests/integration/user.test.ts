@@ -129,3 +129,59 @@ describe("GET /users/me/stories", () => {
     });
   });
 });
+
+describe("GET /users/:username", () => {
+  const route = "/users";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}/a`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(`${route}/a`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(`${route}/a`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return 200 and an empty array when no username match", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+
+      const response = await app.get(`${route}/z123`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([]);
+    });
+
+    it("should return 200 and an users array", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+
+      const response = await app.get(`${route}/${user.username.slice(1, 3)}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: expect.any(Number),
+          username: user.username,
+          avatar: user.avatar,
+          rankColor: expect.any(String),
+          isUser: true,
+          following: false,
+        },
+      ]);
+    });
+  });
+});
