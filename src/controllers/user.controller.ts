@@ -48,4 +48,24 @@ async function getUsersByUsername(req: Request, res: Response) {
   }
 }
 
-export { getUserData, getUserStories, getUsersByUsername };
+async function getUserDataByUserId(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+  const wantedUser = Number(req.params.userId) || null;
+
+  if (!wantedUser || wantedUser <= 0) {
+    return responseHelper.BAD_REQUEST({ res, body: { message: "Id de usuário inválido!" } });
+  }
+
+  try {
+    const user = await userService.getUserDataByUserId(userId, wantedUser);
+    return responseHelper.OK({ res, body: user });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getUserData, getUserStories, getUsersByUsername, getUserDataByUserId };

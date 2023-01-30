@@ -26,6 +26,32 @@ function findUserData(id: number) {
   });
 }
 
+function findUserDataByUserId(id: number, userId: number) {
+  return prisma.users.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      username: true,
+      avatar: true,
+      about: true,
+      status: true,
+      Ranks: { select: { color: true, name: true } },
+      _count: {
+        select: {
+          Followed: true,
+          Follower: true,
+          Stories: true,
+        },
+      },
+      Follower: {
+        where: {
+          followerId: userId,
+        },
+      },
+    },
+  });
+}
+
 function findUsers(userId: number, username: string) {
   return prisma.users.findMany({
     where: { username: { contains: username } },
@@ -47,4 +73,4 @@ function findUsers(userId: number, username: string) {
   });
 }
 
-export { findUserData, findUsers };
+export { findUserData, findUsers, findUserDataByUserId };

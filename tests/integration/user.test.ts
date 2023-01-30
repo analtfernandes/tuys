@@ -185,3 +185,73 @@ describe("GET /users/:username", () => {
     });
   });
 });
+
+describe("GET /users/user/:userId", () => {
+  const route = "/users/user";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(`${route}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/0`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if user does not exist", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.get(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return 200 and user data", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      await createStory(otherUser.id);
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+      await createFollow({ followedId: user.id, followerId: otherUser.id });
+
+      const response = await app.get(`${route}/${otherUser.id}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual({
+        id: expect.any(Number),
+        username: otherUser.username,
+        avatar: otherUser.avatar,
+        about: otherUser.about,
+        status: UserStatus.ACTIVE,
+        rankName: expect.any(String),
+        rankColor: expect.any(String),
+        createdStories: 1,
+        followers: 1,
+        following: 1,
+        isFollowing: true,
+        isUser: false,
+      });
+    });
+  });
+});
