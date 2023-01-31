@@ -1,12 +1,33 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Icons } from "../utils";
 import logo from "../images/logo.png";
-import { useState } from "react";
+import { useUserContext } from "../../contexts/UserContext";
+import api from "../../services/tuys";
+import { RequestKeyEnum } from "../utils/enums";
+import { useRequestQuery } from "../hooks";
+import { Icons } from "../utils";
 import { Search } from "./Search";
 
 export function Header() {
 	const [isSearching, setIsSearching] = useState(false);
+	const [windowWidth, setWindowWidth] = useState(0);
+	const [haveNewNotification, setHaveNewNotification] = useState(false);
+
+	const { user } = useUserContext();
+	const { data: notifications } = useRequestQuery(
+		[RequestKeyEnum.notifications, user.username],
+		() => api.getNotifications()
+	);
+
+	useEffect(() => {
+		const { innerWidth } = window;
+		setWindowWidth(innerWidth);
+	}, []);
+
+	if (notifications && !notifications[0].read && !haveNewNotification) {
+		setHaveNewNotification(true);
+	}
 
 	return (
 		<>
@@ -20,29 +41,34 @@ export function Header() {
 						onClick={() => setIsSearching((prev) => !prev)}
 					/>
 
-					<Link to="/">
-						<Icons type="home" />
-					</Link>
+					{windowWidth >= 500 && (
+						<>
+							<Link to="/">
+								<Icons type="home" />
+							</Link>
 
-					<Link to="/channels">
-						<Icons type="channels" />
-					</Link>
+							<Link to="/channels">
+								<Icons type="channels" />
+							</Link>
 
-					<Link to="/ranking">
-						<Icons type="ranking" />
-					</Link>
+							<Link to="/ranking">
+								<Icons type="ranking" />
+							</Link>
 
-					<Link to="/notifications">
-						<Icons type="notification" />
-					</Link>
+							<Link to="/notifications">
+								<Icons type="notification" />
+								{haveNewNotification && <div></div>}
+							</Link>
 
-					<Link to="/me">
-						<Icons type="me" />
-					</Link>
+							<Link to="/me">
+								<Icons type="me" />
+							</Link>
 
-					<Link to="/settings">
-						<Icons type="settings" />
-					</Link>
+							<Link to="/settings">
+								<Icons type="settings" />
+							</Link>
+						</>
+					)}
 				</div>
 			</Wrapper>
 		</>
@@ -80,16 +106,25 @@ const Wrapper = styled.section`
 		}
 	}
 
+	a {
+		position: relative;
+
+		> div {
+			width: 10px;
+			height: 10px;
+			border-radius: 50px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color: ${(props) => props.theme.colors.red};
+		}
+	}
+
 	@media (max-width: 500px) {
 		> div {
-			width: 25px;
-			height: 25px;
-			overflow: hidden;
-
 			svg {
 				height: 25px;
 				width: 25px;
-				margin: 0;
 			}
 		}
 	}

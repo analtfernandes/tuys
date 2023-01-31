@@ -1,8 +1,24 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useUserContext } from "../../contexts/UserContext";
+import api from "../../services/tuys";
+import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
+import { useRequestQuery } from "../hooks";
 
 export function Footer() {
+	const [haveNewNotification, setHaveNewNotification] = useState(false);
+	const { user } = useUserContext();
+	const { data: notifications } = useRequestQuery(
+		[RequestKeyEnum.notifications, user.username],
+		() => api.getNotifications()
+	);
+
+	if (notifications && !notifications[0].read && !haveNewNotification) {
+		setHaveNewNotification(true);
+	}
+
 	return (
 		<Wrapper>
 			<Link to="/">
@@ -19,6 +35,7 @@ export function Footer() {
 
 			<Link to="/notifications">
 				<Icons type="notification" />
+				{haveNewNotification && <div></div>}
 			</Link>
 
 			<Link to="/me">
@@ -45,6 +62,20 @@ const Wrapper = styled.section`
 	z-index: 2;
 	box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.25);
 	background-color: ${(props) => props.theme.colors.background};
+
+	a {
+		position: relative;
+
+		> div {
+			width: 8px;
+			height: 8px;
+			border-radius: 50px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color: ${(props) => props.theme.colors.red};
+		}
+	}
 
 	svg {
 		height: 23px;
