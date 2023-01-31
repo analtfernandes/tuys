@@ -287,6 +287,23 @@ describe("POST /stories/:storyId/like", () => {
 
       expect(afterCount).toBe(beforeCount + 1);
     });
+
+    it("should save a new notification on database", async () => {
+      const user = await generateValidUser();
+      const otherUser = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const {
+        Stories: [story],
+      } = await createStory(otherUser.id);
+
+      const beforeCount = await prisma.notifications.count();
+
+      await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.notifications.count();
+
+      expect(afterCount).toBe(beforeCount + 1);
+    });
   });
 });
 

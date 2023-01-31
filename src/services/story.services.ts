@@ -48,6 +48,20 @@ async function postLikeStory(storyId: number, userId: number) {
   if (isLikedByUser) throw badRequestError();
 
   await storyRepository.createLike(storyId, userId);
+
+  const storyLikes = await storyRepository.findStoryLikes(storyId);
+
+  if (storyLikes.length === 1) {
+    const user = storyLikes[0].Users.username;
+    const notificationMessage = `${user} gostou da sua história: ${story.title}.`;
+    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
+  }
+
+  if (storyLikes.length % 4 === 0) {
+    const user = storyLikes[storyLikes.length - 1].Users.username;
+    const notificationMessage = `${user} e mais 3 gostaram da sua história: ${story.title}.`;
+    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
+  }
 }
 
 async function postUnlikeStory(storyId: number, userId: number) {
@@ -75,7 +89,7 @@ async function postDenounce(data: PostDenounceParams) {
 
   await storyRepository.createDenunciation(data);
 
-  const notificationMessage = `Sua história: ${story.title} foi denunciada pois: “${data.text}”`;
+  const notificationMessage = `Sua história: ${story.title} foi denunciada, pois: “${data.text}”`;
   await notificationRepository.createNewDenounceNotification(notificationMessage, story.userId);
 }
 
