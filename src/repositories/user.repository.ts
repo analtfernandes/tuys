@@ -82,6 +82,14 @@ function findFollow(data: FollowParams) {
   return prisma.follows.findFirst({ where: { ...data } });
 }
 
+function findFollowers(userId: number) {
+  return prisma.follows.findMany({
+    where: { followedId: userId },
+    select: { Follower: { select: { username: true } } },
+    orderBy: { id: "desc" },
+  });
+}
+
 function createFollow(data: FollowParams) {
   return prisma.follows.create({ data: { ...data } });
 }
@@ -92,4 +100,13 @@ function deleteFollow(data: FollowParams) {
 
 type FollowParams = Omit<Follows, "id">;
 
-export { findUserData, findUsers, findUserDataByUserId, findUserById, findFollow, createFollow, deleteFollow };
+export {
+  findUserData,
+  findUsers,
+  findUserDataByUserId,
+  findUserById,
+  findFollow,
+  findFollowers,
+  createFollow,
+  deleteFollow,
+};

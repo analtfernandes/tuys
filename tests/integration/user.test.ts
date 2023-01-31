@@ -431,6 +431,20 @@ describe("POST /users/:userId/follow", () => {
 
       expect(afterCount).toBe(beforeCount + 1);
     });
+
+    it("should save a new notification on database", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const beforeCount = await prisma.notifications.count();
+
+      await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.notifications.count();
+
+      expect(afterCount).toBe(beforeCount + 1);
+    });
   });
 });
 
