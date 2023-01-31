@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { loadEnv } from "./config/env";
-import { channelRoute, rankingRoute, storyRoute, userRoute } from "./routers";
+import { channelRoute, notificationRoute, rankingRoute, storyRoute, userRoute } from "./routers";
 
 loadEnv();
 
@@ -14,6 +14,7 @@ server
   .use("/channels", channelRoute)
   .use("/stories", storyRoute)
   .use("/users", userRoute)
-  .use("/ranking", rankingRoute);
+  .use("/ranking", rankingRoute)
+  .use("/notifications", notificationRoute);
 
 export default server;
