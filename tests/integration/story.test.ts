@@ -183,6 +183,23 @@ describe("POST /stories", () => {
 
         expect(afterCount).toBe(beforeCount + 1);
       });
+
+      it("should save a new notification on database", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const channel = await createChannel();
+        const newBody = { ...body, channelId: channel.id };
+        const otherUser = await generateValidUser();
+        await createFollow({ followedId: user.id, followerId: otherUser.id });
+
+        const beforeCount = await prisma.notifications.count();
+
+        await app.post(`${route}`).set("Authorization", authorization).send(newBody);
+
+        const afterCount = await prisma.notifications.count();
+
+        expect(afterCount).toBe(beforeCount + 1);
+      });
     });
   });
 });

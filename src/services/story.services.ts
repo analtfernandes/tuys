@@ -1,6 +1,7 @@
 import { Comments, Denunciations, Follows, Likes, Stories, UserStatus } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
+import * as notificationRepository from "../repositories/notification.repository";
 import { badRequestError, notFoundError, unauthorizedError } from "../helpers/errors.helper";
 
 async function getFromUserAndFollowed(userId: number) {
@@ -26,9 +27,15 @@ async function getComments({ storyId, userId }: GetCommentsParams) {
 }
 
 async function postStory(data: PostStoryParams) {
-  await validateChannelId(data.channelId);
+  const channel = await validateChannelId(data.channelId);
 
   const createdStory = await storyRepository.createStory(data);
+
+  const notificationMessage = `
+    #${createdStory.Users.username} acabou de escrever 
+    #${createdStory.title} no canal #${channel.name}`;
+
+  await notificationRepository.createNewStoryNotification(notificationMessage, data.userId);
 
   return { id: createdStory.id };
 }
@@ -91,6 +98,8 @@ async function validateChannelId(id: number) {
   const channel = await channelRepository.findById(id);
 
   if (!channel) throw notFoundError();
+
+  return channel;
 }
 
 function formatComments(comments: FormartCommentsParams, userId: number) {

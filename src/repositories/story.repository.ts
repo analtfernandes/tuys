@@ -166,7 +166,7 @@ function findComments(storyId: number, userId: number) {
 }
 
 function createStory(data: CreateStoryParams) {
-  return prisma.stories.create({ data: { ...data } });
+  return prisma.stories.create({ data: { ...data }, include: { Users: { select: { username: true } } } });
 }
 
 function createLike(storyId: number, userId: number) {
