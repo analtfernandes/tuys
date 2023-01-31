@@ -32,8 +32,8 @@ async function postStory(data: PostStoryParams) {
   const createdStory = await storyRepository.createStory(data);
 
   const notificationMessage = `
-    #${createdStory.Users.username} acabou de escrever 
-    #${createdStory.title} no canal #${channel.name}`;
+    ${createdStory.Users.username} acabou de escrever 
+    ${createdStory.title} no canal ${channel.name}.`;
 
   await notificationRepository.createNewStoryNotification(notificationMessage, data.userId);
 
@@ -74,6 +74,9 @@ async function postDenounce(data: PostDenounceParams) {
   if (!story) throw notFoundError();
 
   await storyRepository.createDenunciation(data);
+
+  const notificationMessage = `Sua história: ${story.title} foi denunciada pois: “${data.text}”`;
+  await notificationRepository.createNewDenounceNotification(notificationMessage, story.userId);
 }
 
 async function deleteStory(data: DeleteStoryParams) {
