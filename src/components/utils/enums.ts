@@ -8,6 +8,15 @@ const RequestKeyEnum = {
 	user: "user",
 	home: "home",
 	ranking: "ranking",
+	notifications: "notifications",
 };
 
-export { RequestKeyEnum };
+const NotificationTypesEnum = {
+	NEW_STORY: "NEW_STORY",
+	NEW_DENUNCIATION: "NEW_DENUNCIATION",
+	NEW_LIKE: "NEW_LIKE",
+	NEW_COMMENT: "NEW_COMMENT",
+	NEW_FOLLOW: "NEW_FOLLOW",
+};
+
+export { RequestKeyEnum, NotificationTypesEnum };

@@ -2,6 +2,7 @@ import {
 	ChannelType,
 	CommentType,
 	MyDataType,
+	NotificationType,
 	StoryType,
 	UserDataType,
 	UsersType,
@@ -177,6 +178,20 @@ async function getRanking() {
 	return response.json() as Promise<StoryType[]>;
 }
 
+async function getNotifications() {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/notifications`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<NotificationType[]>;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories`, {
@@ -332,6 +347,7 @@ const service = {
 	getUserData,
 	getUserStories,
 	getRanking,
+	getNotifications,
 	postStory,
 	postLike,
 	postUnlike,

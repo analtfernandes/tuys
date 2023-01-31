@@ -1,7 +1,9 @@
+import { Notifications } from "../../components/notifications/Notifications";
+
 export function NotificationsPage() {
 	return (
 		<main>
-			<span>Em breve!</span>
+			<Notifications />
 		</main>
 	);
 }

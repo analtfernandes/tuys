@@ -76,6 +76,20 @@ type UserDataType = Omit<MyDataType, "bannedStories"> & {
 	isUser: boolean;
 };
 
+type NotificationType = {
+	id: number;
+	toUserId: number;
+	text: string;
+	date: string;
+	read: false;
+	type:
+		| "NEW_STORY"
+		| "NEW_DENUNCIATION"
+		| "NEW_LIKE"
+		| "NEW_COMMENT"
+		| "NEW_FOLLOW";
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 type CallbackType = (...params: any) => any;
 
@@ -87,6 +101,7 @@ export type {
 	MyDataType,
 	UserDataType,
 	UsersType,
+	NotificationType,
 	SetState,
 	CallbackType,
 };

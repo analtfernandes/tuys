@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import api from "../../services/tuys";
+import { RequestKeyEnum } from "../utils/enums";
 import { useRequestQuery, useToast } from "../hooks";
 import { Story } from "./Story";
-import { Wrapper } from "./Stories";
-import { RequestKeyEnum } from "../utils/enums";
 
 export function RankingStories() {
 	const toast = useToast();
@@ -33,22 +32,42 @@ export function RankingStories() {
 		<StoriesWrapper>
 			<div>
 				{stories.map((story, index) => (
-					<>
+					<div key={index}>
 						<Division>
 							<span>{index + 1}</span>
 							<div></div>
 						</Division>
-						<Story key={index} story={story} showChannel={true} />
-					</>
+						<Story story={story} showChannel={true} />
+					</div>
 				))}
 			</div>
 		</StoriesWrapper>
 	);
 }
 
-const StoriesWrapper = styled(Wrapper)`
+const StoriesWrapper = styled.section`
 	width: 100%;
-	padding: 0;
+	height: 100%;
+	margin: 0 auto;
+
+	> div {
+		display: flex;
+		align-items: center;
+		justify-content: initial;
+		flex-wrap: wrap;
+		margin-bottom: 80px;
+
+		> div {
+			width: 100%;
+			margin-top: 20px;
+		}
+	}
+
+	@media (max-width: 345px) {
+		> div {
+			justify-content: center;
+		}
+	}
 `;
 
 const Division = styled.div`
@@ -56,7 +75,6 @@ const Division = styled.div`
 		width: 100%;
 		display: flex;
 		align-items: center;
-		margin-top: 20px;
 
 		> span {
 			font-size: 1.2rem;
