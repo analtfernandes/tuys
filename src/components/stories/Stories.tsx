@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { ChannelStories } from "./ChannelStories";
 import { HomeStories } from "./HomeStories";
+import { RankingStories } from "./RankingStories";
 import { UserStories } from "./UserStories";
 
 type StoriesParams = {
-	path: "home" | "channel" | "user";
+	path: "home" | "channel" | "user" | "ranking";
 };
 
 export function Stories({ path }: StoriesParams) {
@@ -15,6 +16,8 @@ export function Stories({ path }: StoriesParams) {
 			{path === "home" && <HomeStories />}
 
 			{path === "user" && <UserStories />}
+
+			{path === "ranking" && <RankingStories />}
 		</main>
 	);
 }

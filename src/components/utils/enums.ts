@@ -7,6 +7,7 @@ const RequestKeyEnum = {
 	channel: "channel",
 	user: "user",
 	home: "home",
+	ranking: "ranking",
 };
 
 export { RequestKeyEnum };

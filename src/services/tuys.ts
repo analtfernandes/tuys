@@ -163,6 +163,20 @@ async function getUserData(userId: number) {
 	return response.json() as Promise<UserDataType>;
 }
 
+async function getRanking() {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/ranking`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<StoryType[]>;
+}
+
 async function postStory(body: PostStoryParams) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories`, {
@@ -317,6 +331,7 @@ const service = {
 	getUsers,
 	getUserData,
 	getUserStories,
+	getRanking,
 	postStory,
 	postLike,
 	postUnlike,
