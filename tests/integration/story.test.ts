@@ -575,6 +575,24 @@ describe("POST /stories/:storyId/comments", () => {
 
         expect(afterCount).toBe(beforeCount + 1);
       });
+
+      it("should save a new notification on database", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const otherUser = await generateValidUser();
+        const channelWithStory = await createStory(otherUser.id);
+
+        const beforeCount = await prisma.notifications.count();
+
+        await app
+          .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+          .set("Authorization", authorization)
+          .send(body);
+
+        const afterCount = await prisma.notifications.count();
+
+        expect(afterCount).toBe(beforeCount + 1);
+      });
     });
   });
 });

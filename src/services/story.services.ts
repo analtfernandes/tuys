@@ -49,19 +49,7 @@ async function postLikeStory(storyId: number, userId: number) {
 
   await storyRepository.createLike(storyId, userId);
 
-  const storyLikes = await storyRepository.findStoryLikes(storyId);
-
-  if (storyLikes.length === 1) {
-    const user = storyLikes[0].Users.username;
-    const notificationMessage = `${user} gostou da sua história: ${story.title}.`;
-    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
-  }
-
-  if (storyLikes.length % 4 === 0) {
-    const user = storyLikes[storyLikes.length - 1].Users.username;
-    const notificationMessage = `${user} e mais 3 gostaram da sua história: ${story.title}.`;
-    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
-  }
+  await postLikeNotification(story);
 }
 
 async function postUnlikeStory(storyId: number, userId: number) {
@@ -79,6 +67,8 @@ async function postComment(data: PostCommentParams) {
   if (!story) throw notFoundError();
 
   const comment = await storyRepository.createComment(data);
+
+  await postCommentNotification(story);
 
   return { id: comment.id };
 }
@@ -117,6 +107,38 @@ async function validateChannelId(id: number) {
   if (!channel) throw notFoundError();
 
   return channel;
+}
+
+async function postLikeNotification(story: Stories) {
+  const storyLikes = await storyRepository.findStoryLikes(story.id);
+
+  const user = storyLikes[0]?.Users.username;
+
+  if (storyLikes.length === 1) {
+    const notificationMessage = `${user} gostou da sua história: ${story.title}.`;
+    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
+  }
+
+  if (storyLikes.length % 4 === 0) {
+    const notificationMessage = `${user} e mais 3 gostaram da sua história: ${story.title}.`;
+    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
+  }
+}
+
+async function postCommentNotification(story: Stories) {
+  const storyComments = await storyRepository.findStoryComments(story.id);
+
+  const user = storyComments[0].Users.username;
+
+  if (storyComments.length === 1) {
+    const notificationMessage = `${user} comentou sua história: ${story.title}.`;
+    await notificationRepository.createNewCommentNotification(notificationMessage, story.userId);
+  }
+
+  if (storyComments.length % 4 === 0) {
+    const notificationMessage = `${user} e mais 3 comentaram sua história: ${story.title}.`;
+    await notificationRepository.createNewCommentNotification(notificationMessage, story.userId);
+  }
 }
 
 function formatComments(comments: FormartCommentsParams, userId: number) {

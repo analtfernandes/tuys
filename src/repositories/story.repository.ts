@@ -165,11 +165,19 @@ function findComments(storyId: number, userId: number) {
   });
 }
 
+function findStoryComments(storyId: number) {
+  return prisma.comments.findMany({
+    where: { storyId },
+    select: { Users: { select: { username: true } } },
+    orderBy: { id: "desc" },
+  });
+}
+
 function findStoryLikes(storyId: number) {
   return prisma.likes.findMany({
     where: { storyId },
     select: { Users: { select: { username: true } } },
-    orderBy: { date: "asc" },
+    orderBy: { date: "desc" },
   });
 }
 
@@ -239,6 +247,7 @@ export {
   findComments,
   findById,
   findStoryLikes,
+  findStoryComments,
   findStoryLikedByUser,
   createStory,
   createLike,
