@@ -62,7 +62,7 @@ const Wrapper = styled.section`
 		margin-bottom: 80px;
 	}
 
-	@media (max-width: 345px) {
+	@media (max-width: 450px) {
 		> div {
 			justify-content: center;
 		}

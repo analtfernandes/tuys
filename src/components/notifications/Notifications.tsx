@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { useUserContext } from "../../contexts/UserContext";
+import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { NotificationTypesEnum, RequestKeyEnum } from "../utils/enums";
-import { useToast, useRequestQuery } from "../hooks";
-import { Subtitle, Title } from "../shared";
+import { useToast } from "../hooks";
+import { NotificationTypesEnum } from "../utils/enums";
+import { NotificationType } from "../utils/Protocols";
 import { Icons } from "../utils";
+import { Subtitle, Title } from "../shared";
 
 type NotificationProps = {
 	read: boolean;
@@ -15,15 +16,9 @@ type NotificationIconsType = {
 };
 
 export function Notifications() {
-	const { user } = useUserContext();
+	const [notifications, setNotifications] = useState<NotificationType[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const toast = useToast();
-	const {
-		isError,
-		data: notifications,
-		...request
-	} = useRequestQuery([RequestKeyEnum.notifications, user.username], () =>
-		api.getNotifications()
-	);
 
 	const notificationIconsType: NotificationIconsType = {
 		[NotificationTypesEnum.NEW_COMMENT]: "comment",
@@ -33,25 +28,42 @@ export function Notifications() {
 		[NotificationTypesEnum.NEW_STORY]: "edit",
 	};
 
-	if (isError) {
-		toast({
-			type: "error",
-			text:
-				request.error ||
-				"Não foi possível carregar os canais. Por favor, recarregue a página.",
-		});
-		return null;
-	}
+	useEffect(() => {
+		api
+			.getNotifications()
+			.then((notifications) => {
+				if (notifications) {
+					setIsLoading(false);
+					setNotifications(notifications);
+				}
+			})
+			.catch((error) =>
+				toast({
+					type: "error",
+					text:
+						error.message ||
+						"Não foi possível carregar as notificações. Por favor, recarregue a página.",
+				})
+			);
+	}, []);
 
-	if (typeof notifications !== "object") {
-		return <></>;
-	}
+	useEffect(() => {
+		(async () => {
+			const notificationsIds = notifications
+				.filter(({ read }) => read === false)
+				.map(({ id }) => id);
+
+			for (const id of notificationsIds) {
+				await api.postNotificationRead(id);
+			}
+		})();
+	}, [notifications]);
 
 	return (
 		<Wrapper>
 			<Title>Notificações</Title>
 
-			{notifications.length === 0 && (
+			{!isLoading && notifications.length === 0 && (
 				<Subtitle>Não há nenhuma notificação ainda.</Subtitle>
 			)}
 

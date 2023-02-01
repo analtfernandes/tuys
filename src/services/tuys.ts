@@ -293,6 +293,18 @@ async function postUnfollow(userId: number) {
 	return response;
 }
 
+async function postNotificationRead(id: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/notifications/${id}/read`, {
+		method: "POST",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -355,6 +367,7 @@ const service = {
 	postDenounce,
 	postFollow,
 	postUnfollow,
+	postNotificationRead,
 	deleteStory,
 	putStory,
 };

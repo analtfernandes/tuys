@@ -19,6 +19,10 @@ export function Footer() {
 		setHaveNewNotification(true);
 	}
 
+	if (notifications && notifications[0].read && haveNewNotification) {
+		setHaveNewNotification(false);
+	}
+
 	return (
 		<Wrapper>
 			<Link to="/">

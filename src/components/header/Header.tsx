@@ -29,6 +29,10 @@ export function Header() {
 		setHaveNewNotification(true);
 	}
 
+	if (notifications && notifications[0].read && haveNewNotification) {
+		setHaveNewNotification(false);
+	}
+
 	return (
 		<>
 			<Wrapper>
