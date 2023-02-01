@@ -5,6 +5,14 @@ function findNotifications(userId: number) {
   return prisma.notifications.findMany({ where: { toUserId: userId } });
 }
 
+function findNotificationById(id: number) {
+  return prisma.notifications.findUnique({ where: { id } });
+}
+
+function updateNotification(id: number) {
+  return prisma.notifications.update({ where: { id }, data: { read: true } });
+}
+
 function createNewStoryNotification(text: string, userId: number) {
   return prisma.$transaction(async (p) => {
     const followers = await p.users.findMany({
@@ -36,6 +44,8 @@ function createNewFollowNotification(text: string, userId: number) {
 
 export {
   findNotifications,
+  findNotificationById,
+  updateNotification,
   createNewStoryNotification,
   createNewDenounceNotification,
   createNewLikeNotification,
