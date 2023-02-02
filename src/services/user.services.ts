@@ -27,6 +27,14 @@ async function getUserData(userId: number) {
   return formatedUser;
 }
 
+async function getUserResgiter(userId: number) {
+  const user = await userRepository.findUserRegister(userId);
+
+  if (!user) throw notFoundError();
+
+  return user;
+}
+
 async function getUserDataByUserId(userId: number, wantedUser: number) {
   const user = await userRepository.findUserDataByUserId(wantedUser, userId);
 
@@ -123,7 +131,7 @@ async function putUser(userId: number, data: PutUserParams) {
   if (!user) throw notFoundError();
 
   const userWithUsername = await userRepository.findUserByUsername(data.username);
-  if (userWithUsername) throw badRequestError();
+  if (userWithUsername && userWithUsername.id !== userId) throw badRequestError();
 
   await userRepository.updateUser(userId, data);
 }
@@ -133,6 +141,7 @@ type PutUserParams = Omit<Users, "id" | "email" | "password" | "rankId" | "statu
 
 export {
   getUserData,
+  getUserResgiter,
   getUserStories,
   getUsersByUsername,
   getUserDataByUserId,

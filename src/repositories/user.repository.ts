@@ -27,6 +27,13 @@ function findUserData(id: number) {
   });
 }
 
+function findUserRegister(id: number) {
+  return prisma.users.findUnique({
+    where: { id },
+    select: { id: true, username: true, avatar: true, email: true, about: true },
+  });
+}
+
 function findUserDataByUserId(id: number, userId: number) {
   return prisma.users.findUnique({
     where: { id },
@@ -111,6 +118,7 @@ type UpdateUserParams = Omit<Users, "id" | "email" | "password" | "rankId" | "st
 
 export {
   findUserData,
+  findUserRegister,
   findUsers,
   findUserDataByUserId,
   findUserById,

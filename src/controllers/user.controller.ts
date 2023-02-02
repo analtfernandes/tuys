@@ -17,6 +17,21 @@ async function getUserData(req: Request, res: Response) {
   }
 }
 
+async function getUserResgiter(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+
+  try {
+    const user = await userService.getUserResgiter(userId);
+    return responseHelper.OK({ res, body: user });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function getUserStories(req: Request, res: Response) {
   const userId: number = res.locals.userId;
 
@@ -153,6 +168,7 @@ async function putUser(req: Request, res: Response) {
 
 export {
   getUserData,
+  getUserResgiter,
   getUserStories,
   getUsersByUsername,
   getUserDataByUserId,

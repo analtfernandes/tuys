@@ -346,6 +346,49 @@ describe("GET /users/:userId/stories", () => {
   });
 });
 
+describe("GET /users/register/me", () => {
+  const route = "/users/register/me";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(route);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(route).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 200 and user register data", async () => {
+      const user = await generateValidUser();
+      const authorization = await generateValidToken(user);
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual({
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar,
+        about: user.about,
+        email: user.email,
+      });
+    });
+  });
+});
+
 describe("POST /users/:userId/follow", () => {
   const route = "/users";
   const subRoute = "follow";

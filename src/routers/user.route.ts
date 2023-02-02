@@ -4,6 +4,7 @@ import * as schema from "../schemas/user.schema";
 import {
   getUserData,
   getUserDataByUserId,
+  getUserResgiter,
   getUsersByUsername,
   getUserStories,
   getUserStoriesByUserId,
@@ -19,6 +20,7 @@ userRoute
   .get("/me", getUserData)
   .get("/me/stories", getUserStories)
   .get("/:username", getUsersByUsername)
+  .get("/register/me", getUserResgiter)
   .get("/user/:userId", validateSchema(schema.allUserIdParams, "params"), getUserDataByUserId)
   .get("/:userId/stories", validateSchema(schema.allUserIdParams, "params"), getUserStoriesByUserId)
   .post("/:userId/follow", validateSchema(schema.allUserIdParams, "params"), postFollow)
