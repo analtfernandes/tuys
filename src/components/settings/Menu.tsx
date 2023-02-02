@@ -39,8 +39,10 @@ export function Menu() {
 const Wrapper = styled.div`
 	width: 40%;
 	max-width: 260px;
+	min-width: 200px;
 	height: 100%;
 	background-color: ${(props) => props.theme.colors.pastelBlue};
+    cursor: default;
 
 	> h1 {
 		margin-left: 20px;
@@ -49,6 +51,8 @@ const Wrapper = styled.div`
 	@media (max-width: 500px) {
 		width: 100%;
 		max-width: 100%;
+		height: fit-content;
+		margin-bottom: 20px;
 		background-color: ${(props) => props.theme.colors.background};
 	}
 `;

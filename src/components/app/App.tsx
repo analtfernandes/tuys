@@ -15,6 +15,7 @@ import { Stories } from "../stories/Stories";
 import { QueryClientContextProvider } from "../../contexts/QueryClientContext";
 import { UserContextProvider } from "../../contexts/UserContext";
 import { UserPage } from "../../pages/user/User";
+import { Settings } from "../settings/Settings";
 
 function App() {
 	return (
@@ -40,7 +41,9 @@ function App() {
 
 								<Route path="/me" element={<MePage />} />
 								<Route path="/user/:userId" element={<UserPage />} />
-								<Route path="/settings" element={<SettingsPage />}></Route>
+								<Route path="/settings" element={<SettingsPage />}>
+									<Route path="" element={<Settings />} />
+								</Route>
 							</Routes>
 						</PrivatePage>
 					</UserContextProvider>

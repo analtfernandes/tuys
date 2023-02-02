@@ -1,12 +1,34 @@
+import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 import { Menu } from "../../components/settings/Menu";
 
 export function SettingsPage() {
 	return (
-		<main>
+		<Wrapper>
 			<Menu />
 
 			<Outlet />
-		</main>
+		</Wrapper>
 	);
 }
+
+const Wrapper = styled.main`
+	&& {
+		display: flex;
+		flex-direction: row;
+
+		> section {
+			width: 50%;
+			max-width: 700px;
+			margin: 0 auto;
+		}
+
+		@media (max-width: 500px) {
+			flex-direction: column;
+
+			> section {
+				width: 90%;
+			}
+		}
+	}
+`;
