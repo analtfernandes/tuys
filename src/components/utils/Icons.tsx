@@ -7,6 +7,8 @@ import {
 	AiOutlinePlusCircle,
 	AiOutlineMinus,
 	AiOutlinePlus,
+	AiOutlineEye,
+	AiOutlineRight,
 } from "react-icons/ai";
 import {
 	BsBellFill,
@@ -25,6 +27,7 @@ import {
 	IoHeart,
 	IoReload,
 	IoPaperPlaneSharp,
+	IoExitOutline,
 } from "react-icons/io5";
 
 type IconsParams = {
@@ -53,7 +56,10 @@ type IconsParams = {
 		| "bannedBooks"
 		| "status"
 		| "unfollow"
-		| "follow";
+		| "follow"
+		| "theme"
+		| "exit"
+		| "continue";
 };
 
 const IconsTypes = Object.freeze({
@@ -81,6 +87,9 @@ const IconsTypes = Object.freeze({
 	status: GrStatusInfo,
 	unfollow: AiOutlineMinus,
 	follow: AiOutlinePlus,
+	theme: AiOutlineEye,
+	exit: IoExitOutline,
+	continue: AiOutlineRight,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {

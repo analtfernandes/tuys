@@ -10,7 +10,7 @@ export function Ranking() {
 		const fromDiff = today.getDate() - dayIndex + (dayIndex === 0 ? -6 : 1);
 		const from = new Date(today.setDate(fromDiff)).toLocaleDateString("pt-br");
 
-		const toDiff = today.getDate() - dayIndex + 8;
+		const toDiff = today.getDate() - today.getDay() + 7;
 		const to = new Date(today.setDate(toDiff)).toLocaleDateString("pt-br");
 
 		return `${from} - ${to}`;

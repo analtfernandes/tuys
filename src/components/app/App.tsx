@@ -37,9 +37,10 @@ function App() {
 								/>
 								<Route path="/ranking" element={<RankingPage />} />
 								<Route path="/notifications" element={<NotificationsPage />} />
+
 								<Route path="/me" element={<MePage />} />
 								<Route path="/user/:userId" element={<UserPage />} />
-								<Route path="/settings" element={<SettingsPage />} />
+								<Route path="/settings" element={<SettingsPage />}></Route>
 							</Routes>
 						</PrivatePage>
 					</UserContextProvider>
