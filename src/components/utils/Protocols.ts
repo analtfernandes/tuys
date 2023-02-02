@@ -98,6 +98,13 @@ type NotificationType = {
 		| "NEW_FOLLOW";
 };
 
+type LocalStorageType = {
+	id: number;
+	username: string;
+	avatar: string;
+	theme: "light" | "dark";
+};
+
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 type CallbackType = (...params: any) => any;
 
@@ -111,6 +118,7 @@ export type {
 	UsersType,
 	UserRegisterType,
 	NotificationType,
+	LocalStorageType,
 	SetState,
 	CallbackType,
 };

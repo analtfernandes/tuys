@@ -174,6 +174,7 @@ const Wrapper = styled.section`
 `;
 
 const Menu = styled.div`
+	width: fit-content;
 	display: flex;
 	align-items: center;
 	cursor: pointer;

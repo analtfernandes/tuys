@@ -48,6 +48,23 @@ const theme = {
 			...neutralPallet,
 		},
 	},
+	dark: {
+		name: "dark",
+		colors: {
+			background: neutralPallet.darkGray,
+			text: neutralPallet.white,
+			primary: "#f2d6b3",
+			secundary: neutralPallet.white,
+			blue: "#2B7B8C",
+			pastelBlue: "#70A4A2",
+			rosewater: "#F2D6B3",
+			pastelPink: "#D9B3B0",
+			pink: "#A65353",
+			red: "#FF0000",
+			...neutralPallet,
+			white: neutralPallet.black,
+		},
+	},
 };
 
 export const palette = { theme };

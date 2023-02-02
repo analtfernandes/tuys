@@ -17,7 +17,7 @@ import { MePage } from "../../pages/me/Me";
 import { SettingsPage } from "../../pages/settings/Settings";
 import { UserPage } from "../../pages/user/User";
 import { Stories } from "../stories/Stories";
-import { Settings, Perfil } from "../settings";
+import { Settings, Perfil, Themes } from "../settings";
 
 function App() {
 	return (
@@ -46,6 +46,7 @@ function App() {
 								<Route path="/settings" element={<SettingsPage />}>
 									<Route path="" element={<Settings />} />
 									<Route path="perfil" element={<Perfil />} />
+									<Route path="themes" element={<Themes />} />
 								</Route>
 							</Routes>
 						</PrivatePage>

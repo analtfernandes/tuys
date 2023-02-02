@@ -1,3 +1,3 @@
 export * from "./Settings";
-export * from "./Menu";
+export * from "./Themes";
 export * from "./Perfil";
