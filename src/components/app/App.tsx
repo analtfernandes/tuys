@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeContextProvider } from "../../contexts";
+import {
+	ThemeContextProvider,
+	QueryClientContextProvider,
+	UserContextProvider,
+} from "../../contexts";
 import { ToastContainer } from "../hooks";
 
 import { PrivatePage } from "../privatePage/PrivatePage";
@@ -11,11 +15,9 @@ import { RankingPage } from "../../pages/ranking/Ranking";
 import { NotificationsPage } from "../../pages/notifications/Notifications";
 import { MePage } from "../../pages/me/Me";
 import { SettingsPage } from "../../pages/settings/Settings";
-import { Stories } from "../stories/Stories";
-import { QueryClientContextProvider } from "../../contexts/QueryClientContext";
-import { UserContextProvider } from "../../contexts/UserContext";
 import { UserPage } from "../../pages/user/User";
-import { Settings } from "../settings/Settings";
+import { Stories } from "../stories/Stories";
+import { Settings, Perfil } from "../settings";
 
 function App() {
 	return (
@@ -43,6 +45,7 @@ function App() {
 								<Route path="/user/:userId" element={<UserPage />} />
 								<Route path="/settings" element={<SettingsPage />}>
 									<Route path="" element={<Settings />} />
+									<Route path="perfil" element={<Perfil />} />
 								</Route>
 							</Routes>
 						</PrivatePage>

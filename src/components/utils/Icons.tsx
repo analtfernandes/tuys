@@ -9,6 +9,9 @@ import {
 	AiOutlinePlus,
 	AiOutlineEye,
 	AiOutlineRight,
+	AiOutlineLeft,
+	AiFillEye,
+	AiFillEyeInvisible,
 } from "react-icons/ai";
 import {
 	BsBellFill,
@@ -59,7 +62,10 @@ type IconsParams = {
 		| "follow"
 		| "theme"
 		| "exit"
-		| "continue";
+		| "continue"
+		| "return"
+		| "visible"
+		| "invisible";
 };
 
 const IconsTypes = Object.freeze({
@@ -90,6 +96,9 @@ const IconsTypes = Object.freeze({
 	theme: AiOutlineEye,
 	exit: IoExitOutline,
 	continue: AiOutlineRight,
+	return: AiOutlineLeft,
+	visible: AiFillEye,
+	invisible: AiFillEyeInvisible,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {

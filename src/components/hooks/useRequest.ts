@@ -82,6 +82,10 @@ function useRequestMutation(
 			const messages: string[] = errorParsed.message;
 			returnedError = messages.join(", ");
 		}
+
+		if (errorParsed.message.message) {
+			returnedError = errorParsed.message.message;
+		}
 	}
 
 	return {

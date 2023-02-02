@@ -5,6 +5,7 @@ import {
 	NotificationType,
 	StoryType,
 	UserDataType,
+	UserRegisterType,
 	UsersType,
 } from "../components/utils/Protocols";
 
@@ -106,6 +107,20 @@ async function getMyData() {
 	}
 
 	return response.json() as Promise<MyDataType>;
+}
+
+async function getRegister() {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/register/me`, {
+		method: "GET",
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json() as Promise<UserRegisterType>;
 }
 
 async function getMyStories() {
@@ -334,6 +349,19 @@ async function putStory(body: PutStoryParams, storyId: number) {
 	return response;
 }
 
+async function putRegister(body: PutRegisterParams, userId: number) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/users/${userId}`, {
+		method: "PUT",
+		body: JSON.stringify(body),
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+}
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -347,6 +375,7 @@ export type PostCommentParams = {
 
 export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 export type PostDenounceParams = PostCommentParams;
+export type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
 
 const service = {
 	getChannels,
@@ -357,6 +386,7 @@ const service = {
 	getMyStories,
 	getUsers,
 	getUserData,
+	getRegister,
 	getUserStories,
 	getRanking,
 	getNotifications,
@@ -370,6 +400,7 @@ const service = {
 	postNotificationRead,
 	deleteStory,
 	putStory,
+	putRegister,
 };
 
 export default service;

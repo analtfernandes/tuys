@@ -1,13 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Title } from "../shared";
 import { Icons } from "../utils";
 
+type WrapperProps = {
+	showMenu: boolean;
+};
+
 export function Menu() {
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	function showMenu() {
+		const isMainPage =
+			location.pathname === "/settings" || location.pathname === "/settings/";
+		const isMobileWidth = window.innerWidth <= 500;
+		return isMainPage || !isMobileWidth;
+	}
 
 	return (
-		<Wrapper>
+		<Wrapper showMenu={showMenu()}>
 			<Title>Configurações</Title>
 
 			<Option onClick={() => navigate("/settings/perfil")}>
@@ -36,13 +48,14 @@ export function Menu() {
 	);
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<WrapperProps>`
 	width: 40%;
 	max-width: 260px;
 	min-width: 200px;
-	height: 100%;
+	height: 100vh;
 	background-color: ${(props) => props.theme.colors.pastelBlue};
-    cursor: default;
+	cursor: default;
+	display: ${(props) => (props.showMenu ? "initial" : "none")};
 
 	> h1 {
 		margin-left: 20px;

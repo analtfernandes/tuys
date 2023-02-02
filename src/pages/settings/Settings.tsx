@@ -21,6 +21,7 @@ const Wrapper = styled.main`
 			width: 50%;
 			max-width: 700px;
 			margin: 0 auto;
+			padding-bottom: 70px;
 		}
 
 		@media (max-width: 500px) {

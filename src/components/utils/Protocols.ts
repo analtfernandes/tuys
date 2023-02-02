@@ -76,6 +76,14 @@ type UserDataType = Omit<MyDataType, "bannedStories"> & {
 	isUser: boolean;
 };
 
+type UserRegisterType = {
+	id: number;
+	username: string;
+	avatar: string;
+	about: string;
+	email: string;
+};
+
 type NotificationType = {
 	id: number;
 	toUserId: number;
@@ -101,6 +109,7 @@ export type {
 	MyDataType,
 	UserDataType,
 	UsersType,
+	UserRegisterType,
 	NotificationType,
 	SetState,
 	CallbackType,
