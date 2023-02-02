@@ -1,4 +1,4 @@
-import { Follows } from "@prisma/client";
+import { Follows, Users } from "@prisma/client";
 import { prisma } from "../database";
 
 function findUserData(id: number) {
@@ -78,6 +78,10 @@ function findUserById(id: number) {
   return prisma.users.findUnique({ where: { id } });
 }
 
+function findUserByUsername(username: string) {
+  return prisma.users.findUnique({ where: { username } });
+}
+
 function findFollow(data: FollowParams) {
   return prisma.follows.findFirst({ where: { ...data } });
 }
@@ -98,7 +102,12 @@ function deleteFollow(data: FollowParams) {
   return prisma.follows.deleteMany({ where: { ...data } });
 }
 
+function updateUser(userId: number, data: UpdateUserParams) {
+  return prisma.users.update({ where: { id: userId }, data: { ...data } });
+}
+
 type FollowParams = Omit<Follows, "id">;
+type UpdateUserParams = Omit<Users, "id" | "email" | "password" | "rankId" | "status">;
 
 export {
   findUserData,
@@ -107,6 +116,8 @@ export {
   findUserById,
   findFollow,
   findFollowers,
+  findUserByUsername,
   createFollow,
   deleteFollow,
+  updateUser,
 };

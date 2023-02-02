@@ -5,12 +5,12 @@ import { prisma } from "../../src/database";
 function createStory(userId: number) {
   return prisma.channels.create({
     data: {
-      name: faker.internet.userName(),
+      name: faker.internet.userName().concat(faker.random.alphaNumeric(3)),
       background: faker.image.abstract(),
       Stories: {
         create: {
-          title: faker.lorem.word(10),
-          body: faker.lorem.paragraph(),
+          title: faker.lorem.word(5),
+          body: faker.lorem.words(5),
           userId,
         },
       },
@@ -26,7 +26,7 @@ function createStory(userId: number) {
 function createBannedStoryOfChannel(userId: number, channelId: number) {
   return prisma.stories.create({
     data: {
-      title: faker.lorem.word(10),
+      title: faker.lorem.word(5),
       body: faker.lorem.words(5),
       userId,
       channelId,
@@ -39,7 +39,7 @@ function createBannedStoryOfChannel(userId: number, channelId: number) {
 function createStoryOfChannel(userId: number, channelId: number) {
   return prisma.stories.create({
     data: {
-      title: faker.lorem.word(10),
+      title: faker.lorem.word(5),
       body: faker.lorem.words(5),
       userId,
       channelId,
@@ -52,7 +52,7 @@ function createComment(data: CreateCommentParams) {
   return prisma.comments.create({
     data: {
       ...data,
-      text: faker.lorem.text(),
+      text: faker.lorem.words(5),
     },
   });
 }
@@ -71,7 +71,7 @@ function denounceStory(storyId: number, userId: number) {
     data: {
       storyId,
       userId,
-      text: faker.lorem.words(),
+      text: faker.lorem.words(5),
     },
   });
 }

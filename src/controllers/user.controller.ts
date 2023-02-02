@@ -124,6 +124,33 @@ async function postUnfollow(req: Request, res: Response) {
   }
 }
 
+async function putUser(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+  const userIdParams = Number(req.params.userId);
+
+  if (userId !== userIdParams) {
+    return responseHelper.UNAUTHORIZED({ res });
+  }
+
+  try {
+    await userService.putUser(userIdParams, req.body);
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não encontrado!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({
+        res,
+        body: { message: `Já existe um usuário chamado ${req.body.username}!` },
+      });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 export {
   getUserData,
   getUserStories,
@@ -132,4 +159,5 @@ export {
   getUserStoriesByUserId,
   postFollow,
   postUnfollow,
+  putUser,
 };

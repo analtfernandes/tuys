@@ -3,7 +3,7 @@ import * as userRepository from "../repositories/user.repository";
 import * as storyRepository from "../repositories/story.repository";
 import * as notificationRepository from "../repositories/notification.repository";
 import { formatStories } from "./story.services";
-import { Follows } from "@prisma/client";
+import { Follows, Users } from "@prisma/client";
 
 async function getUserData(userId: number) {
   const user = await userRepository.findUserData(userId);
@@ -118,7 +118,18 @@ async function postFollowNotification(userId: number) {
   }
 }
 
+async function putUser(userId: number, data: PutUserParams) {
+  const user = await userRepository.findUserById(userId);
+  if (!user) throw notFoundError();
+
+  const userWithUsername = await userRepository.findUserByUsername(data.username);
+  if (userWithUsername) throw badRequestError();
+
+  await userRepository.updateUser(userId, data);
+}
+
 type PostFollowParams = Omit<Follows, "id">;
+type PutUserParams = Omit<Users, "id" | "email" | "password" | "rankId" | "status">;
 
 export {
   getUserData,
@@ -128,4 +139,5 @@ export {
   getUserStoriesByUserId,
   postFollow,
   postUnfollow,
+  putUser,
 };

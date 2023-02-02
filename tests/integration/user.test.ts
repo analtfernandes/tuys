@@ -536,3 +536,120 @@ describe("POST /users/:userId/unfollow", () => {
     });
   });
 });
+
+describe("PUT /users/:userId", () => {
+  const route = "/users";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.put(`${route}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.put(`${route}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const authorization = await generateValidToken();
+      const body = {
+        username: faker.fake.name,
+        avatar: faker.image.avatar(),
+        about: "",
+      };
+
+      const response = await app.put(`${route}/0`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if body is no sent", async () => {
+      const authorization = await generateValidToken();
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if body is invalid", async () => {
+      const authorization = await generateValidToken();
+      const body = { [faker.word.adjective()]: faker.fake.name };
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    describe("when body is valid", () => {
+      const body = {
+        username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
+        avatar: faker.image.avatar(),
+        about: "",
+      };
+
+      it("should return status 400 if already have an user with the sent username", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const otherUser = await generateValidUser();
+        const newBody = { ...body, username: otherUser.username };
+
+        const response = await app.put(`${route}/${user.id}`).set("Authorization", authorization).send(newBody);
+
+        expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      });
+
+      it("should return status 401 if params 'userId' and token's owner id are not the same", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const otherUser = await generateValidUser();
+
+        const response = await app.put(`${route}/${otherUser.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+      });
+
+      it("should return status 204", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const body = {
+          username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
+          avatar: faker.image.avatar(),
+          about: "",
+        };
+
+        const response = await app.put(`${route}/${user.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NO_CONTENT);
+      });
+
+      it("should update the user on database", async () => {
+        const user = await generateValidUser();
+        const authorization = await generateValidToken(user);
+        const body = {
+          username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
+          avatar: faker.image.avatar(),
+          about: "",
+        };
+
+        await app.put(`${route}/${user.id}`).set("Authorization", authorization).send(body);
+
+        const updatedUser = await prisma.users.findUnique({ where: { id: user.id } });
+
+        expect(updatedUser).not.toBeNull();
+        expect(updatedUser?.username).toBe(body.username);
+      });
+    });
+  });
+});

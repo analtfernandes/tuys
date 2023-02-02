@@ -5,15 +5,15 @@ import { prisma } from "../../src/database";
 function createCustomUser(data: CreateCustomUserParams) {
   return prisma.ranks.create({
     data: {
-      name: faker.internet.userName(),
+      name: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
       color: faker.internet.color(),
       Users: {
         create: {
-          username: faker.name.firstName(),
+          username: faker.internet.userName().concat(faker.random.alphaNumeric(3)),
           avatar: faker.image.avatar(),
           email: faker.internet.email(),
           password: faker.internet.password(),
-          about: faker.lorem.words(),
+          about: faker.lorem.words(5),
           status: UserStatus.ACTIVE,
           ...data,
         },
