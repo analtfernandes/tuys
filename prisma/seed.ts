@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { RanksHelper } from "../src/helpers/ranks.helper";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -126,34 +128,13 @@ async function createRanks() {
 
   const insertedRanks = await prisma.ranks.createMany({
     data: [
-      {
-        name: "Iniciante",
-        color: "#58E2FF",
-      },
-      {
-        name: "Contador de Estórias",
-        color: "#5FFD51",
-      },
-      {
-        name: "Narrador Nato",
-        color: "#FF5E3A",
-      },
-      {
-        name: "Narrador Raro",
-        color: "#FF70F1",
-      },
-      {
-        name: "Narrador Épico",
-        color: "#5D5AFD",
-      },
-      {
-        name: "Narrador Lendário",
-        color: "#FF9A03",
-      },
-      {
-        name: "Admin",
-        color: "linear-gradient(to left bottom, #58E2FF, #5FFD51, #FF5E3A, #FF70F1, #5D5AFD, #FF9A03)",
-      },
+      RanksHelper.LEVEL_1,
+      RanksHelper.LEVEL_2,
+      RanksHelper.LEVEL_3,
+      RanksHelper.LEVEL_4,
+      RanksHelper.LEVEL_5,
+      RanksHelper.LEVEL_6,
+      RanksHelper.LEVEL_7,
     ],
   });
 
@@ -183,7 +164,8 @@ async function createChannels() {
       },
       {
         name: "Aventura",
-        background: "https://foradazonadeconforto.com/wp-content/uploads/2019/09/Viagens-de-aventura-pelo-mundo-e1568488207333.jpg",
+        background:
+          "https://foradazonadeconforto.com/wp-content/uploads/2019/09/Viagens-de-aventura-pelo-mundo-e1568488207333.jpg",
       },
       {
         name: "Policial",

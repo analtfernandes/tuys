@@ -26,4 +26,10 @@ function conflictError(): ErrorType {
   };
 }
 
-export { notFoundError, badRequestError, unauthorizedError, conflictError };
+function signUpError(): ErrorType {
+  return {
+    name: "SignUp",
+  };
+}
+
+export { notFoundError, badRequestError, unauthorizedError, conflictError, signUpError };

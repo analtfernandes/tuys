@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { loadEnv } from "./config/env";
-import { channelRoute, notificationRoute, rankingRoute, storyRoute, userRoute } from "./routers";
+import { channelRoute, notificationRoute, rankingRoute, signRoute, storyRoute, userRoute } from "./routers";
 
 loadEnv();
 
@@ -11,6 +11,7 @@ server
   .use(express.json())
   .use(cors())
   .get("/status", (req, res) => res.send("It's alive!!!"))
+  .use("/auth", signRoute)
   .use("/channels", channelRoute)
   .use("/stories", storyRoute)
   .use("/users", userRoute)
