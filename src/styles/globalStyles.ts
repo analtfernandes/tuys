@@ -145,7 +145,7 @@ const GlobalStyle = createGlobalStyle<GlobalStyleType>`
 
     * {
       box-sizing: border-box;
-      --white: '#F2F2F2';
+      --white: #F2F2F2;
       --light-gray: #D2D2D2;
       --medium-gray_one: #A6A6A6;
       --medium-gray_two: #595959;

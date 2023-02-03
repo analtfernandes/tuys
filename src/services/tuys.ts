@@ -320,6 +320,19 @@ async function postNotificationRead(id: number) {
 	}
 }
 
+async function postSignUp(body: PostSignUpParams) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/auth/sign-up`, {
+		method: "POST",
+		body: JSON.stringify(body),
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -367,14 +380,15 @@ export type PostStoryParams = {
 	body: string;
 	channelId: number;
 };
-
 export type PostCommentParams = {
 	body: { text: string };
 	storyId: number;
 };
-
-export type PutStoryParams = Omit<PostStoryParams, "channelId">;
+export type PostSignUpParams = Omit<UserRegisterType, "id" | "about"> & {
+	password: string;
+};
 export type PostDenounceParams = PostCommentParams;
+export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 export type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
 
 const service = {
@@ -398,6 +412,7 @@ const service = {
 	postFollow,
 	postUnfollow,
 	postNotificationRead,
+	postSignUp,
 	deleteStory,
 	putStory,
 	putRegister,

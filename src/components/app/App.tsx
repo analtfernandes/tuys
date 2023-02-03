@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import {
 	ThemeContextProvider,
 	QueryClientContextProvider,
@@ -18,6 +18,7 @@ import { SettingsPage } from "../../pages/settings/Settings";
 import { UserPage } from "../../pages/user/User";
 import { Stories } from "../stories/Stories";
 import { Settings, Perfil, Themes } from "../settings";
+import SignUp from "../sign/SignUp";
 
 function App() {
 	return (
@@ -27,29 +28,37 @@ function App() {
 					<ToastContainer />
 
 					<UserContextProvider>
-						<PrivatePage>
-							<Header />
-							<Footer />
+						<Routes>
+							<Route path="/sign-up" element={<SignUp />} />
 
-							<Routes>
-								<Route path="/" element={<HomePage />} />
-								<Route path="/channels" element={<ChannelsPage />} />
+							<Route
+								path="/"
+								element={
+									<PrivatePage>
+										<Header />
+										<Outlet />
+										<Footer />
+									</PrivatePage>
+								}
+							>
+								<Route path="" element={<HomePage />} />
+								<Route path="channels" element={<ChannelsPage />} />
 								<Route
-									path="/channels/:channelName"
+									path="channels/:channelName"
 									element={<Stories path="channel" />}
 								/>
-								<Route path="/ranking" element={<RankingPage />} />
-								<Route path="/notifications" element={<NotificationsPage />} />
+								<Route path="ranking" element={<RankingPage />} />
+								<Route path="notifications" element={<NotificationsPage />} />
 
-								<Route path="/me" element={<MePage />} />
-								<Route path="/user/:userId" element={<UserPage />} />
-								<Route path="/settings" element={<SettingsPage />}>
+								<Route path="me" element={<MePage />} />
+								<Route path="user/:userId" element={<UserPage />} />
+								<Route path="settings" element={<SettingsPage />}>
 									<Route path="" element={<Settings />} />
 									<Route path="perfil" element={<Perfil />} />
 									<Route path="themes" element={<Themes />} />
 								</Route>
-							</Routes>
-						</PrivatePage>
+							</Route>
+						</Routes>
 					</UserContextProvider>
 				</QueryClientContextProvider>
 			</ThemeContextProvider>

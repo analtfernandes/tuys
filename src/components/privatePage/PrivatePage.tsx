@@ -8,22 +8,13 @@ export function PrivatePage({ children }: React.PropsWithChildren) {
 	const navigate = useNavigate();
 	const locationRef = useRef(location);
 
-	useEffect(() => {
-		if (location.pathname !== "/sign-in") locationRef.current = location;
-	}, [location]);
 
 	useEffect(() => {
 		if (!user.token) {
 			navigate("/sign-in");
 		}
-		if (user.token) {
-			navigate(locationRef.current.pathname, { ...locationRef.current });
-		}
 	}, [user]);
 
-	if (user.token) {
-		return <>{children}</>;
-	}
 
-	return <></>;
+	return <>{children}</>;
 }

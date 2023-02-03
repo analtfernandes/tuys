@@ -12,6 +12,7 @@ import {
 	AiOutlineLeft,
 	AiFillEye,
 	AiFillEyeInvisible,
+	AiFillPicture,
 } from "react-icons/ai";
 import {
 	BsBellFill,
@@ -31,6 +32,8 @@ import {
 	IoReload,
 	IoPaperPlaneSharp,
 	IoExitOutline,
+	IoMail,
+	IoKey,
 } from "react-icons/io5";
 
 type IconsParams = {
@@ -65,7 +68,10 @@ type IconsParams = {
 		| "continue"
 		| "return"
 		| "visible"
-		| "invisible";
+		| "invisible"
+		| "avatar"
+		| "email"
+		| "password";
 };
 
 const IconsTypes = Object.freeze({
@@ -99,6 +105,9 @@ const IconsTypes = Object.freeze({
 	return: AiOutlineLeft,
 	visible: AiFillEye,
 	invisible: AiFillEyeInvisible,
+	avatar: AiFillPicture,
+	email: IoMail,
+	password: IoKey,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {
