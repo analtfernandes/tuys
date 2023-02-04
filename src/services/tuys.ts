@@ -12,8 +12,7 @@ import {
 const BASE_URI = process.env.REACT_APP_API_URI;
 
 function createHeader() {
-	const token = JSON.parse(localStorage.getItem("tuys.com") || "")?.token;
-	if (!token) return {};
+	const token = JSON.parse(localStorage.getItem("tuys.com") || "{}")?.token;
 
 	const config = {
 		headers: {
@@ -333,6 +332,21 @@ async function postSignUp(body: PostSignUpParams) {
 	}
 }
 
+async function postSignIn(body: PostSignInParams) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/auth/sign-in`, {
+		method: "POST",
+		body: JSON.stringify(body),
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json();
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -387,6 +401,7 @@ export type PostCommentParams = {
 export type PostSignUpParams = Omit<UserRegisterType, "id" | "about"> & {
 	password: string;
 };
+export type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
 export type PostDenounceParams = PostCommentParams;
 export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 export type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
@@ -413,6 +428,7 @@ const service = {
 	postUnfollow,
 	postNotificationRead,
 	postSignUp,
+	postSignIn,
 	deleteStory,
 	putStory,
 	putRegister,

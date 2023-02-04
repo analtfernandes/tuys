@@ -19,6 +19,7 @@ import { UserPage } from "../../pages/user/User";
 import { Stories } from "../stories/Stories";
 import { Settings, Perfil, Themes } from "../settings";
 import SignUp from "../sign/SignUp";
+import SignIn from "../sign/SignIn";
 
 function App() {
 	return (
@@ -30,6 +31,7 @@ function App() {
 					<UserContextProvider>
 						<Routes>
 							<Route path="/sign-up" element={<SignUp />} />
+							<Route path="/sign-in" element={<SignIn />} />
 
 							<Route
 								path="/"

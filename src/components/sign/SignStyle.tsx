@@ -17,6 +17,7 @@ const Container = styled.main`
 	margin: 0;
 	padding: 0;
 	display: flex;
+    background-color: #f2f2f2;
 
 	> img {
 		height: 100%;
