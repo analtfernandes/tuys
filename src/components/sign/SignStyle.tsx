@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import banner from "../images/banner.svg";
+import { Icons } from "../utils";
 
 export function SignStyle({ children }: React.PropsWithChildren) {
 	return (
@@ -11,13 +12,32 @@ export function SignStyle({ children }: React.PropsWithChildren) {
 	);
 }
 
+SignStyle.OptionDiv = () => {
+	return (
+		<OptionDiv>
+			<div></div>
+			<span>ou</span>
+			<div></div>
+		</OptionDiv>
+	);
+};
+
+SignStyle.GoogleButton = ({ ...props }: any) => {
+	return (
+		<GoogleButton {...props}>
+			<Icons type="signWithGoogle" />
+			<span>Google</span>
+		</GoogleButton>
+	);
+};
+
 const Container = styled.main`
 	width: 100%;
 	height: 100vh;
 	margin: 0;
 	padding: 0;
 	display: flex;
-    background-color: #f2f2f2;
+	background-color: #f2f2f2;
 
 	> img {
 		height: 100%;
@@ -32,7 +52,7 @@ const Container = styled.main`
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		margin: 0 auto;
+		margin: 20px auto;
 
 		h1 {
 			width: 100%;
@@ -113,16 +133,16 @@ const Container = styled.main`
 			}
 		}
 
-		a {
+		> a {
 			text-decoration: none;
 			text-align: center;
+			margin-bottom: 30px;
 		}
 
 		span {
 			line-height: 20px;
 			font-size: 1.1rem;
 			color: var(--dark-gray);
-			margin-bottom: 20px;
 
 			em {
 				color: #a65353;
@@ -166,6 +186,53 @@ const Container = styled.main`
 			span {
 				font-size: 1rem;
 			}
+		}
+	}
+`;
+
+const OptionDiv = styled.div`
+	&& {
+		width: 100%;
+		margin: 0 auto;
+		color: #595959;
+		display: flex;
+		align-items: center;
+
+		> div {
+			width: 100%;
+			height: 1px;
+			background-color: #595959;
+		}
+
+		> span {
+			font-size: 0.9rem;
+			margin: 0 10px;
+		}
+	}
+`;
+
+const GoogleButton = styled.button`
+	&& {
+		width: 80%;
+		max-width: 300px;
+		height: 45px;
+		min-height: 45px;
+		margin: 30px auto;
+		display: flex;
+		align-items: center;
+		border-radius: 50px;
+		border: 1px solid #2b7b8c;
+		background-color: #f2f2f2;
+		color: #595959;
+
+		> span {
+			font-size: 1rem;
+			margin: 0;
+			margin-left: 10px;
+		}
+
+		> svg {
+			font-size: 2rem;
 		}
 	}
 `;

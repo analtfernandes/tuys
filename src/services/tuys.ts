@@ -362,6 +362,21 @@ async function postSignOut() {
 	return response;
 }
 
+async function postSignWithGoogle(body: PostSignUpParams) {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/auth/sign/method/google`, {
+		method: "POST",
+		body: JSON.stringify(body),
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response.json();
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -445,6 +460,7 @@ const service = {
 	postSignUp,
 	postSignIn,
 	postSignOut,
+	postSignWithGoogle,
 	deleteStory,
 	putStory,
 	putRegister,

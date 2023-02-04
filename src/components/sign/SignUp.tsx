@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import api, { PostSignUpParams } from "../../services/tuys";
-import { useToast } from "../hooks";
+import { useToast, useSignWithGoogle } from "../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";
 
@@ -12,11 +12,10 @@ type SingUpForm = PostSignUpParams & {
 export default function SignUp() {
 	const toast = useToast();
 	const [form, setForm] = useState({} as SingUpForm);
-
+	const signUpWithGoogle = useSignWithGoogle();
 	const navigate = useNavigate();
 
 	function isValidateForm() {
-		const avatarRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|svg)/g;
 		let error = "";
 
 		if (form.password !== form.confirmPassword) {
@@ -25,10 +24,6 @@ export default function SignUp() {
 
 		if (form.password.length < 6) {
 			error = "A senha deve ter no mínimo 6 caracteres!";
-		}
-
-		if (!form.avatar.match(avatarRegex)) {
-			error = "A URL da imagem deve ser válida!";
 		}
 
 		if (error) {
@@ -142,6 +137,10 @@ export default function SignUp() {
 					Cadastrar-se <Icons type="continue" />
 				</button>
 			</form>
+
+			<SignStyle.OptionDiv />
+
+			<SignStyle.GoogleButton onClick={signUpWithGoogle} />
 
 			<Link to="/sign-in">
 				<span>

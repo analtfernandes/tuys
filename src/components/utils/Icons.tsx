@@ -1,4 +1,5 @@
 import { TbBookOff } from "react-icons/tb";
+import { FcGoogle } from "react-icons/fc";
 import { GrStatusInfo } from "react-icons/gr";
 import { FaRegCommentDots, FaBook, FaAward } from "react-icons/fa";
 import {
@@ -71,7 +72,8 @@ type IconsParams = {
 		| "invisible"
 		| "avatar"
 		| "email"
-		| "password";
+		| "password"
+		| "signWithGoogle";
 };
 
 const IconsTypes = Object.freeze({
@@ -108,6 +110,7 @@ const IconsTypes = Object.freeze({
 	avatar: AiFillPicture,
 	email: IoMail,
 	password: IoKey,
+	signWithGoogle: FcGoogle,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {

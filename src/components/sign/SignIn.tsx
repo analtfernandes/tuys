@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api, { PostSignInParams } from "../../services/tuys";
-import { useToast } from "../hooks";
+import { useToast, useSignWithGoogle } from "../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";
 
@@ -10,6 +10,7 @@ export default function SignIn() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
 	const { setLocalTheme } = useThemeContext();
+	const signUpWithGoogle = useSignWithGoogle();
 	const [form, setForm] = useState({} as PostSignInParams);
 
 	const navigate = useNavigate();
@@ -93,6 +94,10 @@ export default function SignIn() {
 					Entrar <Icons type="continue" />
 				</button>
 			</form>
+
+			<SignStyle.OptionDiv />
+
+			<SignStyle.GoogleButton onClick={signUpWithGoogle} />
 
 			<Link to="/sign-up">
 				<span>
