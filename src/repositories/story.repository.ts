@@ -181,6 +181,12 @@ function findStoryLikes(storyId: number) {
   });
 }
 
+function findStoryDenouncedByUser(storyId: number, userId: number) {
+  return prisma.denunciations.findFirst({
+    where: { storyId, userId },
+  });
+}
+
 function createStory(data: CreateStoryParams) {
   return prisma.stories.create({ data: { ...data }, include: { Users: { select: { username: true } } } });
 }
@@ -249,6 +255,7 @@ export {
   findStoryLikes,
   findStoryComments,
   findStoryLikedByUser,
+  findStoryDenouncedByUser,
   createStory,
   createLike,
   createComment,

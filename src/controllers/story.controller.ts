@@ -93,7 +93,7 @@ async function postUnlikeStory(req: Request, res: Response) {
     }
 
     if (error.name === "BadRequest") {
-      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já curtiu ssa história!" } });
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já curtiu essa história!" } });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -126,6 +126,10 @@ async function postDenounce(req: Request, res: Response) {
   } catch (error: any) {
     if (error.name === "NotFound") {
       return responseHelper.NOT_FOUND({ res, body: { message: "Essa história não existe!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Denúncias só são pertimidas uma vez!" } });
     }
 
     return responseHelper.SERVER_ERROR({ res });

@@ -77,6 +77,9 @@ async function postDenounce(data: PostDenounceParams) {
   const story = await storyRepository.findById(data.storyId);
   if (!story) throw notFoundError();
 
+  const userAlreadyDenounceStory = await storyRepository.findStoryDenouncedByUser(data.storyId, data.userId);
+  if (userAlreadyDenounceStory) throw badRequestError();
+
   await storyRepository.createDenunciation(data);
 
   const notificationMessage = `Sua história: ${story.title} foi denunciada, pois: “${data.text}”`;

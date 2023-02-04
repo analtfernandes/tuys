@@ -661,6 +661,20 @@ describe("POST /stories/:storyId/denounce", () => {
         expect(response.status).toBe(httpStatus.NOT_FOUND);
       });
 
+      it("should return status 400 if user already denounce the story", async () => {
+        const user = await generateValidUser();
+        const channelWithStory = await createStory(user.id);
+        const { authorization } = await generateValidToken(user);
+        await denounceStory(channelWithStory.Stories[0].id, user.id);
+
+        const response = await app
+          .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
+          .set("Authorization", authorization)
+          .send(body);
+
+        expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      });
+
       it("should return status 204", async () => {
         const user = await generateValidUser();
         const channelWithStory = await createStory(user.id);
