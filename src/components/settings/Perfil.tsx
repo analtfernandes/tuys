@@ -21,7 +21,7 @@ export function Perfil() {
 		updateRegisterCallback
 	);
 
-	const [newData, setNewData] = useState(userRegister || null);
+	const [newData, setNewData] = useState(userRegister);
 	const [emailIsVisible, setEmailIsVisible] = useState(false);
 
 	if (updateRegister.isError) {
@@ -56,8 +56,8 @@ export function Perfil() {
 		}
 	}
 
-	if (!newData) {
-		return null;
+	if (userRegister && !newData) {
+		setNewData(userRegister);
 	}
 
 	function updateRegisterCallback() {
@@ -75,7 +75,6 @@ export function Perfil() {
 				if (prev) {
 					return { ...prev, [event.target.name]: event.target.value };
 				}
-				return null;
 			});
 		}
 	}
@@ -89,78 +88,82 @@ export function Perfil() {
 
 	return (
 		<Wrapper>
-			<Menu onClick={() => navigate("/settings")}>
-				{window.innerWidth <= 500 && <Icons type="return" />}
-				<Title>Perfil</Title>
-			</Menu>
+			<>
+				<Menu onClick={() => navigate("/settings")}>
+					{window.innerWidth <= 500 && <Icons type="return" />}
+					<Title>Perfil</Title>
+				</Menu>
 
-			<Form onSubmit={handleUpdate}>
-				<Form.Section margin="20px 0">
-					<label>
-						Nome de usuário <em>*</em>
-					</label>
-					<input
-						required
-						autoCapitalize="off"
-						placeholder="Insira seu nome de usuário..."
-						type="text"
-						name="username"
-						value={newData.username}
-						onChange={handleChange}
-					/>
-				</Form.Section>
+				{newData && (
+					<Form onSubmit={handleUpdate}>
+						<Form.Section margin="20px 0">
+							<label>
+								Nome de usuário <em>*</em>
+							</label>
+							<input
+								required
+								autoCapitalize="off"
+								placeholder="Insira seu nome de usuário..."
+								type="text"
+								name="username"
+								value={newData.username}
+								onChange={handleChange}
+							/>
+						</Form.Section>
 
-				<Form.Section margin="20px 0">
-					<label>
-						Avatar <em>*</em>
-					</label>
-					<input
-						required
-						autoCapitalize="off"
-						placeholder="Insira a URL do seu avatar..."
-						type="url"
-						name="avatar"
-						value={newData.avatar}
-						onChange={handleChange}
-					/>
-				</Form.Section>
+						<Form.Section margin="20px 0">
+							<label>
+								Avatar <em>*</em>
+							</label>
+							<input
+								required
+								autoCapitalize="off"
+								placeholder="Insira a URL do seu avatar..."
+								type="url"
+								name="avatar"
+								value={newData.avatar}
+								onChange={handleChange}
+							/>
+						</Form.Section>
 
-				<Form.Section margin="20px 0">
-					<label>Email (campo não editável)</label>
-					<InputSection>
-						<input
-							disabled={true}
-							type={emailIsVisible ? "email" : "password"}
-							value={newData.email}
-						/>
-						<Icons
-							type={emailIsVisible ? "invisible" : "visible"}
-							onClick={() => setEmailIsVisible((prev) => !prev)}
-						/>
-					</InputSection>
-				</Form.Section>
+						<Form.Section margin="20px 0">
+							<label>Email (campo não editável)</label>
+							<InputSection>
+								<input
+									disabled={true}
+									type={emailIsVisible ? "email" : "password"}
+									value={newData.email}
+								/>
+								<Icons
+									type={emailIsVisible ? "invisible" : "visible"}
+									onClick={() => setEmailIsVisible((prev) => !prev)}
+								/>
+							</InputSection>
+						</Form.Section>
 
-				<Form.Section margin="20px 0">
-					<label>Sobre</label>
-					<textarea
-						autoCapitalize="off"
-						placeholder="Conte-nos sobre mais sobre você..."
-						name="about"
-						value={newData.about}
-						onChange={handleChange}
-					/>
-				</Form.Section>
+						<Form.Section margin="20px 0">
+							<label>Sobre</label>
+							<textarea
+								autoCapitalize="off"
+								placeholder="Conte-nos sobre mais sobre você..."
+								name="about"
+								value={newData.about}
+								onChange={handleChange}
+							/>
+						</Form.Section>
 
-				<div
-					style={{
-						width: "100%",
-						display: "flex",
-						justifyContent: "end",
-					}}
-				>
-					<Button config={{ margin: "0" }}>Atualizar</Button>
-				</div>
-			</Form>
+						<div
+							style={{
+								width: "100%",
+								display: "flex",
+								justifyContent: "end",
+							}}
+						>
+							<Button config={{ margin: "0" }}>Atualizar</Button>
+						</div>
+					</Form>
+				)}
+			</>
 		</Wrapper>
 	);
 }
