@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useUserContext } from "../../contexts";
+import { useThemeContext, useUserContext } from "../../contexts";
 import api, { PostSignInParams } from "../../services/tuys";
 import { useToast } from "../hooks";
 import { Icons } from "../utils";
@@ -9,6 +9,7 @@ import { SignStyle } from "./SignStyle";
 export default function SignIn() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
+	const { setLocalTheme } = useThemeContext();
 	const [form, setForm] = useState({} as PostSignInParams);
 
 	const navigate = useNavigate();
@@ -38,6 +39,7 @@ export default function SignIn() {
 					JSON.stringify({ ...localData, ...response })
 				);
 				setUser({ ...response });
+				setLocalTheme(localData.theme || "light");
 
 				navigate("/");
 			})

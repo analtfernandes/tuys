@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useUserContext } from "../../contexts";
+import { useThemeContext, useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useToast } from "../hooks";
 import { UserType } from "../utils/Protocols";
@@ -14,6 +14,7 @@ type WrapperProps = {
 export function Menu() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
+	const { setLocalTheme } = useThemeContext();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -45,6 +46,7 @@ export function Menu() {
 				}
 
 				setUser({} as UserType);
+				setLocalTheme("light");
 
 				navigate("/sign-in");
 			})

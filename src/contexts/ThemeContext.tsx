@@ -13,6 +13,7 @@ import { CallbackType, LocalStorageType } from "../components/utils/Protocols";
 type ThemeContextType = {
 	theme: ThemeType;
 	changeTheme: CallbackType;
+	setLocalTheme: CallbackType;
 } | null;
 
 type ReducerAction = {
@@ -59,7 +60,11 @@ function getDefaultTheme() {
 		return themes.light;
 	}
 
-	return themes[localdata.theme];
+	if (!localdata.token) {
+		return themes.light;
+	}
+
+	return themes[localdata.theme] || themes.light;
 }
 
 export function ThemeContextProvider({ children }: PropsWithChildren) {
@@ -70,8 +75,12 @@ export function ThemeContextProvider({ children }: PropsWithChildren) {
 		return dispatch({ type: theme });
 	}
 
+	function setLocalTheme(theme: string) {
+		return dispatch({ type: theme });
+	}
+
 	return (
-		<ThemeContext.Provider value={{ theme, changeTheme }}>
+		<ThemeContext.Provider value={{ theme, changeTheme, setLocalTheme }}>
 			<ThemeProvider theme={theme}>
 				<GlobalStyle variant={theme} />
 				{children}

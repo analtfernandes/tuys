@@ -103,6 +103,7 @@ type LocalStorageType = {
 	id: number;
 	username: string;
 	avatar: string;
+	token: string;
 	theme: "light" | "dark";
 };
 
