@@ -47,7 +47,7 @@ function useSignWithGoogle() {
 						"tuys.com",
 						JSON.stringify({ ...localData, ...response })
 					);
-					setUser({ ...response });
+					if (response) setUser({ ...response });
 					setLocalTheme(localData.theme || "light");
 
 					navigate("/");
