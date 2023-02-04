@@ -27,9 +27,8 @@ async function postSignIn(data: PostSignInParams) {
     throw notFoundError();
   }
 
-  const userHaveActiveSession = await signRepository.findActiveSessionByUserId(user.id);
-
-  if (userHaveActiveSession) throw badRequestError();
+  const userActivesSessionsCount = await signRepository.countActiveSessionsByUserId(user.id);
+  if (userActivesSessionsCount >= 3) throw badRequestError();
 
   const token = jwt.sign({ user: user.id }, process.env.JWT_SECRET || "JWT_KEY");
 
@@ -68,8 +67,8 @@ async function signUpGoogle(data: PostSignUpParams) {
 }
 
 async function signInGoogle(user: SignInGoogleParams) {
-  const userHaveActiveSession = await signRepository.findActiveSessionByUserId(user.id);
-  if (userHaveActiveSession) throw badRequestError();
+  const userActivesSessionsCount = await signRepository.countActiveSessionsByUserId(user.id);
+  if (userActivesSessionsCount >= 3) throw badRequestError();
 
   const token = jwt.sign({ user: user.id }, process.env.JWT_SECRET || "JWT_KEY");
 

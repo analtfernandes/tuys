@@ -10,6 +10,15 @@ function findActiveSessionByUserId(userId: number) {
   });
 }
 
+function countActiveSessionsByUserId(userId: number) {
+  return prisma.sessions.count({
+    where: {
+      userId,
+      active: true,
+    },
+  });
+}
+
 function findUserByEmail(email: string) {
   return prisma.users.findUnique({ where: { email }, include: { Ranks: { select: { color: true } } } });
 }
@@ -47,4 +56,5 @@ export {
   createUser,
   createSession,
   updateActiveSessionId,
+  countActiveSessionsByUserId,
 };

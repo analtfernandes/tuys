@@ -6,7 +6,7 @@ import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
 import { cleanDatabase } from "../helpers/cleanDatabase";
-import { updateActiveSession } from "../factories";
+import { createSession, updateActiveSession } from "../factories";
 
 const app = supertest(server);
 
@@ -127,8 +127,10 @@ describe("POST /auth/sign-in", () => {
     expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
 
-  it("should return status 400 when user have an active session", async () => {
+  it("should return status 400 when user have three active session", async () => {
     const user = await generateValidUser();
+    await createSession({ userId: user.id, token: "token" });
+    await createSession({ userId: user.id, token: "token" });
     await generateValidToken(user);
     const body = {
       email: user.email,
@@ -143,6 +145,7 @@ describe("POST /auth/sign-in", () => {
   describe("when body is valid", () => {
     it("should return status 200 and user data with his session token", async () => {
       const user = await generateValidUser();
+      await generateValidToken(user);
       const body = {
         email: user.email,
         password: user.password,
