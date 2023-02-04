@@ -1,13 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Title } from "../shared";
+import { useUserContext } from "../../contexts";
+import api from "../../services/tuys";
+import { useToast } from "../hooks";
+import { UserType } from "../utils/Protocols";
 import { Icons } from "../utils";
+import { Title } from "../shared";
 
 type WrapperProps = {
 	showMenu: boolean;
 };
 
 export function Menu() {
+	const toast = useToast();
+	const { setUser } = useUserContext();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -16,6 +22,41 @@ export function Menu() {
 			location.pathname === "/settings" || location.pathname === "/settings/";
 		const isMobileWidth = window.innerWidth <= 500;
 		return isMainPage || !isMobileWidth;
+	}
+
+	function logout() {
+		api
+			.postSignOut()
+			.then(() => {
+				toast({
+					type: "success",
+					text: "Logout realizado com sucesso!",
+				});
+				toast({
+					type: "success",
+					text: "Volte mais tarde para no contar suas histórias! :)",
+				});
+
+				const localData = JSON.parse(localStorage.getItem("tuys.com") || "{}");
+
+				if (localData) {
+					const newLocalData = { theme: localData.theme || "light" };
+					localStorage.setItem("tuys.com", JSON.stringify(newLocalData));
+				}
+
+				setUser({} as UserType);
+
+				navigate("/sign-in");
+			})
+			.catch((err) => {
+				const error = JSON.parse(err.message);
+				toast({
+					type: "error",
+					text:
+						error?.message?.message ||
+						"Não foi possível deslogar. Por favor, tente novamente.",
+				});
+			});
 	}
 
 	return (
@@ -38,7 +79,7 @@ export function Menu() {
 				<Icons type="continue" />
 			</Option>
 
-			<Option>
+			<Option onClick={() => logout()}>
 				<div>
 					<Icons type="exit" />
 					<span>Sair</span>

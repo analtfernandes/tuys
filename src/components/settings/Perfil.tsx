@@ -13,11 +13,11 @@ export function Perfil() {
 	const { user, setUser } = useUserContext();
 
 	const { data: userRegister } = useRequestQuery(
-		["register", user.username],
+		["register", user.id, user.username],
 		() => api.getRegister()
 	);
 	const updateRegister = useRequestMutation(
-		["register", user.username],
+		["register", user.id, user.username],
 		updateRegisterCallback
 	);
 

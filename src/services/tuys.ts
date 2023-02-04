@@ -347,6 +347,21 @@ async function postSignIn(body: PostSignInParams) {
 	return response.json();
 }
 
+async function postSignOut() {
+	const config = createHeader();
+	const response = await fetch(`${BASE_URI}/auth/sign-out`, {
+		method: "POST",
+		body: JSON.stringify({}),
+		...config,
+	});
+
+	if (response.status >= 400) {
+		return throwError(response);
+	}
+
+	return response;
+}
+
 async function deleteStory(storyId: number) {
 	const config = createHeader();
 	const response = await fetch(`${BASE_URI}/stories/${storyId}`, {
@@ -429,6 +444,7 @@ const service = {
 	postNotificationRead,
 	postSignUp,
 	postSignIn,
+	postSignOut,
 	deleteStory,
 	putStory,
 	putRegister,
