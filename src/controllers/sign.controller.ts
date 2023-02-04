@@ -36,6 +36,23 @@ async function postSignIn(req: Request, res: Response) {
   }
 }
 
+async function postSignWithGoogle(req: Request, res: Response) {
+  try {
+    const user = await signService.postSignWithGoogle(req.body);
+    return responseHelper.CREATED({ res, body: user });
+  } catch (error: any) {
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já está logado!" } });
+    }
+
+    if (error.name === "Conflict") {
+      return responseHelper.CONFLICT({ res, body: { message: "Já existe outro usuário com esse email!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function postSignOut(req: Request, res: Response) {
   const userId: number = res.locals.userId;
 
@@ -51,4 +68,4 @@ async function postSignOut(req: Request, res: Response) {
   }
 }
 
-export { postSignUp, postSignIn, postSignOut };
+export { postSignUp, postSignIn, postSignWithGoogle, postSignOut };

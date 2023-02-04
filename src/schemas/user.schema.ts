@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const imageFormatRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+const imageFormatRegex = /(http(s?):)([/|.|\w|\s|-])/;
 
 const allUserIdParams = Joi.object({
   userId: Joi.number().integer().min(1).required(),

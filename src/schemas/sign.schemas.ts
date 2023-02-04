@@ -14,4 +14,11 @@ const postSignIn = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-export { postSignUp, postSignIn };
+const postSignWithGoogle = Joi.object({
+  username: Joi.string().required(),
+  email: Joi.string().email().message("Email com formato inválido!").required(),
+  avatar: Joi.string().uri().message("A url da imagem é inválida!").required(),
+  password: Joi.string().required(),
+});
+
+export { postSignUp, postSignIn, postSignWithGoogle };
