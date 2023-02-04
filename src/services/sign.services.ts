@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { Users } from "@prisma/client";
-import { conflictError, signUpError } from "../helpers/errors.helper";
+import { badRequestError, conflictError, notFoundError, signUpError } from "../helpers/errors.helper";
 import { RanksHelper } from "../helpers/ranks.helper";
 import * as signRepository from "../repositories/sign.repository";
 import * as rankRepository from "../repositories/rank.repository";
@@ -28,6 +29,25 @@ async function postSignUp(data: PostSignUpParams) {
   return signRepository.createUser({ ...data, password: hashedPassword, rankId: rank.id });
 }
 
-type PostSignUpParams = Omit<Users, "id" | "about" | "rankId" | "status">;
+async function postSignIn(data: PostSignInParams) {
+  const user = await signRepository.findUserByEmail(data.email);
 
-export { postSignUp };
+  if (!user || !bcrypt.compareSync(data.password, user.password)) {
+    throw notFoundError();
+  }
+
+  const userHaveActiveSession = await signRepository.findActiveSessionByUserId(user.id);
+
+  if (userHaveActiveSession) throw badRequestError();
+
+  const token = jwt.sign({ user: user.id }, process.env.JWT_SECRET || "JWT_KEY");
+
+  await signRepository.createSession({ userId: user.id, token });
+
+  return { token, id: user.id, username: user.username, avatar: user.avatar, rankColor: user.Ranks.color };
+}
+
+type PostSignUpParams = Omit<Users, "id" | "about" | "rankId" | "status">;
+type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
+
+export { postSignUp, postSignIn };

@@ -1,4 +1,4 @@
-import { Users } from "@prisma/client";
+import { Sessions, Users } from "@prisma/client";
 import { prisma } from "../database";
 
 function findActiveSessionByUserId(userId: number) {
@@ -11,7 +11,7 @@ function findActiveSessionByUserId(userId: number) {
 }
 
 function findUserByEmail(email: string) {
-  return prisma.users.findUnique({ where: { email } });
+  return prisma.users.findUnique({ where: { email }, include: { Ranks: { select: { color: true } } } });
 }
 
 function findUserByUsername(username: string) {
@@ -22,6 +22,11 @@ function createUser(data: CreateUserParams) {
   return prisma.users.create({ data: { ...data } });
 }
 
-type CreateUserParams = Omit<Users, "id" | "about" | "status">;
+function createSession(data: CreateSessionParams) {
+  return prisma.sessions.create({ data: { ...data } });
+}
 
-export { findActiveSessionByUserId, findUserByEmail, findUserByUsername, createUser };
+type CreateUserParams = Omit<Users, "id" | "about" | "status">;
+type CreateSessionParams = Omit<Sessions, "id" | "active">;
+
+export { findActiveSessionByUserId, findUserByEmail, findUserByUsername, createUser, createSession };

@@ -4,7 +4,7 @@ import { faker } from "@faker-js/faker";
 import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
-import { generateValidUser } from "../helpers/generateValidData";
+import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -90,6 +90,89 @@ describe("POST /auth/sign-up", () => {
         rankId: expect.any(Number),
         status: UserStatus.ACTIVE,
       });
+    });
+  });
+});
+
+describe("POST /auth/sign-in", () => {
+  const route = "/auth/sign-in";
+
+  it("should return status 400 when sent body is invalid", async () => {
+    const body = { [faker.word.adjective()]: faker.word.adverb() };
+    const response = await app.post(route).send(body);
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should return status 404 when does not exist user with sent email", async () => {
+    const body = {
+      email: faker.internet.email(),
+      password: faker.internet.password(6),
+    };
+
+    const response = await app.post(route).send(body);
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
+  });
+
+  it("should return status 404 when exist user with sent email but password is wrong", async () => {
+    const user = await generateValidUser();
+    const body = {
+      email: user.email,
+      password: faker.internet.password(6),
+    };
+
+    const response = await app.post(route).send(body);
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
+  });
+
+  it("should return status 400 when user have an active session", async () => {
+    const user = await generateValidUser();
+    await generateValidToken(user);
+    const body = {
+      email: user.email,
+      password: user.password,
+    };
+
+    const response = await app.post(route).send(body);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  describe("when body is valid", () => {
+    it("should return status 200 and user data with his session token", async () => {
+      const user = await generateValidUser();
+      const body = {
+        email: user.email,
+        password: user.password,
+      };
+
+      const response = await app.post(route).send(body);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual({
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar,
+        token: expect.any(String),
+        rankColor: expect.any(String),
+      });
+    });
+
+    it("should save a new session in database", async () => {
+      const user = await generateValidUser();
+      const body = {
+        email: user.email,
+        password: user.password,
+      };
+
+      const beforeCount = await prisma.sessions.count();
+
+      await app.post(route).send(body);
+
+      const afterCount = await prisma.sessions.count();
+
+      expect(afterCount).toBe(beforeCount + 1);
     });
   });
 });
