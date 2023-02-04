@@ -25,11 +25,20 @@ export function Header() {
 		setWindowWidth(innerWidth);
 	}, []);
 
-	if (notifications && !notifications[0].read && !haveNewNotification) {
+	if (
+		notifications &&
+		notifications[0] &&
+		!notifications[0].read &&
+		!haveNewNotification
+	) {
 		setHaveNewNotification(true);
 	}
 
-	if (notifications && notifications[0].read && haveNewNotification) {
+	if (
+		notifications &&
+		((notifications[0]?.read && haveNewNotification) ||
+			(notifications?.length === 0 && haveNewNotification))
+	) {
 		setHaveNewNotification(false);
 	}
 
