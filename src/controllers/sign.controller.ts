@@ -36,4 +36,19 @@ async function postSignIn(req: Request, res: Response) {
   }
 }
 
-export { postSignUp, postSignIn };
+async function postSignOut(req: Request, res: Response) {
+  const userId: number = res.locals.userId;
+
+  try {
+    await signService.postSignOut(userId);
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não possui sessão!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { postSignUp, postSignIn, postSignOut };

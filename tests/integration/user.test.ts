@@ -49,7 +49,7 @@ describe("GET /users/me", () => {
       await createStory(user.id);
       const otherUser = await generateValidUser();
       await createFollow({ followedId: user.id, followerId: otherUser.id });
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(route).set("Authorization", authorization);
 
@@ -101,7 +101,7 @@ describe("GET /users/me/stories", () => {
       const channelWithStory = await createStory(user.id);
       const otherUser = await generateValidUser();
       await createStory(otherUser.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(route).set("Authorization", authorization);
 
@@ -158,7 +158,7 @@ describe("GET /users/:username", () => {
 
     it("should return 200 and an empty array when no username match", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(`${route}/z123`).set("Authorization", authorization);
 
@@ -168,7 +168,7 @@ describe("GET /users/:username", () => {
 
     it("should return 200 and an users array", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(`${route}/${user.username.slice(0, 3)}`).set("Authorization", authorization);
 
@@ -213,7 +213,7 @@ describe("GET /users/user/:userId", () => {
     });
 
     it("should return status 400 if params 'userId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/0`).set("Authorization", authorization);
 
@@ -221,7 +221,7 @@ describe("GET /users/user/:userId", () => {
     });
 
     it("should return status 404 if user does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/1`).set("Authorization", authorization);
 
@@ -230,7 +230,7 @@ describe("GET /users/user/:userId", () => {
 
     it("should return 200 and user data", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       await createStory(otherUser.id);
       await createFollow({ followedId: otherUser.id, followerId: user.id });
@@ -284,7 +284,7 @@ describe("GET /users/:userId/stories", () => {
     });
 
     it("should return status 400 if params 'userId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -292,7 +292,7 @@ describe("GET /users/:userId/stories", () => {
     });
 
     it("should return status 404 if user does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -302,7 +302,7 @@ describe("GET /users/:userId/stories", () => {
     it("should return 200 and an empty array if user has not stories", async () => {
       const user = await generateValidUser();
       await createStory(user.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const response = await app.get(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
@@ -314,7 +314,7 @@ describe("GET /users/:userId/stories", () => {
     it("should return 200 and a stories array", async () => {
       const user = await generateValidUser();
       await createStory(user.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       const channelWithStory = await createStory(otherUser.id);
 
@@ -373,7 +373,7 @@ describe("GET /users/register/me", () => {
 
     it("should return status 200 and user register data", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(route).set("Authorization", authorization);
 
@@ -416,7 +416,7 @@ describe("POST /users/:userId/follow", () => {
     });
 
     it("should return status 400 if params 'userId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -424,7 +424,7 @@ describe("POST /users/:userId/follow", () => {
     });
 
     it("should return status 404 if user does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -433,7 +433,7 @@ describe("POST /users/:userId/follow", () => {
 
     it("should return status 400 if user already follow the other user", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       await createFollow({ followedId: otherUser.id, followerId: user.id });
 
@@ -444,7 +444,7 @@ describe("POST /users/:userId/follow", () => {
 
     it("should return status 400 if params 'userId' and the requester id are the same", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
 
@@ -453,7 +453,7 @@ describe("POST /users/:userId/follow", () => {
 
     it("should return status 204", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
@@ -463,7 +463,7 @@ describe("POST /users/:userId/follow", () => {
 
     it("should add a new follow on database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const beforeCount = await prisma.follows.count();
@@ -477,7 +477,7 @@ describe("POST /users/:userId/follow", () => {
 
     it("should save a new notification on database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const beforeCount = await prisma.notifications.count();
@@ -518,7 +518,7 @@ describe("POST /users/:userId/unfollow", () => {
     });
 
     it("should return status 400 if params 'userId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -526,7 +526,7 @@ describe("POST /users/:userId/unfollow", () => {
     });
 
     it("should return status 404 if user does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -535,7 +535,7 @@ describe("POST /users/:userId/unfollow", () => {
 
     it("should return status 400 if user don't follow the other user", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
@@ -545,7 +545,7 @@ describe("POST /users/:userId/unfollow", () => {
 
     it("should return status 400 if params 'userId' and the requester id are the same", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
 
@@ -554,7 +554,7 @@ describe("POST /users/:userId/unfollow", () => {
 
     it("should return status 204", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       await createFollow({ followedId: otherUser.id, followerId: user.id });
 
@@ -565,7 +565,7 @@ describe("POST /users/:userId/unfollow", () => {
 
     it("should delete the follow from database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       await createFollow({ followedId: otherUser.id, followerId: user.id });
 
@@ -606,7 +606,7 @@ describe("PUT /users/:userId", () => {
     });
 
     it("should return status 400 if params 'userId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = {
         username: faker.fake.name,
         avatar: faker.image.avatar(),
@@ -619,7 +619,7 @@ describe("PUT /users/:userId", () => {
     });
 
     it("should return status 400 if body is no sent", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.put(`${route}/1`).set("Authorization", authorization);
 
@@ -627,7 +627,7 @@ describe("PUT /users/:userId", () => {
     });
 
     it("should return status 400 if body is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = { [faker.word.adjective()]: faker.fake.name };
 
       const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
@@ -644,7 +644,7 @@ describe("PUT /users/:userId", () => {
 
       it("should return status 400 if already have an user with the sent username", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const otherUser = await generateValidUser();
         const newBody = { ...body, username: otherUser.username };
 
@@ -655,7 +655,7 @@ describe("PUT /users/:userId", () => {
 
       it("should return status 401 if params 'userId' and token's owner id are not the same", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const otherUser = await generateValidUser();
 
         const response = await app.put(`${route}/${otherUser.id}`).set("Authorization", authorization).send(body);
@@ -665,7 +665,7 @@ describe("PUT /users/:userId", () => {
 
       it("should return status 204", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const body = {
           username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
           avatar: faker.image.avatar(),
@@ -679,7 +679,7 @@ describe("PUT /users/:userId", () => {
 
       it("should update the user on database", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const body = {
           username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
           avatar: faker.image.avatar(),

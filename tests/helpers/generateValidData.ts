@@ -21,9 +21,9 @@ async function generateValidToken(user?: Users) {
   const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
   const authorization = `Bearer ${token}`;
 
-  await createSession({ userId: id, token });
+  const session = await createSession({ userId: id, token });
 
-  return authorization;
+  return { authorization, session };
 }
 
 export { generateValidUser, generateValidToken };

@@ -43,7 +43,7 @@ describe("GET /channels", () => {
     });
 
     it("should return status 200 and an empty array if there is no channel created", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(route).set("Authorization", authorization);
 
@@ -52,7 +52,7 @@ describe("GET /channels", () => {
     });
 
     it("should return status 200 and an array of channels", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const channel = await createChannel();
 
       const response = await app.get(route).set("Authorization", authorization);

@@ -26,7 +26,25 @@ function createSession(data: CreateSessionParams) {
   return prisma.sessions.create({ data: { ...data } });
 }
 
+function updateActiveSessionId(id: number) {
+  return prisma.sessions.update({
+    where: {
+      id,
+    },
+    data: {
+      active: false,
+    },
+  });
+}
+
 type CreateUserParams = Omit<Users, "id" | "about" | "status">;
 type CreateSessionParams = Omit<Sessions, "id" | "active">;
 
-export { findActiveSessionByUserId, findUserByEmail, findUserByUsername, createUser, createSession };
+export {
+  findActiveSessionByUserId,
+  findUserByEmail,
+  findUserByUsername,
+  createUser,
+  createSession,
+  updateActiveSessionId,
+};

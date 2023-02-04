@@ -7,6 +7,17 @@ function createSession(data: CreateSessionParams) {
   });
 }
 
+function updateActiveSession(id: number) {
+  return prisma.sessions.update({
+    where: {
+      id,
+    },
+    data: {
+      active: false,
+    },
+  });
+}
+
 type CreateSessionParams = Omit<Sessions, "id" | "active">;
 
-export { createSession };
+export { createSession, updateActiveSession };

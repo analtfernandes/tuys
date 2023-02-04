@@ -47,7 +47,14 @@ async function postSignIn(data: PostSignInParams) {
   return { token, id: user.id, username: user.username, avatar: user.avatar, rankColor: user.Ranks.color };
 }
 
+async function postSignOut(userId: number) {
+  const session = await signRepository.findActiveSessionByUserId(userId);
+  if (!session) throw notFoundError();
+
+  return signRepository.updateActiveSessionId(session.id);
+}
+
 type PostSignUpParams = Omit<Users, "id" | "about" | "rankId" | "status">;
 type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
 
-export { postSignUp, postSignIn };
+export { postSignUp, postSignIn, postSignOut };

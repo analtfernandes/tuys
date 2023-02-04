@@ -54,7 +54,7 @@ describe("GET /stories/:channelId", () => {
     });
 
     it("should return 400 if channel id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/0`).set("Authorization", authorization);
 
@@ -62,7 +62,7 @@ describe("GET /stories/:channelId", () => {
     });
 
     it("should return 404 if channel does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/1`).set("Authorization", authorization);
 
@@ -72,7 +72,7 @@ describe("GET /stories/:channelId", () => {
     it("should return 200 and an stories array", async () => {
       const user = await generateValidUser();
       const channelWithStory = await createStory(user.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app.get(`${route}/${channelWithStory.id}`).set("Authorization", authorization);
 
@@ -128,7 +128,7 @@ describe("POST /stories", () => {
     });
 
     it("should return status 400 if no body is sent", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}`).set("Authorization", authorization);
 
@@ -136,7 +136,7 @@ describe("POST /stories", () => {
     });
 
     it("should return status 400 if the sent body is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = { [faker.lorem.word()]: faker.lorem.word() };
 
       const response = await app.post(`${route}`).set("Authorization", authorization).send(body);
@@ -151,7 +151,7 @@ describe("POST /stories", () => {
       };
 
       it("should return status 404 if the channel with id on body property 'channelId' does not exist", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
         const newBody = { ...body, channelId: 1 };
 
         const response = await app.post(`${route}`).set("Authorization", authorization).send(newBody);
@@ -160,7 +160,7 @@ describe("POST /stories", () => {
       });
 
       it("should return status 201 and story id", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
         const channel = await createChannel();
         const newBody = { ...body, channelId: channel.id };
 
@@ -171,7 +171,7 @@ describe("POST /stories", () => {
       });
 
       it("should save a new story on database", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
         const channel = await createChannel();
         const newBody = { ...body, channelId: channel.id };
 
@@ -186,7 +186,7 @@ describe("POST /stories", () => {
 
       it("should save a new notification on database", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const channel = await createChannel();
         const newBody = { ...body, channelId: channel.id };
         const otherUser = await generateValidUser();
@@ -231,7 +231,7 @@ describe("POST /stories/:storyId/like", () => {
     });
 
     it("should return status 400 if story id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -239,7 +239,7 @@ describe("POST /stories/:storyId/like", () => {
     });
 
     it("should return status 404 if story does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -248,7 +248,7 @@ describe("POST /stories/:storyId/like", () => {
 
     it("should return status 400 if user has already liked the story", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -262,7 +262,7 @@ describe("POST /stories/:storyId/like", () => {
 
     it("should return status 200", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -274,7 +274,7 @@ describe("POST /stories/:storyId/like", () => {
 
     it("should add a new like on database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -291,7 +291,7 @@ describe("POST /stories/:storyId/like", () => {
     it("should save a new notification on database", async () => {
       const user = await generateValidUser();
       const otherUser = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(otherUser.id);
@@ -334,7 +334,7 @@ describe("POST /stories/:storyId/unlike", () => {
     });
 
     it("should return status 400 if story id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -342,7 +342,7 @@ describe("POST /stories/:storyId/unlike", () => {
     });
 
     it("should return status 404 if story does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -351,7 +351,7 @@ describe("POST /stories/:storyId/unlike", () => {
 
     it("should return status 400 if user has not liked the story", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -363,7 +363,7 @@ describe("POST /stories/:storyId/unlike", () => {
 
     it("should return status 200", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -377,7 +377,7 @@ describe("POST /stories/:storyId/unlike", () => {
 
     it("should delete the like on database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const {
         Stories: [story],
       } = await createStory(user.id);
@@ -421,7 +421,7 @@ describe("GET /stories/:storyId/comments", () => {
     });
 
     it("should return status 400 if story id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -429,7 +429,7 @@ describe("GET /stories/:storyId/comments", () => {
     });
 
     it("should return status 404 if story does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -439,7 +439,7 @@ describe("GET /stories/:storyId/comments", () => {
     it("should return status 200 and an empty array if there is no comment", async () => {
       const user = await generateValidUser();
       const channelWithStory = await createStory(user.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
 
       const response = await app
         .get(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
@@ -452,7 +452,7 @@ describe("GET /stories/:storyId/comments", () => {
     it("should return status 200 and a comments array", async () => {
       const user = await generateValidUser();
       const channelWithStory = await createStory(user.id);
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const comment = await createComment({ userId: user.id, storyId: channelWithStory.Stories[0].id });
 
       const response = await app
@@ -508,7 +508,7 @@ describe("POST /stories/:storyId/comments", () => {
     });
 
     it("should return status 400 if story id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -516,7 +516,7 @@ describe("POST /stories/:storyId/comments", () => {
     });
 
     it("should return status 400 if no body is sent", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -524,7 +524,7 @@ describe("POST /stories/:storyId/comments", () => {
     });
 
     it("should return status 400 if the sent body is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = { [faker.lorem.word()]: faker.lorem.word() };
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
@@ -538,7 +538,7 @@ describe("POST /stories/:storyId/comments", () => {
       };
 
       it("should return status 404 if story does not exist", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
 
         const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
 
@@ -548,7 +548,7 @@ describe("POST /stories/:storyId/comments", () => {
       it("should return status 201 and the comment id", async () => {
         const user = await generateValidUser();
         const channelWithStory = await createStory(user.id);
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
 
         const response = await app
           .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
@@ -562,7 +562,7 @@ describe("POST /stories/:storyId/comments", () => {
       it("should save a new comment in database", async () => {
         const user = await generateValidUser();
         const channelWithStory = await createStory(user.id);
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
 
         const beforeCount = await prisma.comments.count();
 
@@ -578,7 +578,7 @@ describe("POST /stories/:storyId/comments", () => {
 
       it("should save a new notification on database", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const otherUser = await generateValidUser();
         const channelWithStory = await createStory(otherUser.id);
 
@@ -624,7 +624,7 @@ describe("POST /stories/:storyId/denounce", () => {
     });
 
     it("should return status 400 if story id is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
 
@@ -632,7 +632,7 @@ describe("POST /stories/:storyId/denounce", () => {
     });
 
     it("should return status 400 if no body is sent", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
 
@@ -640,7 +640,7 @@ describe("POST /stories/:storyId/denounce", () => {
     });
 
     it("should return status 400 if the sent body is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = { [faker.lorem.word()]: faker.lorem.word() };
 
       const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
@@ -654,7 +654,7 @@ describe("POST /stories/:storyId/denounce", () => {
       };
 
       it("should return status 404 if story does not exist", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
 
         const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization).send(body);
 
@@ -664,7 +664,7 @@ describe("POST /stories/:storyId/denounce", () => {
       it("should return status 204", async () => {
         const user = await generateValidUser();
         const channelWithStory = await createStory(user.id);
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
 
         const response = await app
           .post(`${route}/${channelWithStory.Stories[0].id}/${subRoute}`)
@@ -677,7 +677,7 @@ describe("POST /stories/:storyId/denounce", () => {
       it("should save a new denounce in database", async () => {
         const user = await generateValidUser();
         const channelWithStory = await createStory(user.id);
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
 
         const beforeCount = await prisma.denunciations.count();
 
@@ -694,7 +694,7 @@ describe("POST /stories/:storyId/denounce", () => {
       it(`should set the story status to '${StorieStatus.BANNED}' if there is three denounces to it`, async () => {
         const user = await generateValidUser();
         const { Stories } = await createStory(user.id);
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         await denounceStory(Stories[0].id, user.id);
         await denounceStory(Stories[0].id, user.id);
 
@@ -707,7 +707,7 @@ describe("POST /stories/:storyId/denounce", () => {
 
       it(`should set the user status to '${UserStatus.BANNED}' if user have five banned stories`, async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const channel = await createChannel();
         await createBannedStoryOfChannel(user.id, channel.id);
         await createBannedStoryOfChannel(user.id, channel.id);
@@ -724,7 +724,7 @@ describe("POST /stories/:storyId/denounce", () => {
 
       it("should save a new notification on database", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const otherUser = await generateValidUser();
         const channelWithStory = await createStory(otherUser.id);
 
@@ -769,7 +769,7 @@ describe("DELETE /stories/:storyId", () => {
     });
 
     it("should return status 400 if params 'storyId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.delete(`${route}/0`).set("Authorization", authorization);
 
@@ -777,7 +777,7 @@ describe("DELETE /stories/:storyId", () => {
     });
 
     it("should return status 404 if story does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.delete(`${route}/1`).set("Authorization", authorization);
 
@@ -786,7 +786,7 @@ describe("DELETE /stories/:storyId", () => {
 
     it("should return status 401 if user is not the owner of story", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       const { Stories } = await createStory(otherUser.id);
 
@@ -797,7 +797,7 @@ describe("DELETE /stories/:storyId", () => {
 
     it("should return status 204", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const { Stories } = await createStory(user.id);
 
       const response = await app.delete(`${route}/${Stories[0].id}`).set("Authorization", authorization);
@@ -807,7 +807,7 @@ describe("DELETE /stories/:storyId", () => {
 
     it("should delete the story in database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const { Stories } = await createStory(user.id);
 
       const beforeCount = await prisma.stories.count();
@@ -847,7 +847,7 @@ describe("PUT /stories/:storyId", () => {
     });
 
     it("should return status 400 if params 'storyId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.put(`${route}/0`).set("Authorization", authorization).send({});
 
@@ -855,7 +855,7 @@ describe("PUT /stories/:storyId", () => {
     });
 
     it("should return status 400 if no body is sent", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.put(`${route}/1`).set("Authorization", authorization);
 
@@ -863,7 +863,7 @@ describe("PUT /stories/:storyId", () => {
     });
 
     it("should return status 400 if the sent body is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
       const body = { [faker.lorem.word()]: faker.lorem.word() };
 
       const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
@@ -878,7 +878,7 @@ describe("PUT /stories/:storyId", () => {
       };
 
       it("should return status 404 if story does not exist", async () => {
-        const authorization = await generateValidToken();
+        const { authorization } = await generateValidToken();
 
         const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
 
@@ -887,7 +887,7 @@ describe("PUT /stories/:storyId", () => {
 
       it("should return status 401 if user is not the owner of story", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const otherUser = await generateValidUser();
         const { Stories } = await createStory(otherUser.id);
 
@@ -898,7 +898,7 @@ describe("PUT /stories/:storyId", () => {
 
       it("should return status 204", async () => {
         const user = await generateValidUser();
-        const authorization = await generateValidToken(user);
+        const { authorization } = await generateValidToken(user);
         const { Stories } = await createStory(user.id);
 
         const response = await app.put(`${route}/${Stories[0].id}`).set("Authorization", authorization).send(body);
@@ -945,7 +945,7 @@ describe("GET /stories", () => {
 
       await createFollow({ followedId: secondUser.id, followerId: firstUser.id });
 
-      const authorization = await generateValidToken(firstUser);
+      const { authorization } = await generateValidToken(firstUser);
       const response = await app.get(route).set("Authorization", authorization);
 
       expect(response.status).toBe(httpStatus.OK);

@@ -6,6 +6,7 @@ import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
 import { cleanDatabase } from "../helpers/cleanDatabase";
+import { updateActiveSession } from "../factories";
 
 const app = supertest(server);
 
@@ -174,5 +175,37 @@ describe("POST /auth/sign-in", () => {
 
       expect(afterCount).toBe(beforeCount + 1);
     });
+  });
+});
+
+describe("POST /auth/sign-out", () => {
+  const route = "/auth/sign-out";
+
+  it("should return status 401 when user don't have an active session", async () => {
+    const { authorization, session } = await generateValidToken();
+    await updateActiveSession(session.id);
+
+    const response = await app.post(route).set("Authorization", authorization);
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 204", async () => {
+    const { authorization } = await generateValidToken();
+
+    const response = await app.post(route).set("Authorization", authorization);
+
+    expect(response.status).toBe(httpStatus.NO_CONTENT);
+  });
+
+  it("should set the session as inactive in database", async () => {
+    const { authorization, session } = await generateValidToken();
+
+    await app.post(route).set("Authorization", authorization);
+
+    const updatedSession = await prisma.sessions.findUnique({ where: { id: session.id } });
+
+    expect(updatedSession).not.toBeNull();
+    expect(updatedSession?.active).toBe(false);
   });
 });

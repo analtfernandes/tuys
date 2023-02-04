@@ -45,7 +45,7 @@ describe("GET /ranking", () => {
 
     it("should return 200 and ranking", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const channel = await createChannel();
       const story = await createStoryOfChannel(user.id, channel.id);
       await likeStory(story.id, user.id);

@@ -45,7 +45,7 @@ describe("GET /notifications", () => {
 
     it("should return 200 and user notifications", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const notificationExpect = await createNotification(user.id);
 
       const otherUser = await generateValidUser();
@@ -95,7 +95,7 @@ describe("POST /notifications/:notificationId/read", () => {
     });
 
     it("should return status 400 if params 'notificationId' is invalid", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/[]/${subroute}`).set("Authorization", authorization);
 
@@ -103,7 +103,7 @@ describe("POST /notifications/:notificationId/read", () => {
     });
 
     it("should return status 404 if notification does not exist", async () => {
-      const authorization = await generateValidToken();
+      const { authorization } = await generateValidToken();
 
       const response = await app.post(`${route}/1/${subroute}`).set("Authorization", authorization);
 
@@ -112,7 +112,7 @@ describe("POST /notifications/:notificationId/read", () => {
 
     it("should return status 401 if notification is not of the user", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
       const notification = await createNotification(otherUser.id);
 
@@ -123,7 +123,7 @@ describe("POST /notifications/:notificationId/read", () => {
 
     it("should return status 400 if notification it's already read", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const notification = await createNotification(user.id, { read: true });
 
       const response = await app.post(`${route}/${notification.id}/${subroute}`).set("Authorization", authorization);
@@ -133,7 +133,7 @@ describe("POST /notifications/:notificationId/read", () => {
 
     it("should return status 204", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const notification = await createNotification(user.id);
 
       const response = await app.post(`${route}/${notification.id}/${subroute}`).set("Authorization", authorization);
@@ -143,7 +143,7 @@ describe("POST /notifications/:notificationId/read", () => {
 
     it("should update the notification on database", async () => {
       const user = await generateValidUser();
-      const authorization = await generateValidToken(user);
+      const { authorization } = await generateValidToken(user);
       const notification = await createNotification(user.id);
 
       await app.post(`${route}/${notification.id}/${subroute}`).set("Authorization", authorization);
