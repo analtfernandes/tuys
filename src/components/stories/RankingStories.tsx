@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
-import { useRequestQuery, useToast } from "../hooks";
+import { useRequestQuery, useToast } from "../../hooks";
 import { Story } from "./Story";
 
 export function RankingStories() {

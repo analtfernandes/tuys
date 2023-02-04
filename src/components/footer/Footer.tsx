@@ -5,7 +5,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { useRequestQuery } from "../hooks";
+import { useRequestQuery } from "../../hooks";
 
 export function Footer() {
 	const [haveNewNotification, setHaveNewNotification] = useState(false);

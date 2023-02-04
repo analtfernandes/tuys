@@ -2,7 +2,7 @@ import api from "../../services/tuys";
 import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
-import { useRequestQuery, useToast } from "../hooks";
+import { useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { useUserContext } from "../../contexts/UserContext";
 

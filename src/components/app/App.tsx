@@ -4,7 +4,7 @@ import {
 	QueryClientContextProvider,
 	UserContextProvider,
 } from "../../contexts";
-import { ToastContainer } from "../hooks";
+import { ToastContainer } from "../../hooks";
 
 import { PrivatePage } from "../privatePage/PrivatePage";
 import { Header } from "../header/Header";

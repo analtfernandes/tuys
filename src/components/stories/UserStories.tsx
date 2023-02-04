@@ -1,5 +1,5 @@
 import api from "../../services/tuys";
-import { useRequestQuery, useToast } from "../hooks";
+import { useRequestQuery, useToast } from "../../hooks";
 import { Icons } from "../utils";
 import { Title } from "../shared";
 import { Story } from "./Story";

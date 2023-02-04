@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import api from "../../services/tuys";
-import { useToast } from "../hooks";
+import { useToast } from "../../hooks";
 import { NotificationTypesEnum } from "../utils/enums";
 import { NotificationType } from "../utils/Protocols";
 import { Icons } from "../utils";

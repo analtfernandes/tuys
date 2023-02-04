@@ -1,5 +1,5 @@
 import { UseMutateFunction, useMutation, useQuery } from "react-query";
-import { queryClient } from "../../contexts/QueryClientContext";
+import { queryClient } from "../contexts/QueryClientContext";
 import { useNavigateSignIn } from "./useNavigateSignIn";
 
 type QueryResponse<Type> = {

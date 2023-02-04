@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import api from "../../services/tuys";
-import { useToast, useRequestQuery } from "../hooks";
+import { useToast, useRequestQuery } from "../../hooks";
 import { Subtitle, Title } from "../shared";
 import { RequestKeyEnum } from "../utils/enums";
 import { Channel } from "./Channel";

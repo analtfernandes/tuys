@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api, { PostSignInParams } from "../../services/tuys";
-import { useToast, useSignWithGoogle } from "../hooks";
+import { useToast, useSignWithGoogle } from "../../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";
 

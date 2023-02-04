@@ -1,5 +1,5 @@
 import api from "../../services/tuys";
-import { useRequestQuery, useToast } from "../hooks";
+import { useRequestQuery, useToast } from "../../hooks";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 import { RequestKeyEnum } from "../utils/enums";

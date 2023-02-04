@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../images/logo.png";
+import logo from "../../images/logo.png";
 import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
-import { useRequestQuery } from "../hooks";
+import { useRequestQuery } from "../../hooks";
 import { Icons } from "../utils";
 import { Search } from "./Search";
 

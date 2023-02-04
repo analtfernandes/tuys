@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api, { PostStoryParams } from "../../services/tuys";
-import { useRequestMutation, useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Button, Form } from "../shared";
 

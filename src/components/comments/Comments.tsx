@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import api from "../../../services/tuys";
+import api from "../../services/tuys";
+import { RequestKeyEnum } from "../utils/enums";
 import { useToast, useRequestQuery } from "../../hooks";
 import { Comment } from "./Comment";
 import { CreateComment } from "./CreateComment";
-import { RequestKeyEnum } from "../../utils/enums";
 
 type CommentsProps = {
 	storyId: number;

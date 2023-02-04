@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useState } from "react";
-import api from "../../../services/tuys";
+import { useUserContext } from "../../contexts/UserContext";
+import api from "../../services/tuys";
 import { useToast, useRequestMutation } from "../../hooks";
-import { RequestKeyEnum } from "../../utils/enums";
-import { Icons } from "../../utils";
-import { UserRank } from "../../shared";
-import { useUserContext } from "../../../contexts/UserContext";
+import { RequestKeyEnum } from "../utils/enums";
+import { Icons } from "../utils";
+import { UserRank } from "../shared";
 
 type CreateCommentParams = {
 	storyId: number;

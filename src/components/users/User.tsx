@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import api from "../../services/tuys";
-import { useRequestMutation, useRequestQuery, useToast } from "../hooks";
+import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";

@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api from "../../services/tuys";
-import { useToast } from "../hooks";
+import { useToast } from "../../hooks";
 import { UserType } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { Title } from "../shared";

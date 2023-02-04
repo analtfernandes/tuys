@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
 import api from "../../services/tuys";
-import { useRequestMutation, useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
-import { Comments } from "./comments/Comments";
+import { Comments } from "../comments/Comments";
 
 type StoryParams = {
 	story: StoryType;

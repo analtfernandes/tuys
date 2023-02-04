@@ -5,7 +5,7 @@ import {
 	useReducer,
 } from "react";
 import { ThemeProvider } from "styled-components";
-import { contextError } from "./contextErros";
+import { contextError } from "./contextError";
 import GlobalStyle from "../styles/globalStyles";
 import { palette, ThemeType } from "../styles/palettes";
 import { CallbackType, LocalStorageType } from "../components/utils/Protocols";

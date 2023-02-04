@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import api from "../../services/tuys";
-import { useToast, useRequestQuery } from "../hooks";
+import { useToast, useRequestQuery } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";

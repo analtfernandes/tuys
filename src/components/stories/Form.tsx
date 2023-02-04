@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../services/tuys";
 import { SetState } from "../utils/Protocols";
 import { Button } from "../shared";
-import { useRequestMutation, useToast } from "../hooks";
+import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 
 type WrapperProps = {

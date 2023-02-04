@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
-import { useRequestQuery } from "../hooks";
+import { useRequestQuery } from "../../hooks";
 import { UserRank } from "../shared";
 import { Icons } from "../utils";
 

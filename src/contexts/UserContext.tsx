@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { SetState, UserType } from "../components/utils/Protocols";
-import { contextError } from "./contextErros";
+import { contextError } from "./contextError";
 
 type UserContextType = {
 	user: UserType;
