@@ -179,7 +179,7 @@ const Following = styled.div`
 		span {
 			font-size: 0.8rem;
 			font-weight: 700;
-			color: ${(props) => props.theme.colors.pastelBlue};
+			color: ${(props) => props.theme.colors.blue};
 		}
 
 		@media (max-width: 400px) {

@@ -11,6 +11,8 @@ export function Themes() {
 	const themes = {
 		light: "light",
 		dark: "dark",
+		melancholic: "melancholic",
+		highlight: "highlight",
 	};
 
 	function handleChange(newTheme: string) {
@@ -43,6 +45,22 @@ export function Themes() {
 					/>
 					<span>Dark</span>
 				</li>
+				<li>
+					<input
+						type="radio"
+						checked={theme.name === themes.melancholic}
+						onChange={() => handleChange(themes.melancholic)}
+					/>
+					<span>Melancholic</span>
+				</li>
+				<li>
+					<input
+						type="radio"
+						checked={theme.name === themes.highlight}
+						onChange={() => handleChange(themes.highlight)}
+					/>
+					<span>Highlight</span>
+				</li>
 			</ul>
 		</Wrapper>
 	);
@@ -65,7 +83,7 @@ const Wrapper = styled.section`
 
 			input {
 				accent-color: ${(props) => props.theme.colors.pink};
-                cursor: pointer;
+				cursor: pointer;
 			}
 
 			span {

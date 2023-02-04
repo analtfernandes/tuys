@@ -51,7 +51,7 @@ const Wrapper = styled.div<WrapperProps>`
 		margin: ${(props) => props.margin};
 		background-color: ${(props) => props.theme.colors.white};
 		box-shadow: 0 0 4px 1px
-			${(props) => props.getBorderColor(props.theme.colors.black, 0.25)};
+			${(props) => props.getBorderColor(props.theme.colors.darkGray, 0.25)};
 		transition: all ease 0.1s;
 
 		@media (max-width: 400px) {

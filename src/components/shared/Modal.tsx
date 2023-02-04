@@ -148,6 +148,11 @@ const Wrapper = styled(ReactModal)`
 const FormStyle = styled(Form)`
 	&& {
 		width: 100%;
+
+		p {
+			color: ${(props) => props.theme.colors.text};
+			margin: 3px 0;
+		}
 	}
 `;
 

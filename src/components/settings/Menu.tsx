@@ -121,7 +121,7 @@ const Option = styled.div`
 	justify-content: space-between;
 	padding: 10px;
 	background-color: ${(props) => props.theme.colors.pastelBlue};
-	color: ${(props) => props.theme.colors.white};
+	color: #f2f2f2;
 	font-size: 1.2rem;
 
 	:hover {

@@ -33,6 +33,14 @@ function reducer<Type>(theme: Type, action: ReducerAction) {
 		return themes.dark;
 	}
 
+	if (action.type === "melancholic") {
+		return themes.melancholic;
+	}
+
+	if (action.type === "highlight") {
+		return themes.highlight;
+	}
+
 	return themes.light;
 }
 

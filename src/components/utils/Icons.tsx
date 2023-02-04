@@ -1,6 +1,5 @@
 import { TbBookOff } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
-import { GrStatusInfo } from "react-icons/gr";
 import { FaRegCommentDots, FaBook, FaAward } from "react-icons/fa";
 import {
 	AiFillBook,
@@ -14,6 +13,7 @@ import {
 	AiFillEye,
 	AiFillEyeInvisible,
 	AiFillPicture,
+	AiOutlineInfoCircle
 } from "react-icons/ai";
 import {
 	BsBellFill,
@@ -98,7 +98,7 @@ const IconsTypes = Object.freeze({
 	stories: BsBookFill,
 	following: AiOutlinePlusCircle,
 	rank: FaAward,
-	status: GrStatusInfo,
+	status: AiOutlineInfoCircle,
 	unfollow: AiOutlineMinus,
 	follow: AiOutlinePlus,
 	theme: AiOutlineEye,

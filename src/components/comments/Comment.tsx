@@ -52,6 +52,7 @@ const Wrapper = styled.div`
 	display: flex;
 	background-color: ${(props) => props.theme.colors.lightGray};
 	border-bottom: 1px solid ${(props) => props.theme.colors.text};
+	color: ${(props) => props.theme.colors.black};
 	font-size: 0.9rem;
 
 	> div {

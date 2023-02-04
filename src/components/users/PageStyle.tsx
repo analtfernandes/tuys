@@ -48,7 +48,7 @@ const Header = styled.div`
 	h1 {
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: ${(props) => props.theme.colors.black};
+		color: ${(props) => props.theme.colors.text};
 		margin-left: 20px;
 	}
 
