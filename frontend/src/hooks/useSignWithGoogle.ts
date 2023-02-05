@@ -4,11 +4,13 @@ import { firebaseApp } from "../config/firebase";
 import { useThemeContext, useUserContext } from "../contexts";
 import api from "../services/tuys";
 import { useToast } from "./useToast";
+import { useLocalStorage } from "./useLocalStorage";
 
 function useSignWithGoogle() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
 	const { setLocalTheme } = useThemeContext();
+	const { localData, addInLocalStorage } = useLocalStorage();
 	const navigate = useNavigate();
 
 	const googleProvider = new GoogleAuthProvider();
@@ -40,14 +42,11 @@ function useSignWithGoogle() {
 						text: "Login realizado com sucesso!",
 					});
 
-					const localData = JSON.parse(
-						localStorage.getItem("tuys.com") || "{}"
-					);
-					localStorage.setItem(
-						"tuys.com",
-						JSON.stringify({ ...localData, ...response })
-					);
-					if (response) setUser({ ...response });
+					if (response) {
+						addInLocalStorage({ ...response });
+						setUser({ ...response });
+					}
+
 					setLocalTheme(localData.theme || "light");
 
 					navigate("/");

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api, { PostSignInParams } from "../../services/tuys";
-import { useToast, useSignWithGoogle } from "../../hooks";
+import { useToast, useSignWithGoogle, useLocalStorage } from "../../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";
 
@@ -10,6 +10,7 @@ export default function SignIn() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
 	const { setLocalTheme } = useThemeContext();
+	const { localData, addInLocalStorage } = useLocalStorage();
 	const signUpWithGoogle = useSignWithGoogle();
 	const [form, setForm] = useState({} as PostSignInParams);
 
@@ -34,12 +35,11 @@ export default function SignIn() {
 					text: "Login realizado com sucesso!",
 				});
 
-				const localData = JSON.parse(localStorage.getItem("tuys.com") || "{}");
-				localStorage.setItem(
-					"tuys.com",
-					JSON.stringify({ ...localData, ...response })
-				);
-				if(response) setUser({ ...response });
+				if (response) {
+					addInLocalStorage({ ...response });
+					setUser({ ...response });
+				}
+
 				setLocalTheme(localData.theme || "light");
 
 				navigate("/");

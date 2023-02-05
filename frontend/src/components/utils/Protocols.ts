@@ -104,7 +104,7 @@ type LocalStorageType = {
 	username: string;
 	avatar: string;
 	token: string;
-	theme: "light" | "dark";
+	theme: "light" | "dark" | "melancholic" | "highlight";
 };
 
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;

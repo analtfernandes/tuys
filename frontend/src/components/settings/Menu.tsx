@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api from "../../services/tuys";
-import { useToast } from "../../hooks";
+import { useLocalStorage, useToast } from "../../hooks";
 import { UserType } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { Title } from "../shared";
@@ -15,6 +15,7 @@ export function Menu() {
 	const toast = useToast();
 	const { setUser } = useUserContext();
 	const { setLocalTheme } = useThemeContext();
+	const { clearLocalStorage } = useLocalStorage();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -38,13 +39,7 @@ export function Menu() {
 					text: "Volte mais tarde para no contar suas histórias! :)",
 				});
 
-				const localData = JSON.parse(localStorage.getItem("tuys.com") || "{}");
-
-				if (localData) {
-					const newLocalData = { theme: localData.theme || "light" };
-					localStorage.setItem("tuys.com", JSON.stringify(newLocalData));
-				}
-
+				clearLocalStorage();
 				setUser({} as UserType);
 				setLocalTheme("light");
 

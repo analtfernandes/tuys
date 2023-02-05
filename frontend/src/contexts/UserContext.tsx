@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { SetState, UserType } from "../components/utils/Protocols";
+import { useLocalStorage } from "../hooks";
 import { contextError } from "./contextError";
 
 type UserContextType = {
@@ -10,10 +11,9 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | null>(null);
 
 export function UserContextProvider({ children }: React.PropsWithChildren) {
-	const userData: UserType | undefined = JSON.parse(
-		localStorage.getItem("tuys.com") || ""
-	);
-	const [user, setUser] = useState(userData || ({} as UserType));
+	const { localData } = useLocalStorage();
+	const { theme, ...userData } = localData;
+	const [user, setUser] = useState((userData || {}) as UserType);
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>

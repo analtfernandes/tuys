@@ -9,6 +9,7 @@ import { contextError } from "./contextError";
 import GlobalStyle from "../styles/globalStyles";
 import { palette, ThemeType } from "../styles/palettes";
 import { CallbackType, LocalStorageType } from "../components/utils/Protocols";
+import { useLocalStorage } from "../hooks";
 
 type ThemeContextType = {
 	theme: ThemeType;
@@ -44,42 +45,36 @@ function reducer<Type>(theme: Type, action: ReducerAction) {
 	return themes.light;
 }
 
-function saveTheme(theme: string) {
-	const localStorageKey = "tuys.com";
-	const localdata = JSON.parse(localStorage.getItem(localStorageKey) || "");
+type GetDefaultThemeParams = {
+	localData: LocalStorageType;
+	addInLocalStorage: CallbackType;
+};
 
-	localStorage.setItem(
-		localStorageKey,
-		JSON.stringify({ ...localdata, theme })
-	);
-}
-
-function getDefaultTheme() {
-	const localStorageKey = "tuys.com";
-	const localdata = JSON.parse(
-		localStorage.getItem(localStorageKey) || ""
-	) as LocalStorageType;
-
-	if (!localdata || !localdata.theme) {
-		localStorage.setItem(
-			localStorageKey,
-			JSON.stringify({ ...localdata, theme: "light" })
-		);
+function getDefaultTheme({
+	localData,
+	addInLocalStorage,
+}: GetDefaultThemeParams) {
+	if (!localData || !localData.theme) {
+		addInLocalStorage({ theme: "light" });
 		return themes.light;
 	}
 
-	if (!localdata.token) {
+	if (!localData.token) {
 		return themes.light;
 	}
 
-	return themes[localdata.theme] || themes.light;
+	return themes[localData.theme] || themes.light;
 }
 
 export function ThemeContextProvider({ children }: PropsWithChildren) {
-	const [theme, dispatch] = useReducer(reducer, getDefaultTheme());
+	const { localData, addInLocalStorage } = useLocalStorage();
+	const [theme, dispatch] = useReducer(
+		reducer,
+		getDefaultTheme({ localData, addInLocalStorage })
+	);
 
-	function changeTheme(theme: string) {
-		saveTheme(theme);
+	function changeTheme(theme: "light" | "dark" | "melancholic" | "highlight") {
+		addInLocalStorage({ theme });
 		return dispatch({ type: theme });
 	}
 

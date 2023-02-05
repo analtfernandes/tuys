@@ -3,13 +3,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
-import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
+import {
+	useLocalStorage,
+	useRequestMutation,
+	useRequestQuery,
+	useToast,
+} from "../../hooks";
 import { Icons } from "../utils";
 import { Button, Form, Title } from "../shared";
 
 export function Perfil() {
 	const navigate = useNavigate();
 	const toast = useToast();
+	const { addInLocalStorage } = useLocalStorage();
 	const { user, setUser } = useUserContext();
 
 	const { data: userRegister } = useRequestQuery(
@@ -45,13 +51,7 @@ export function Perfil() {
 
 		if (newData) {
 			const { username, avatar } = newData;
-			const localData = JSON.parse(localStorage.getItem("tuys.com") || "");
-
-			if (localData) {
-				const newLocalData = { ...localData, username, avatar };
-				localStorage.setItem("tuys.com", JSON.stringify(newLocalData));
-			}
-
+			addInLocalStorage({ username, avatar });
 			setUser((prev) => ({ ...prev, username, avatar }));
 		}
 	}
