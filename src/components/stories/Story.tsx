@@ -104,7 +104,9 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	if (requestDenounce.isError) {
 		toast({
 			type: "error",
-			text: "Não foi enviar a denúncia. Tente novamente.",
+			text:
+				requestDenounce.error ||
+				"Não foi possível enviar a denúncia. Tente novamente.",
 		});
 		requestDenounce.reset();
 	}

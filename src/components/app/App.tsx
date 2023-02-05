@@ -20,6 +20,7 @@ import { Stories } from "../stories/Stories";
 import { Settings, Perfil, Themes } from "../settings";
 import SignUp from "../sign/SignUp";
 import SignIn from "../sign/SignIn";
+import { NotFoundError } from "../errors/NotFoundError";
 
 function App() {
 	return (
@@ -60,6 +61,8 @@ function App() {
 									<Route path="themes" element={<Themes />} />
 								</Route>
 							</Route>
+
+							<Route path="*" element={<NotFoundError />} />
 						</Routes>
 					</UserContextProvider>
 				</QueryClientContextProvider>
