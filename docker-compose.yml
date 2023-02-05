@@ -1,0 +1,48 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 2346:5432
+    env_file:
+      - ./backend/.env
+    volumes:
+      - volume_postgres:/var/lib/postgresql/data
+
+  app_backend:
+    build: ./backend
+    container_name: app_backend
+    ports:
+      - 5000:5000
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/usr/src
+      - /usr/src/node_modules
+    entrypoint: dockerize -wait tcp://postgres:5432 -timeout 20s docker-entrypoint.sh
+    command: "npm run start"
+    depends_on:
+      - postgres
+
+  app_frontend:
+    build: ./frontend
+    container_name: app_frontend
+    volumes:
+      - build_frontend:/var/www/html
+    depends_on:
+      - app_backend
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - build_frontend:/var/www/html
+    depends_on:
+      - app_frontend
+
+volumes:
+  build_frontend:
+  volume_postgres:
