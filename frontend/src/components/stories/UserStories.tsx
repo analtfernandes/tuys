@@ -1,7 +1,7 @@
 import api from "../../services/tuys";
 import { useRequestQuery, useToast } from "../../hooks";
 import { Icons } from "../utils";
-import { Title } from "../shared";
+import { Title, Loading } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
 import { RequestKeyEnum } from "../utils/enums";
@@ -16,7 +16,7 @@ export function UserStories() {
 
 	const {
 		isError,
-		isSuccess,
+		isLoading,
 		data: stories,
 		...request
 	} = useRequestQuery(
@@ -31,11 +31,6 @@ export function UserStories() {
 				request.error ||
 				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
 		});
-		return null;
-	}
-
-	if (!stories) {
-		return null;
 	}
 
 	function getUserStories() {
@@ -60,13 +55,18 @@ export function UserStories() {
 			</Title>
 
 			<div>
-				{stories.length === 0 && (
-					<span>Nenhuma história foi criada ainda.</span>
-				)}
+				{isLoading && <Loading />}
 
-				{stories.map((story, index) => (
-					<Story key={index} story={story} showChannel={true} />
-				))}
+				<>
+					{stories && stories.length === 0 && (
+						<span>Nenhuma história foi criada ainda.</span>
+					)}
+
+					{stories &&
+						stories.map((story, index) => (
+							<Story key={index} story={story} showChannel={true} />
+						))}
+				</>
 			</div>
 		</Wrapper>
 	);

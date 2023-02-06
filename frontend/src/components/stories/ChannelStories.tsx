@@ -5,7 +5,7 @@ import { useToast, useRequestQuery } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Button, Title } from "../shared";
+import { Button, Loading, Title } from "../shared";
 import { CreateStory } from "./CreateStory";
 import { Wrapper } from "./Stories";
 import { Story } from "./Story";
@@ -19,6 +19,7 @@ export function ChannelStories() {
 	const {
 		isError,
 		isSuccess,
+		isLoading,
 		data: haveMoreStories,
 		...request
 	} = useRequestQuery([RequestKeyEnum.stories, location?.channelId || 1], () =>
@@ -41,7 +42,6 @@ export function ChannelStories() {
 				request.error ||
 				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
 		});
-		return null;
 	}
 
 	if (
@@ -58,6 +58,8 @@ export function ChannelStories() {
 			<Title>{stories[0]?.channel || location.channelName}</Title>
 
 			<CreateStory channelId={location.channelId} />
+
+			{isLoading && <Loading />}
 
 			{stories.length === 0 && (
 				<div>

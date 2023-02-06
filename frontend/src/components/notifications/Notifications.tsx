@@ -5,7 +5,7 @@ import { useToast } from "../../hooks";
 import { NotificationTypesEnum } from "../utils/enums";
 import { NotificationType } from "../utils/Protocols";
 import { Icons } from "../utils";
-import { Subtitle, Title } from "../shared";
+import { Loading, Subtitle, Title } from "../shared";
 
 type NotificationProps = {
 	read: boolean;
@@ -62,6 +62,8 @@ export function Notifications() {
 	return (
 		<Wrapper>
 			<Title>Notificações</Title>
+
+			{isLoading && <Loading />}
 
 			{!isLoading && notifications.length === 0 && (
 				<Subtitle>Não há nenhuma notificação ainda.</Subtitle>

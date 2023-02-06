@@ -4,14 +4,14 @@ import styled from "styled-components";
 import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
 import { useRequestQuery } from "../../hooks";
-import { UserRank } from "../shared";
+import { Loading, UserRank } from "../shared";
 import { Icons } from "../utils";
 
 export function Search() {
 	const { user } = useUserContext();
 	const [search, setSearch] = useState("");
 	const navigate = useNavigate();
-	const { data: users } = useRequestQuery(
+	const { isLoading, data: users } = useRequestQuery(
 		["users", search, user.username],
 		() => api.getUsers(search)
 	);
@@ -36,6 +36,8 @@ export function Search() {
 			{search.length > 0 && (
 				<Users>
 					<>
+						{isLoading && <Loading />}
+
 						{users &&
 							users.map((user, index) => (
 								<User key={index} onClick={() => goToUserPage(user.id)}>
@@ -57,6 +59,7 @@ export function Search() {
 									)}
 								</User>
 							))}
+
 						{users && users.length === 0 && (
 							<span>Nenhum resultado encontrado!</span>
 						)}
@@ -92,7 +95,7 @@ const Wrapper = styled.div`
 			}
 		}
 
-		svg {
+		> svg {
 			font-size: 1.01rem;
 			position: absolute;
 			right: 15px;

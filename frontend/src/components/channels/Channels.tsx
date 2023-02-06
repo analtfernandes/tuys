@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import api from "../../services/tuys";
 import { useToast, useRequestQuery } from "../../hooks";
-import { Subtitle, Title } from "../shared";
+import { Loading, Subtitle, Title } from "../shared";
 import { RequestKeyEnum } from "../utils/enums";
 import { Channel } from "./Channel";
 
@@ -9,6 +9,7 @@ export function Channels() {
 	const toast = useToast();
 	const {
 		isError,
+		isLoading,
 		data: channels,
 		...request
 	} = useRequestQuery([RequestKeyEnum.channels], () => api.getChannels());
@@ -20,29 +21,27 @@ export function Channels() {
 				request.error ||
 				"Não foi possível carregar os canais. Por favor, recarregue a página.",
 		});
-		return null;
-	}
-
-	if (typeof channels !== "object") {
-		return <></>;
 	}
 
 	return (
 		<Wrapper>
-			{channels.length > 0 && (
-				<>
-					<Title>Canais</Title>
-					<Subtitle>
-						Escolha um dos canais para começar a escrever sua estória.
-					</Subtitle>
+			<Title>Canais</Title>
 
+			<Subtitle>
+				Escolha um dos canais para começar a escrever sua estória.
+			</Subtitle>
+
+			{isLoading && <Loading />}
+
+			<>
+				{channels && channels.length > 0 && (
 					<div>
 						{channels.map((channel, index) => (
 							<Channel key={index} {...channel} />
 						))}
 					</div>
-				</>
-			)}
+				)}
+			</>
 		</Wrapper>
 	);
 }

@@ -10,7 +10,7 @@ import {
 	useToast,
 } from "../../hooks";
 import { Icons } from "../utils";
-import { Button, Form, Title } from "../shared";
+import { Button, Form, Loading, Title } from "../shared";
 
 export function Perfil() {
 	const navigate = useNavigate();
@@ -18,7 +18,7 @@ export function Perfil() {
 	const { addInLocalStorage } = useLocalStorage();
 	const { user, setUser } = useUserContext();
 
-	const { data: userRegister } = useRequestQuery(
+	const { data: userRegister, ...requestRegister } = useRequestQuery(
 		["register", user.id, user.username],
 		() => api.getRegister()
 	);
@@ -93,6 +93,8 @@ export function Perfil() {
 					{window.innerWidth <= 500 && <Icons type="return" />}
 					<Title>Perfil</Title>
 				</Menu>
+
+				{requestRegister.isLoading && <Loading />}
 
 				{newData && (
 					<Form onSubmit={handleUpdate}>

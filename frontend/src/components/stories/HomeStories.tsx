@@ -1,15 +1,16 @@
 import api from "../../services/tuys";
+import { RequestKeyEnum } from "../utils/enums";
 import { useRequestQuery, useToast } from "../../hooks";
+import { Loading } from "../shared";
 import { Story } from "./Story";
 import { Wrapper } from "./Stories";
-import { RequestKeyEnum } from "../utils/enums";
 
 export function HomeStories() {
 	const toast = useToast();
 
 	const {
 		isError,
-		isSuccess,
+		isLoading,
 		data: stories,
 		...request
 	} = useRequestQuery([RequestKeyEnum.stories, RequestKeyEnum.home], () =>
@@ -23,25 +24,26 @@ export function HomeStories() {
 				request.error ||
 				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
 		});
-		return null;
-	}
-
-	if (!stories) {
-		return null;
 	}
 
 	return (
 		<Wrapper>
 			<div>
-				{stories.length === 0 && (
-					<span>
-						Você ainda não escreveu nenhuma história! <br /> Ei, já segue alguém
-						para ver as histórias deles aqui também?
-					</span>
-				)}
-				{stories.map((story, index) => (
-					<Story key={index} story={story} showChannel={true} />
-				))}
+				{isLoading && <Loading />}
+
+				<>
+					{stories && stories.length === 0 && (
+						<span>
+							Você ainda não escreveu nenhuma história! <br /> Ei, já segue
+							alguém para ver as histórias deles aqui também?
+						</span>
+					)}
+
+					{stories &&
+						stories.map((story, index) => (
+							<Story key={index} story={story} showChannel={true} />
+						))}
+				</>
 			</div>
 		</Wrapper>
 	);

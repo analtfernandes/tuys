@@ -3,13 +3,14 @@ import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
 import { useRequestQuery, useToast } from "../../hooks";
 import { Story } from "./Story";
+import { Loading } from "../shared";
 
 export function RankingStories() {
 	const toast = useToast();
 
 	const {
 		isError,
-		isSuccess,
+		isLoading,
 		data: stories,
 		...request
 	} = useRequestQuery([RequestKeyEnum.ranking], () => api.getRanking());
@@ -24,26 +25,27 @@ export function RankingStories() {
 		return null;
 	}
 
-	if (!stories) {
-		return null;
-	}
-
 	return (
 		<StoriesWrapper>
 			<div>
-				{stories.length === 0 && (
-					<span>Nenhuma história foi curtida ainda...</span>
-				)}
+				{isLoading && <Loading />}
 
-				{stories.map((story, index) => (
-					<div key={index}>
-						<Division>
-							<span>{index + 1}</span>
-							<div></div>
-						</Division>
-						<Story story={story} showChannel={true} />
-					</div>
-				))}
+				<>
+					{stories && stories.length === 0 && (
+						<span>Nenhuma história foi curtida ainda...</span>
+					)}
+
+					{stories &&
+						stories.map((story, index) => (
+							<div key={index}>
+								<Division>
+									<span>{index + 1}</span>
+									<div></div>
+								</Division>
+								<Story story={story} showChannel={true} />
+							</div>
+						))}
+				</>
 			</div>
 		</StoriesWrapper>
 	);

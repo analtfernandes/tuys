@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
 import { useToast, useRequestQuery } from "../../hooks";
+import { Loading } from "../shared";
 import { Comment } from "./Comment";
 import { CreateComment } from "./CreateComment";
 
@@ -26,6 +27,7 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 
 	const {
 		isError,
+		isLoading,
 		data: comments,
 		...request
 	} = useRequestQuery(
@@ -61,23 +63,25 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 		setTimeout(() => setHeight(autoHeight), 100);
 	}
 
-	if (typeof comments !== "object") {
-		return <></>;
-	}
-
 	return (
 		<Wrapper
 			height={height}
 			padding={height === defaultHeight ? "0 15px" : "20px 15px"}
 			margin={height === defaultHeight ? "0" : "0 0 20px 0"}
 		>
-			<div>
-				{comments.map((comment, index) => (
-					<Comment key={index} comment={comment} />
-				))}
+			<>
+				{isLoading && <Loading />}
 
-				{comments.length > 0 && <div ref={scrollToLast} />}
-			</div>
+				{comments && (
+					<div>
+						{comments.map((comment, index) => (
+							<Comment key={index} comment={comment} />
+						))}
+
+						{comments.length > 0 && <div ref={scrollToLast} />}
+					</div>
+				)}
+			</>
 
 			<CreateComment storyId={storyId} />
 		</Wrapper>
