@@ -23,7 +23,7 @@ export function Notifications() {
 	const notificationIconsType: NotificationIconsType = {
 		[NotificationTypesEnum.NEW_COMMENT]: "comment",
 		[NotificationTypesEnum.NEW_DENUNCIATION]: "denounce",
-		[NotificationTypesEnum.NEW_LIKE]: "follower",
+		[NotificationTypesEnum.NEW_FOLLOW]: "follower",
 		[NotificationTypesEnum.NEW_LIKE]: "unlike",
 		[NotificationTypesEnum.NEW_STORY]: "edit",
 	};
