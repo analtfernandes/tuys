@@ -59,6 +59,13 @@ export function Notifications() {
 		})();
 	}, [notifications]);
 
+	function getNotificationHtmlMessage(text: string) {
+		return text
+			.split(" ")
+			.map((word) => word.replace(/^#/, "<b>").replace(/#$/, "</b>"))
+			.join(" ");
+	}
+
 	return (
 		<Wrapper>
 			<Title>Notificações</Title>
@@ -75,7 +82,11 @@ export function Notifications() {
 						<Notification key={index} read={notification.read}>
 							<div>
 								<Icons type={notificationIconsType[notification.type]} />
-								<span>{notification.text}</span>
+								<span
+									dangerouslySetInnerHTML={{
+										__html: getNotificationHtmlMessage(notification.text),
+									}}
+								/>
 							</div>
 							<span>
 								{new Date(notification.date).toLocaleDateString("pt-br")}
@@ -135,6 +146,10 @@ const Notification = styled.div<NotificationProps>`
 		svg {
 			font-size: 1.5rem;
 			color: ${(props) => props.theme.colors.darkGray};
+		}
+
+		b {
+			font-weight: 700;
 		}
 	}
 
