@@ -2,7 +2,7 @@ import { NotificationType } from "@prisma/client";
 import { prisma } from "../database";
 
 function findNotifications(userId: number) {
-  return prisma.notifications.findMany({ where: { toUserId: userId } });
+  return prisma.notifications.findMany({ where: { toUserId: userId }, orderBy: { id: "desc" } });
 }
 
 function findNotificationById(id: number) {
