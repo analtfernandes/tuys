@@ -5,6 +5,7 @@ type UserRankParams = {
 	alt: string;
 	background: string;
 	size?: "normal" | "small" | "large";
+	[key: string]: any;
 };
 
 type WrapperProps = {
@@ -18,9 +19,11 @@ export function UserRank({
 	image,
 	alt,
 	size = "normal",
+	...other
 }: UserRankParams) {
 	return (
 		<Wrapper
+			{...other}
 			background={background || "#000000"}
 			size={size}
 			admin={background.length > 30}

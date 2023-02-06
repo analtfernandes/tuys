@@ -8,6 +8,7 @@ import { Icons } from "../utils";
 import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
+import { useNavigate } from "react-router-dom";
 
 type StoryParams = {
 	story: StoryType;
@@ -24,6 +25,7 @@ type ModalConfig = {
 };
 
 export function Story({ story, showChannel = true }: StoryParams) {
+	const navigate = useNavigate();
 	const requestKey = [
 		RequestKeyEnum.stories,
 		RequestKeyEnum.story,
@@ -159,10 +161,17 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						background={owner.rankColor}
 						image={owner.avatar}
 						alt={owner.username}
+						onClick={() => navigate(`/user/${story.userId}`)}
+						style={{ cursor: "pointer" }}
 					/>
 
 					<div>
-						<span>{owner.username}</span>
+						<span
+							onClick={() => navigate(`/user/${story.userId}`)}
+							style={{ cursor: "pointer" }}
+						>
+							{owner.username}
+						</span>
 						{showChannel && <Channel>#{story.channel.toUpperCase()}</Channel>}
 					</div>
 
