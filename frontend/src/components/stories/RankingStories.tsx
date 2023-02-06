@@ -31,6 +31,10 @@ export function RankingStories() {
 	return (
 		<StoriesWrapper>
 			<div>
+				{stories.length === 0 && (
+					<span>Nenhuma história foi curtida ainda...</span>
+				)}
+
 				{stories.map((story, index) => (
 					<div key={index}>
 						<Division>
@@ -60,6 +64,13 @@ const StoriesWrapper = styled.section`
 		> div {
 			width: 100%;
 			margin-top: 20px;
+		}
+
+		> span {
+			line-height: 20px;
+			margin-top: 30px;
+			font-size: 1.1rem;
+			color: ${(props) => props.theme.colors.text};
 		}
 	}
 

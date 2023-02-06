@@ -34,6 +34,13 @@ export const Wrapper = styled.section`
 		justify-content: initial;
 		flex-wrap: wrap;
 		margin-bottom: 80px;
+
+		> span {
+			line-height: 20px;
+			margin-top: 30px;
+			font-size: 1.1rem;
+			color: ${(props) => props.theme.colors.text};
+		}
 	}
 
 	@media (max-width: 345px) {

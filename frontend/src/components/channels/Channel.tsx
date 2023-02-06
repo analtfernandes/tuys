@@ -14,7 +14,7 @@ export function Channel({ id, name, background }: ChannelType) {
 			.replaceAll("/", "-")
 			.replaceAll("?", "-")
 			.toLocaleLowerCase();
-		navigate(`/channels/${route}`, { state: { channelId: id } });
+		navigate(`/channels/${route}`, { state: { channelId: id, channelName: name } });
 	}
 
 	return (

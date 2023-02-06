@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../../services/tuys";
 import { useToast, useRequestQuery } from "../../hooks";
@@ -13,6 +13,7 @@ import { Story } from "./Story";
 export function ChannelStories() {
 	const [stories, setStories] = useState<StoryType[]>([]);
 	const { state: location } = useLocation();
+	const navigate = useNavigate();
 	const toast = useToast();
 
 	const {
@@ -20,9 +21,14 @@ export function ChannelStories() {
 		isSuccess,
 		data: haveMoreStories,
 		...request
-	} = useRequestQuery([RequestKeyEnum.stories, location.channelId], () =>
-		api.getStoriesFromChannel(location.channelId)
+	} = useRequestQuery([RequestKeyEnum.stories, location?.channelId || 1], () =>
+		api.getStoriesFromChannel(location?.channelId || 1)
 	);
+
+	if (!location) {
+		navigate("/channels");
+		return null;
+	}
 
 	function updateStoriesFunction() {
 		if (haveMoreStories) setStories([...haveMoreStories]);
@@ -38,18 +44,31 @@ export function ChannelStories() {
 		return null;
 	}
 
-	if (isSuccess && haveMoreStories && stories.length === 0) {
+	if (
+		isSuccess &&
+		haveMoreStories &&
+		haveMoreStories.length > 0 &&
+		stories.length === 0
+	) {
 		setStories([...haveMoreStories]);
 	}
 
 	return (
 		<Wrapper>
+			<Title>{stories[0]?.channel || location.channelName}</Title>
+
+			<CreateStory channelId={location.channelId} />
+
+			{stories.length === 0 && (
+				<div>
+					<span>
+						Esse canal ainda não possui histórias... Que tal ser o primeiro?
+					</span>
+				</div>
+			)}
+
 			{stories.length > 0 && (
 				<>
-					<Title>{stories[0].channel}</Title>
-
-					<CreateStory channelId={location.channelId} />
-
 					{haveMoreStories && haveMoreStories.length > stories.length && (
 						<>
 							<Button

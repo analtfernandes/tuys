@@ -12,7 +12,9 @@ export function HomeStories() {
 		isSuccess,
 		data: stories,
 		...request
-	} = useRequestQuery([RequestKeyEnum.stories, RequestKeyEnum.home], () => api.getStories());
+	} = useRequestQuery([RequestKeyEnum.stories, RequestKeyEnum.home], () =>
+		api.getStories()
+	);
 
 	if (isError) {
 		toast({
@@ -31,6 +33,12 @@ export function HomeStories() {
 	return (
 		<Wrapper>
 			<div>
+				{stories.length === 0 && (
+					<span>
+						Você ainda não escreveu nenhuma história! <br /> Ei, já segue alguém
+						para ver as histórias deles aqui também?
+					</span>
+				)}
 				{stories.map((story, index) => (
 					<Story key={index} story={story} showChannel={true} />
 				))}

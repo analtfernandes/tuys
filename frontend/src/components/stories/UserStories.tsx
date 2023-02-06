@@ -60,6 +60,10 @@ export function UserStories() {
 			</Title>
 
 			<div>
+				{stories.length === 0 && (
+					<span>Nenhuma história foi criada ainda.</span>
+				)}
+
 				{stories.map((story, index) => (
 					<Story key={index} story={story} showChannel={true} />
 				))}
