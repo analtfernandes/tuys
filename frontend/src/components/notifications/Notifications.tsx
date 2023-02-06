@@ -62,7 +62,7 @@ export function Notifications() {
 	function getNotificationHtmlMessage(text: string) {
 		return text
 			.split(" ")
-			.map((word) => word.replace(/^#/, "<b>").replace(/#$/, "</b>"))
+			.map((word) => word.replace(/^#/, "<b>").replace("#", "</b>"))
 			.join(" ");
 	}
 

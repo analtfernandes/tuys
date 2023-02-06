@@ -96,7 +96,7 @@ function findFollow(data: FollowParams) {
 function findFollowers(userId: number) {
   return prisma.follows.findMany({
     where: { followedId: userId },
-    select: { Follower: { select: { username: true } } },
+    select: { Followed: { select: { username: true } } },
     orderBy: { id: "desc" },
   });
 }

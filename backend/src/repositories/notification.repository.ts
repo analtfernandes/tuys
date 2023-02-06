@@ -1,4 +1,4 @@
-import { NotificationType } from "@prisma/client";
+import { NotificationType, Stories } from "@prisma/client";
 import { prisma } from "../database";
 
 function findNotifications(userId: number) {
@@ -30,12 +30,40 @@ function createNewDenounceNotification(text: string, userId: number) {
   return prisma.notifications.create({ data: { text, toUserId: userId, type: NotificationType.NEW_DENUNCIATION } });
 }
 
-function createNewLikeNotification(text: string, userId: number) {
-  return prisma.notifications.create({ data: { text, toUserId: userId, type: NotificationType.NEW_LIKE } });
+function createNewLikeNotification(story: Stories, userId: number) {
+  return prisma.$transaction(async (p) => {
+    const likedByUser = await p.users.findUnique({ where: { id: userId } });
+    const likesCount = await p.likes.count({ where: { AND: [{ storyId: story.id, NOT: { userId: story.userId } }] } });
+
+    if (likesCount === 1) {
+      const text = `#${likedByUser?.username}# gostou da sua história: #${story.title}#.`;
+      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_LIKE } });
+    }
+
+    if (likesCount % 4 === 0) {
+      const text = `#${likedByUser?.username}# e mais 3 gostaram da sua história: #${story.title}#.`;
+      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_LIKE } });
+    }
+  });
 }
 
-function createNewCommentNotification(text: string, userId: number) {
-  return prisma.notifications.create({ data: { text, toUserId: userId, type: NotificationType.NEW_COMMENT } });
+function createNewCommentNotification(story: Stories, userId: number) {
+  return prisma.$transaction(async (p) => {
+    const commentedByUser = await p.users.findUnique({ where: { id: userId } });
+    const commentsCount = await p.comments.count({
+      where: { AND: [{ storyId: story.id, NOT: { userId: story.userId } }] },
+    });
+
+    if (commentsCount === 1) {
+      const text = `#${commentedByUser?.username}# comentou sua história: #${story.title}#.`;
+      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_COMMENT } });
+    }
+
+    if (commentsCount % 4 === 0) {
+      const text = `#${commentedByUser?.username}# e mais 3 comentaram sua história: #${story.title}#.`;
+      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_COMMENT } });
+    }
+  });
 }
 
 function createNewFollowNotification(text: string, userId: number) {

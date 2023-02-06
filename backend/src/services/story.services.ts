@@ -32,8 +32,8 @@ async function postStory(data: PostStoryParams) {
   const createdStory = await storyRepository.createStory(data);
 
   const notificationMessage = `
-    ${createdStory.Users.username} acabou de escrever 
-    ${createdStory.title} no canal ${channel.name}.`;
+    #${createdStory.Users.username}# acabou de escrever 
+    #${createdStory.title}# no canal #${channel.name}#.`;
 
   await notificationRepository.createNewStoryNotification(notificationMessage, data.userId);
 
@@ -49,7 +49,7 @@ async function postLikeStory(storyId: number, userId: number) {
 
   await storyRepository.createLike(storyId, userId);
 
-  await postLikeNotification(story);
+  await notificationRepository.createNewLikeNotification(story, userId);
 }
 
 async function postUnlikeStory(storyId: number, userId: number) {
@@ -68,7 +68,7 @@ async function postComment(data: PostCommentParams) {
 
   const comment = await storyRepository.createComment(data);
 
-  await postCommentNotification(story);
+  await notificationRepository.createNewCommentNotification(story, data.userId);
 
   return { id: comment.id };
 }
@@ -82,7 +82,7 @@ async function postDenounce(data: PostDenounceParams) {
 
   await storyRepository.createDenunciation(data);
 
-  const notificationMessage = `Sua história: ${story.title} foi denunciada, pois: “${data.text}”`;
+  const notificationMessage = `Sua história: #${story.title}# foi denunciada, pois: #“${data.text}”#.`;
   await notificationRepository.createNewDenounceNotification(notificationMessage, story.userId);
 }
 
@@ -110,38 +110,6 @@ async function validateChannelId(id: number) {
   if (!channel) throw notFoundError();
 
   return channel;
-}
-
-async function postLikeNotification(story: Stories) {
-  const storyLikes = await storyRepository.findStoryLikes(story.id);
-
-  const user = storyLikes[0]?.Users.username;
-
-  if (storyLikes.length === 1) {
-    const notificationMessage = `${user} gostou da sua história: ${story.title}.`;
-    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
-  }
-
-  if (storyLikes.length % 4 === 0) {
-    const notificationMessage = `${user} e mais 3 gostaram da sua história: ${story.title}.`;
-    await notificationRepository.createNewLikeNotification(notificationMessage, story.userId);
-  }
-}
-
-async function postCommentNotification(story: Stories) {
-  const storyComments = await storyRepository.findStoryComments(story.id);
-
-  const user = storyComments[0].Users.username;
-
-  if (storyComments.length === 1) {
-    const notificationMessage = `${user} comentou sua história: ${story.title}.`;
-    await notificationRepository.createNewCommentNotification(notificationMessage, story.userId);
-  }
-
-  if (storyComments.length % 4 === 0) {
-    const notificationMessage = `${user} e mais 3 comentaram sua história: ${story.title}.`;
-    await notificationRepository.createNewCommentNotification(notificationMessage, story.userId);
-  }
 }
 
 function formatComments(comments: FormartCommentsParams, userId: number) {
