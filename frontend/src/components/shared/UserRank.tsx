@@ -10,6 +10,7 @@ type UserRankParams = {
 type WrapperProps = {
 	background: string;
 	size: string;
+	admin: boolean;
 };
 
 export function UserRank({
@@ -19,7 +20,11 @@ export function UserRank({
 	size = "normal",
 }: UserRankParams) {
 	return (
-		<Wrapper background={background || "#000000"} size={size}>
+		<Wrapper
+			background={background || "#000000"}
+			size={size}
+			admin={background.length > 30}
+		>
 			<img src={image || ""} alt={alt || "user rank"} />
 		</Wrapper>
 	);
@@ -32,7 +37,7 @@ const Wrapper = styled.div<WrapperProps>`
 		border-radius: 50px;
 		margin: 0;
 		border: 2px solid ${(props) => props.background};
-		box-shadow: 0 0 1px 0.2px ${(props) => props.background};
+		box-shadow: 0 0 4px 0.5px ${(props) => props.background};
 		position: relative;
 
 		img {
@@ -44,6 +49,19 @@ const Wrapper = styled.div<WrapperProps>`
 			object-fit: cover;
 			position: absolute;
 		}
+
+		${(props) =>
+			props.admin
+				? `
+					background: linear-gradient(white, white) padding-box, ${props.background} border-box;
+					border: 3px solid transparent;
+					box-shadow: 0 0 4px 0.5px #5D5AFD;
+					img {
+						width: 38px;
+						height: 38px;
+					}
+		`
+				: ""}
 
 		${(props) =>
 			props.size === "small"
@@ -63,8 +81,8 @@ const Wrapper = styled.div<WrapperProps>`
                 height: 62px;
                 width: 62px;
                 img {
-                    width: 55px;
-                    height: 55px;
+                    width: 53px;
+                    height: 53px;
                 }
             `
 				: ""}

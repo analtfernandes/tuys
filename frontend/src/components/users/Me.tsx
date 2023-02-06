@@ -51,7 +51,21 @@ export function Me() {
 					<p>
 						<Icons type="rank" />
 						<b>Rank: </b>
-						<span style={{ color: user.rankColor }}>{user.rankName}</span>
+						<span
+							style={
+								user.rankName !== "Admin"
+									? {
+											color: user.rankColor,
+									  }
+									: {
+											backgroundImage: user.rankColor,
+											backgroundClip: "text",
+											WebkitTextFillColor: "transparent",
+									  }
+							}
+						>
+							{user.rankName}
+						</span>
 					</p>
 					<p>
 						<Icons type="createdStories" />
