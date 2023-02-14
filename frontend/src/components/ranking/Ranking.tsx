@@ -34,7 +34,7 @@ export function Ranking() {
 
 const Wrapper = styled.section`
 	width: 100%;
-	max-width: 500px;
+	max-width: 600px;
 	height: 100%;
 	padding: 0 15px;
 	margin: 0 auto;
@@ -70,7 +70,7 @@ const Wrapper = styled.section`
 
 	@media (min-width: 1000px) {
 		width: 70%;
-		max-width: 700px;
+		max-width: 800px;
 		padding: 0;
 	}
 `;

@@ -36,7 +36,7 @@ export function Menu() {
 				});
 				toast({
 					type: "success",
-					text: "Volte mais tarde para no contar suas histórias! :)",
+					text: "Volte mais tarde para nos contar suas histórias! :)",
 				});
 
 				clearLocalStorage();
@@ -91,9 +91,10 @@ const Wrapper = styled.div<WrapperProps>`
 	max-width: 260px;
 	min-width: 200px;
 	height: 100vh;
+	position: fixed;
 	background-color: ${(props) => props.theme.colors.pastelBlue};
-	cursor: default;
 	display: ${(props) => (props.showMenu ? "initial" : "none")};
+	cursor: default;
 
 	> h1 {
 		margin-left: 20px;

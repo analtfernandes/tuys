@@ -3,10 +3,10 @@ import { useRequestQuery, useToast } from "../../hooks";
 import { Icons } from "../utils";
 import { Title, Loading } from "../shared";
 import { Story } from "./Story";
-import { Wrapper } from "./Stories";
 import { RequestKeyEnum } from "../utils/enums";
 import { useUserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
 export function UserStories() {
 	const { user } = useUserContext();
@@ -49,7 +49,7 @@ export function UserStories() {
 	}
 
 	return (
-		<Wrapper>
+		<StoriesSection>
 			<Title>
 				<Icons type="stories" /> Contos
 			</Title>
@@ -68,6 +68,52 @@ export function UserStories() {
 						))}
 				</>
 			</div>
-		</Wrapper>
+		</StoriesSection>
 	);
 }
+
+const StoriesSection = styled.section`
+	&& {
+		width: 100%;
+		min-width: 400px;
+		height: 100%;
+		margin: 0 auto;
+
+		> div {
+			display: flex;
+			align-items: center;
+			justify-content: initial;
+			flex-wrap: wrap;
+			margin-bottom: 80px;
+
+			> span {
+				line-height: 20px;
+				margin-top: 30px;
+				font-size: 1.1rem;
+				color: ${(props) => props.theme.colors.text};
+			}
+		}
+
+		@media (max-width: 345px) {
+			> div {
+				justify-content: center;
+			}
+		}
+
+		@media (max-width: 900px) {
+			width: 90%;
+			margin: 0;
+		}
+
+		@media (max-width: 860px) {
+			width: 80%;
+			margin: 0;
+		}
+
+		@media (max-width: 800px) {
+			width: 100%;
+			min-width: 100%;
+			margin: 0 auto;
+		}
+	}
+`;

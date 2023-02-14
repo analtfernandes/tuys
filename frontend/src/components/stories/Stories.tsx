@@ -24,6 +24,7 @@ export function Stories({ path }: StoriesParams) {
 
 export const Wrapper = styled.section`
 	width: 100%;
+	max-width: 800px;
 	height: 100%;
 	padding: 0 15px;
 	margin: 0 auto;

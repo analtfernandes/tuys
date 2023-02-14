@@ -22,6 +22,8 @@ const Wrapper = styled.main`
 			max-width: 700px;
 			margin: 0 auto;
 			padding-bottom: 70px;
+			position: absolute;
+			left: 45%;
 		}
 
 		@media (max-width: 500px) {
@@ -29,6 +31,13 @@ const Wrapper = styled.main`
 
 			> section {
 				width: 90%;
+				left: 5%;
+			}
+		}
+
+		@media (min-width: 850px) {
+			> section {
+				left: 350px;;
 			}
 		}
 	}

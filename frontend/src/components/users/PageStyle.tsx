@@ -33,8 +33,9 @@ PageStyle.Title = ({ children }: React.PropsWithChildren) => {
 };
 
 const Wrapper = styled.div`
-	width: 100%;
+	width: 100vw;
 	height: 100%;
+	overflow-x: hidden;
 `;
 
 const Header = styled.div`
@@ -97,6 +98,7 @@ const User = styled.div`
 	width: 450px;
 	height: 100%;
 	font-size: 1.1rem;
+	margin-right: 20px;
 
 	p {
 		width: 100%;

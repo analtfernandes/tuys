@@ -70,6 +70,10 @@ const Wrapper = styled.section`
 	&& {
 		&& {
 			width: 100%;
+
+			@media (max-width: 500px) {
+				left: 0;
+			}
 		}
 	}
 

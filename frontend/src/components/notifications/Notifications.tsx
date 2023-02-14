@@ -68,7 +68,7 @@ export function Notifications() {
 
 	return (
 		<Wrapper>
-			<Title>Notificações</Title>
+			<Title textPadding="0 0 0 15px">Notificações</Title>
 
 			{isLoading && <Loading />}
 
@@ -76,7 +76,7 @@ export function Notifications() {
 				<Subtitle>Não há nenhuma notificação ainda.</Subtitle>
 			)}
 
-			{notifications.length > 0 && (
+			{notifications && notifications.length > 0 && (
 				<div>
 					{notifications.map((notification, index) => (
 						<Notification key={index} read={notification.read}>
@@ -101,18 +101,18 @@ export function Notifications() {
 
 const Wrapper = styled.section`
 	width: 100%;
+	max-width: 800px;
 	height: 100%;
-	padding: 0 15px;
 	margin: 0 auto;
+	overflow-y: scroll;
+	transition: linear 0.1s;
 
-	@media (min-width: 600px) {
+	@media (min-width: 650px) {
 		width: 90%;
-		padding: 0;
 	}
 
-	@media (min-width: 1000px) {
-		width: 70%;
-		padding: 0;
+	@media (max-width: 500px) {
+		padding-bottom: 20px;
 	}
 `;
 
