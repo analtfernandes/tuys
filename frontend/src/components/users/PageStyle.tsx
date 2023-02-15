@@ -96,7 +96,7 @@ const Sections = styled.div`
 
 const User = styled.div`
 	width: 450px;
-	height: 100%;
+	height: fit-content;
 	font-size: 1.1rem;
 	margin-right: 20px;
 
