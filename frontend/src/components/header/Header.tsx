@@ -1,46 +1,15 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useHaveNewNotification } from "../../hooks";
 import logo from "../../images/logo.png";
-import { useUserContext } from "../../contexts/UserContext";
-import api from "../../services/tuys";
-import { RequestKeyEnum } from "../utils/enums";
-import { useRequestQuery } from "../../hooks";
 import { Icons } from "../utils";
 import { Search } from "./Search";
 
 export function Header() {
 	const [isSearching, setIsSearching] = useState(false);
-	const [windowWidth, setWindowWidth] = useState(0);
-	const [haveNewNotification, setHaveNewNotification] = useState(false);
-
-	const { user } = useUserContext();
-	const { data: notifications } = useRequestQuery(
-		[RequestKeyEnum.notifications, user.username],
-		() => api.getNotifications()
-	);
-
-	useEffect(() => {
-		const { innerWidth } = window;
-		setWindowWidth(innerWidth);
-	}, []);
-
-	if (
-		notifications &&
-		notifications[0] &&
-		!notifications[0].read &&
-		!haveNewNotification
-	) {
-		setHaveNewNotification(true);
-	}
-
-	if (
-		notifications &&
-		((notifications[0]?.read && haveNewNotification) ||
-			(notifications?.length === 0 && haveNewNotification))
-	) {
-		setHaveNewNotification(false);
-	}
+	const windowWidth = useRef(window.innerWidth);
+	const [haveNewNotification] = useHaveNewNotification();
 
 	return (
 		<>
@@ -49,12 +18,13 @@ export function Header() {
 
 				<div>
 					{isSearching && <Search />}
+
 					<Icons
 						type="search"
 						onClick={() => setIsSearching((prev) => !prev)}
 					/>
 
-					{windowWidth >= 500 && (
+					{windowWidth.current >= 500 && (
 						<>
 							<Link to="/">
 								<Icons type="home" />

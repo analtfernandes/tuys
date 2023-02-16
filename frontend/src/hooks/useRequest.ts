@@ -23,11 +23,12 @@ type MutationResponse = {
 };
 
 function useRequestQuery<Type>(
-	key: any[] | string,
+	key: (string | number | null)[],
 	callback: (...params: any) => Promise<Type | null>
 ) {
 	const navigateSignIn = useNavigateSignIn();
 	let returnedError: string | null = null;
+	let errorStatus: number | null = null;
 
 	const { isLoading, isError, isSuccess, data, error, status } = useQuery(
 		key,
@@ -37,6 +38,7 @@ function useRequestQuery<Type>(
 	if (isError) {
 		const errorParsed = JSON.parse(`${error.message}`);
 		returnedError = errorParsed.message;
+		errorStatus = errorParsed.status;
 
 		if (errorParsed.status === 401) {
 			navigateSignIn();
@@ -48,7 +50,15 @@ function useRequestQuery<Type>(
 		}
 	}
 
-	return { isLoading, isError, isSuccess, data, status, error: returnedError };
+	return {
+		isLoading,
+		isError,
+		isSuccess,
+		data,
+		status,
+		error: returnedError,
+		errorStatus,
+	};
 }
 
 function useRequestMutation(

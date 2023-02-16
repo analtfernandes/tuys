@@ -20,6 +20,7 @@ export function ChannelStories() {
 		isError,
 		isSuccess,
 		isLoading,
+		errorStatus,
 		data: haveMoreStories,
 		...request
 	} = useRequestQuery([RequestKeyEnum.stories, location?.channelId || 1], () =>
@@ -35,12 +36,19 @@ export function ChannelStories() {
 		if (haveMoreStories) setStories([...haveMoreStories]);
 	}
 
-	if (isError) {
+	if (isError && errorStatus !== 404) {
 		toast({
 			type: "error",
 			text:
 				request.error ||
 				"Não foi possível carregar as histórias. Por favor, recarregue a página.",
+		});
+	}
+
+	if (errorStatus === 404) {
+		toast({
+			type: "error",
+			text: "Parece que este canal não existe mais. Por favor, escolha outro.",
 		});
 	}
 
@@ -61,7 +69,7 @@ export function ChannelStories() {
 
 			{isLoading && <Loading />}
 
-			{stories.length === 0 && (
+			{!isLoading && !isError && stories.length === 0 && (
 				<div>
 					<span>
 						Esse canal ainda não possui histórias... Que tal ser o primeiro?

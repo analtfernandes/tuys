@@ -26,12 +26,7 @@ type ModalConfig = {
 
 export function Story({ story, showChannel = true }: StoryParams) {
 	const navigate = useNavigate();
-	const requestKey = [
-		RequestKeyEnum.stories,
-		RequestKeyEnum.story,
-		story.id,
-		RequestKeyEnum.user,
-	];
+	const requestKey = [RequestKeyEnum.stories, RequestKeyEnum.story];
 	const requestLike = useRequestMutation(requestKey, () =>
 		api.postLike(story.id)
 	);
@@ -270,7 +265,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				</StoryOptions>
 			</Background>
 
-			<Comments storyId={story.id} showComment={showComment} />
+			{showComment ? <Comments storyId={story.id} /> : ""}
 		</>
 	);
 }

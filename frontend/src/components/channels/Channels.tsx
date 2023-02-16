@@ -1,27 +1,32 @@
 import styled from "styled-components";
 import api from "../../services/tuys";
-import { useToast, useRequestQuery } from "../../hooks";
+import { useToast } from "../../hooks";
 import { Loading, Subtitle, Title } from "../shared";
-import { RequestKeyEnum } from "../utils/enums";
 import { Channel } from "./Channel";
+import { useEffect, useState } from "react";
+import { ChannelType } from "../utils/Protocols";
 
 export function Channels() {
+	const [channels, setChannels] = useState<ChannelType[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const toast = useToast();
-	const {
-		isError,
-		isLoading,
-		data: channels,
-		...request
-	} = useRequestQuery([RequestKeyEnum.channels], () => api.getChannels());
 
-	if (isError) {
-		toast({
-			type: "error",
-			text:
-				request.error ||
-				"Não foi possível carregar os canais. Por favor, recarregue a página.",
-		});
-	}
+	useEffect(() => {
+		api
+			.getChannels()
+			.then((response) => {
+				if (response) {
+					setChannels(response);
+					setIsLoading(false);
+				}
+			})
+			.catch(() =>
+				toast({
+					type: "error",
+					text: "Não foi possível carregar os canais. Por favor, recarregue a página.",
+				})
+			);
+	}, []);
 
 	return (
 		<Wrapper>

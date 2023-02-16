@@ -20,7 +20,7 @@ export function UserStories() {
 		data: stories,
 		...request
 	} = useRequestQuery(
-		[RequestKeyEnum.stories, RequestKeyEnum.user, userId || user.username],
+		[RequestKeyEnum.stories, RequestKeyEnum.user, userId || user.id],
 		getUserStories
 	);
 

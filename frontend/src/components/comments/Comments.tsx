@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import api from "../../services/tuys";
 import { RequestKeyEnum } from "../utils/enums";
 import { useToast, useRequestQuery } from "../../hooks";
@@ -9,19 +9,9 @@ import { CreateComment } from "./CreateComment";
 
 type CommentsProps = {
 	storyId: number;
-	showComment: boolean;
 };
 
-type WrapperProps = {
-	height: string;
-	padding: string;
-	margin: string;
-};
-
-export function Comments({ storyId, showComment }: CommentsProps) {
-	const defaultHeight = "0px";
-	const autoHeight = "auto";
-	const [height, setHeight] = useState(defaultHeight);
+export function Comments({ storyId }: CommentsProps) {
 	const scrollToLast = useRef<HTMLDivElement>(null);
 	const toast = useToast();
 
@@ -37,17 +27,10 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 
 	useEffect(() => {
 		scrollToLast.current?.scrollIntoView({
-			behavior: "smooth",
-			block: "nearest",
+			behavior: "auto",
+			block: "center",
 		});
-	}, [scrollToLast, storyId]);
-
-	if (!showComment && height === autoHeight) {
-		setHeight(defaultHeight);
-		return null;
-	}
-
-	if (!showComment) return null;
+	}, []);
 
 	if (isError) {
 		toast({
@@ -56,19 +39,10 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 				request.error ||
 				"Não foi possível carregar os comentários. Tente novamente.",
 		});
-		return null;
-	}
-
-	if (height === defaultHeight) {
-		setTimeout(() => setHeight(autoHeight), 100);
 	}
 
 	return (
-		<Wrapper
-			height={height}
-			padding={height === defaultHeight ? "0 15px" : "20px 15px"}
-			margin={height === defaultHeight ? "0" : "0 0 20px 0"}
-		>
+		<Wrapper>
 			<>
 				{isLoading && <Loading />}
 
@@ -88,13 +62,13 @@ export function Comments({ storyId, showComment }: CommentsProps) {
 	);
 }
 
-const Wrapper = styled.div<WrapperProps>`
+const Wrapper = styled.div`
 	width: 100%;
-	height: ${(props) => props.height};
-	padding: ${(props) => props.padding};
+	height: auto;
+	padding: 20px 15px;
 	max-height: 180px;
 	border-radius: 5px;
-	margin: ${(props) => props.margin};
+	margin: 0 0 20px 0;
 	background-color: ${(props) => props.theme.colors.lightGray};
 	display: flex;
 	flex-direction: column;
@@ -104,5 +78,4 @@ const Wrapper = styled.div<WrapperProps>`
 	left: 0;
 	bottom: 30px;
 	z-index: 0;
-	transition: all ease 0.1s;
 `;

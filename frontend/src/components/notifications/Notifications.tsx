@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
-import { useToast } from "../../hooks";
-import { NotificationTypesEnum } from "../utils/enums";
+import { useRequestMutation, useToast } from "../../hooks";
+import { NotificationTypesEnum, RequestKeyEnum } from "../utils/enums";
 import { NotificationType } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { Loading, Subtitle, Title } from "../shared";
@@ -19,6 +20,12 @@ export function Notifications() {
 	const [notifications, setNotifications] = useState<NotificationType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const toast = useToast();
+
+	const { user } = useUserContext();
+	const { mutate: readNotification } = useRequestMutation(
+		[RequestKeyEnum.notifications, user.username],
+		(id) => api.postNotificationRead(id)
+	);
 
 	const notificationIconsType: NotificationIconsType = {
 		[NotificationTypesEnum.NEW_COMMENT]: "comment",
@@ -48,15 +55,13 @@ export function Notifications() {
 	}, []);
 
 	useEffect(() => {
-		(async () => {
-			const notificationsIds = notifications
-				.filter(({ read }) => read === false)
-				.map(({ id }) => id);
+		const notificationsIds = notifications
+			.filter(({ read }) => read === false)
+			.map(({ id }) => id);
 
-			for (const id of notificationsIds) {
-				await api.postNotificationRead(id);
-			}
-		})();
+		for (const id of notificationsIds) {
+			readNotification(id);
+		}
 	}, [notifications]);
 
 	function getNotificationHtmlMessage(text: string) {
@@ -77,7 +82,7 @@ export function Notifications() {
 			)}
 
 			{notifications && notifications.length > 0 && (
-				<div>
+				<div style={{ marginBottom: 20 }}>
 					{notifications.map((notification, index) => (
 						<Notification key={index} read={notification.read}>
 							<div>
@@ -106,6 +111,12 @@ const Wrapper = styled.section`
 	margin: 0 auto;
 	overflow-y: scroll;
 	transition: linear 0.1s;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	::-webkit-scrollbar {
+		display: none;
+	}
 
 	@media (min-width: 650px) {
 		width: 90%;
