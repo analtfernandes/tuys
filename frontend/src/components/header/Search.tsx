@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
 import { useRequestQuery } from "../../hooks";
-import { Loading, UserRank } from "../shared";
 import { Icons } from "../utils";
+import { Loading, UserRank } from "../shared";
 
 export function Search() {
 	const { user } = useUserContext();
@@ -76,7 +76,7 @@ const Wrapper = styled.div`
 		height: 40px;
 		transition: linear 0.1s;
 		position: relative;
-		z-index: 2;
+		z-index: 3;
 
 		input {
 			width: 100%;

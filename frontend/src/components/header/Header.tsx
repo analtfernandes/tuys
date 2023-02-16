@@ -13,6 +13,12 @@ export function Header() {
 
 	return (
 		<>
+			{isSearching && (
+				<SearchBackground
+					onClick={() => setIsSearching(false)}
+				></SearchBackground>
+			)}
+
 			<Wrapper>
 				<img src={logo} alt="TUYS" />
 
@@ -57,6 +63,16 @@ export function Header() {
 		</>
 	);
 }
+
+const SearchBackground = styled.div`
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 2;
+	background-color: transparent;
+`;
 
 const Wrapper = styled.section`
 	width: 100%;
