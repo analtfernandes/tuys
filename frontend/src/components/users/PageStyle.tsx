@@ -14,7 +14,7 @@ export function PageStyle({ children }: React.PropsWithChildren) {
 PageStyle.Header = ({ color, avatar, username }: HeaderParams) => {
 	return (
 		<Header>
-			<UserRank background={color} image={avatar} alt={username} size="large" />
+			<UserRank background={color} image={avatar} alt={username} size={window.innerWidth > 340 ? "large" : 'normal'} />
 			<h1>{username}</h1>
 		</Header>
 	);
@@ -50,7 +50,8 @@ const Header = styled.div`
 		font-size: 1.5rem;
 		font-weight: 700;
 		color: ${(props) => props.theme.colors.text};
-		margin-left: 20px;
+		margin-left: 1rem;
+		line-break: anywhere;
 	}
 
 	@media (max-width: 500px) {

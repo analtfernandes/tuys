@@ -155,7 +155,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					<UserRank
 						background={owner.rankColor}
 						image={owner.avatar}
-						alt={owner.username}
+						alt="usuário"
 						onClick={() => navigate(`/user/${story.userId}`)}
 						style={{ cursor: "pointer" }}
 					/>
@@ -271,18 +271,21 @@ export function Story({ story, showChannel = true }: StoryParams) {
 }
 
 const Author = styled.div`
+	width: 100%;
 	height: 50px;
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
 
 	> div {
+		width: 50%;
 		display: flex;
 		flex-direction: column;
 		margin: 0 0 0 14px;
 
 		span {
 			font-size: 1.1rem;
+			line-break: anywhere;
 			color: ${(props) => props.theme.colors.black};
 		}
 	}
@@ -364,6 +367,7 @@ const Option = styled.div<OptionProps>`
 
 const Following = styled.div`
 	&& {
+		width: fit-content;
 		margin: 0 0 0 auto;
 		align-self: flex-start;
 
@@ -371,6 +375,7 @@ const Following = styled.div`
 			font-size: 0.9rem;
 			font-weight: 700;
 			color: ${(props) => props.theme.colors.pastelBlue};
+			line-break: normal;
 		}
 
 		@media (max-width: 400px) {
@@ -383,6 +388,7 @@ const Following = styled.div`
 
 const OwnerOptions = styled.div`
 	&& {
+		width: fit-content;
 		display: flex;
 		align-self: flex-start;
 		flex-direction: inherit;
