@@ -20,6 +20,11 @@ type FormParams = {
 	setEditing: SetState<boolean>;
 };
 
+type EditStory = {
+	title: string;
+	body: string;
+};
+
 export function Form({ id, story, editing, setEditing }: FormParams) {
 	const { isError, isSuccess, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories, id],
@@ -27,13 +32,12 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 	);
 
 	const [bodyHeight, setBodyHeight] = useState("auto");
-	const [editStory, setEditStory] = useState({
-		title: "",
-		body: "",
-	});
+	const [editStory, setEditStory] = useState({} as EditStory);
 	const ref = useRef<HTMLTextAreaElement>(null);
 	const toast = useToast();
-	const minimusHeight = "80px";
+
+	const minimusHeight = "5em";
+	const minimusHeightPx = 80;
 	let disabled = !editing;
 
 	useEffect(() => {
@@ -45,13 +49,13 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 
 	useEffect(() => {
 		if (ref.current) {
-			if (ref.current.scrollHeight > 90) {
+			if (ref.current.scrollHeight > minimusHeightPx) {
 				setBodyHeight(minimusHeight);
 			} else {
 				setBodyHeight(`${ref.current?.scrollHeight}px`);
 			}
 		}
-	}, [ref]);
+	}, [ref.current]);
 
 	function toggleReadMore(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -88,7 +92,7 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 	}
 
 	function isBodyBiggerThanMinimun() {
-		return ref.current?.scrollHeight && ref.current?.scrollHeight >= 90;
+		return ref.current?.scrollHeight && ref.current?.scrollHeight > minimusHeightPx;
 	}
 
 	if (isError) {
@@ -127,7 +131,7 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 				placeholder="Título"
 				minLength={3}
 				maxLength={30}
-				value={editStory.title}
+				value={editStory.title || ""}
 				onChange={handleChange}
 			/>
 			<textarea
@@ -139,7 +143,7 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 				placeholder="Corpo"
 				minLength={10}
 				maxLength={1000}
-				value={editStory.body}
+				value={editStory.body || ""}
 				onChange={handleChange}
 			/>
 
