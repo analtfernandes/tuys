@@ -1,8 +1,11 @@
-import { NotificationType, Stories } from "@prisma/client";
+import { Channels, Follows, NotificationType, Stories } from "@prisma/client";
 import { prisma } from "../database";
 
 function findNotifications(userId: number) {
-  return prisma.notifications.findMany({ where: { toUserId: userId }, orderBy: { id: "desc" } });
+  return prisma.notifications.findMany({
+    where: { toUserId: userId },
+    orderBy: [{ date: "desc" }, { read: "asc" }, { id: "desc" }],
+  });
 }
 
 function findNotificationById(id: number) {
@@ -13,12 +16,16 @@ function updateNotification(id: number) {
   return prisma.notifications.update({ where: { id }, data: { read: true } });
 }
 
-function createNewStoryNotification(text: string, userId: number) {
+function createNewStoryNotification({ story, channel }: CreateNewStoryNotificationParams) {
   return prisma.$transaction(async (p) => {
     const followers = await p.users.findMany({
-      where: { Followed: { some: { followedId: userId } } },
+      where: { Followed: { some: { followedId: story.userId } } },
       select: { id: true },
     });
+
+    const text = `
+    #${story.Users.username}# acabou de escrever 
+    #${story.title}# no canal #${channel.name}#.`;
 
     for (const { id } of followers) {
       await p.notifications.create({ data: { text, toUserId: id, type: NotificationType.NEW_STORY } });
@@ -26,8 +33,14 @@ function createNewStoryNotification(text: string, userId: number) {
   });
 }
 
-function createNewDenounceNotification(text: string, userId: number) {
-  return prisma.notifications.create({ data: { text, toUserId: userId, type: NotificationType.NEW_DENUNCIATION } });
+function createNewDenounceNotification(story: Stories, reason: string) {
+  return prisma.notifications.create({
+    data: {
+      text: `Sua história: #${story.title}# foi denunciada, pois: #“${reason}”#.`,
+      toUserId: story.userId,
+      type: NotificationType.NEW_DENUNCIATION,
+    },
+  });
 }
 
 function createNewLikeNotification(story: Stories, userId: number) {
@@ -40,9 +53,23 @@ function createNewLikeNotification(story: Stories, userId: number) {
       await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_LIKE } });
     }
 
-    if (likesCount % 4 === 0) {
-      const text = `#${likedByUser?.username}# e mais 3 gostaram da sua história: #${story.title}#.`;
-      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_LIKE } });
+    if (likesCount > 1) {
+      const notification = await p.notifications.findFirst({
+        where: { type: NotificationType.NEW_LIKE, toUserId: story.userId, text: { contains: `#${story.title}#.` } },
+      });
+
+      const text = `#${likedByUser?.username}# e mais ${likesCount - 1} pessoa(s) gostaram da sua história: #${
+        story.title
+      }#.`;
+
+      if (notification) {
+        await p.notifications.update({
+          where: { id: notification.id },
+          data: { text, date: new Date(), read: false },
+        });
+      } else {
+        await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_LIKE } });
+      }
     }
   });
 }
@@ -59,16 +86,50 @@ function createNewCommentNotification(story: Stories, userId: number) {
       await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_COMMENT } });
     }
 
-    if (commentsCount % 4 === 0) {
-      const text = `#${commentedByUser?.username}# e mais 3 comentaram sua história: #${story.title}#.`;
-      await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_COMMENT } });
+    if (commentsCount > 1) {
+      const notification = await p.notifications.findFirst({
+        where: { type: NotificationType.NEW_COMMENT, toUserId: story.userId, text: { contains: `#${story.title}#.` } },
+      });
+
+      const text = `#${commentedByUser?.username}# e outros adicionaram ${commentsCount} comentários na sua história: #${story.title}#.`;
+
+      if (notification) {
+        await p.notifications.update({
+          where: { id: notification.id },
+          data: { text, date: new Date(), read: false },
+        });
+      } else {
+        await p.notifications.create({ data: { text, toUserId: story.userId, type: NotificationType.NEW_COMMENT } });
+      }
     }
   });
 }
 
-function createNewFollowNotification(text: string, userId: number) {
-  return prisma.notifications.create({ data: { text, toUserId: userId, type: NotificationType.NEW_FOLLOW } });
+function createNewFollowNotification({ followedId, followerId }: CreateNewFollowNotificationParams) {
+  return prisma.$transaction(async (p) => {
+    const followedByUser = await p.users.findUnique({ where: { id: followerId } });
+
+    if (!followedByUser) throw new Error("Follower não existe!");
+
+    await prisma.notifications.create({
+      data: {
+        text: `#${followedByUser.username}# começou a te seguir.`,
+        toUserId: followedId,
+        type: NotificationType.NEW_FOLLOW,
+      },
+    });
+  });
 }
+
+type CreateNewStoryNotificationParams = {
+  story: Stories & {
+    Users: {
+      username: string;
+    };
+  };
+  channel: Channels;
+};
+type CreateNewFollowNotificationParams = Omit<Follows, "id">;
 
 export {
   findNotifications,

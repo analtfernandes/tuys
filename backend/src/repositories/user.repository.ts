@@ -62,7 +62,7 @@ function findUserDataByUserId(id: number, userId: number) {
 
 function findUsers(userId: number, username: string) {
   return prisma.users.findMany({
-    where: { username: { contains: username } },
+    where: { username: { contains: username, mode: "insensitive" } },
     select: {
       id: true,
       username: true,

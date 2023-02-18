@@ -97,7 +97,7 @@ async function postFollow({ followedId, followerId }: PostFollowParams) {
 
   await userRepository.createFollow({ followedId, followerId });
 
-  await postFollowNotification(followedId);
+  await notificationRepository.createNewFollowNotification({ followedId, followerId });
 }
 
 async function postUnfollow({ followedId, followerId }: PostFollowParams) {
@@ -108,22 +108,6 @@ async function postUnfollow({ followedId, followerId }: PostFollowParams) {
   if (!userAlreadyFollow) throw badRequestError();
 
   await userRepository.deleteFollow({ followedId, followerId });
-}
-
-async function postFollowNotification(userId: number) {
-  const followers = await userRepository.findFollowers(userId);
-
-  const user = followers[0].Followed.username;
-
-  if (followers.length === 1) {
-    const notificationMessage = `#${user}# começou a te seguir.`;
-    await notificationRepository.createNewFollowNotification(notificationMessage, userId);
-  }
-
-  if (followers.length % 4 === 0) {
-    const notificationMessage = `#${user} e mais 3# começaram a te seguir.`;
-    await notificationRepository.createNewFollowNotification(notificationMessage, userId);
-  }
 }
 
 async function putUser(userId: number, data: PutUserParams) {

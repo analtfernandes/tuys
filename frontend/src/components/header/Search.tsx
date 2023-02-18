@@ -13,8 +13,16 @@ export function Search() {
 	const navigate = useNavigate();
 	const { isLoading, data: users } = useRequestQuery(
 		["users", search, user.username],
-		() => api.getUsers(search)
+		searchUsers
 	);
+
+	function searchUsers() {
+		if (search.length >= 3) {
+			return api.getUsers(search);
+		}
+
+		return new Promise<null>((resolve) => resolve(null));
+	}
 
 	function goToUserPage(id: number) {
 		setSearch("");
@@ -25,6 +33,7 @@ export function Search() {
 		<Wrapper>
 			<input
 				required
+				autoFocus={true}
 				autoComplete="off"
 				type="text"
 				placeholder="Pesquisar..."
@@ -33,7 +42,7 @@ export function Search() {
 			/>
 			<Icons type="search" />
 
-			{search.length > 0 && (
+			{search.length >= 3 && (
 				<Users>
 					<>
 						{isLoading && <Loading />}
