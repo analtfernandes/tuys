@@ -48,7 +48,7 @@ export function ChannelStories() {
 	if (errorStatus === 404) {
 		toast({
 			type: "error",
-			text: "Parece que este canal não existe mais. Por favor, escolha outro.",
+			text: "Parece que este canal não existe. Por favor, escolha outro.",
 		});
 	}
 

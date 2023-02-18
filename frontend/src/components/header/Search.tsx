@@ -17,7 +17,7 @@ export function Search() {
 	);
 
 	function searchUsers() {
-		if (search.length >= 3) {
+		if (search.length >= 2) {
 			return api.getUsers(search);
 		}
 

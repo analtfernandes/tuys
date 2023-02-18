@@ -25,7 +25,7 @@ async function getAllOfChannel(req: Request, res: Response) {
       return responseHelper.NOT_FOUND({ res, body: { message: "Esse canal não existe!" } });
     }
 
-    return responseHelper.SERVER_ERROR({ res });
+    return responseHelper.SERVER_ERROR({ res, body: { message: "" } });
   }
 }
 

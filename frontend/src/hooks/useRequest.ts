@@ -27,27 +27,14 @@ function useRequestQuery<Type>(
 	callback: (...params: any) => Promise<Type | null>
 ) {
 	const navigateSignIn = useNavigateSignIn();
-	let returnedError: string | null = null;
-	let errorStatus: number | null = null;
 
 	const { isLoading, isError, isSuccess, data, error, status } = useQuery(
 		key,
 		callback
 	) as QueryResponse<Type>;
 
-	if (isError) {
-		const errorParsed = JSON.parse(`${error.message}`);
-		returnedError = errorParsed.message;
-		errorStatus = errorParsed.status;
-
-		if (errorParsed.status === 401) {
-			navigateSignIn();
-		}
-
-		if (Array.isArray(errorParsed.message)) {
-			const messages: string[] = errorParsed.message;
-			returnedError = messages.join(", ");
-		}
+	if (isError && error?.cause?.status === 401) {
+		navigateSignIn();
 	}
 
 	return {
@@ -56,8 +43,8 @@ function useRequestQuery<Type>(
 		isSuccess,
 		data,
 		status,
-		error: returnedError,
-		errorStatus,
+		error: error?.cause?.message || null,
+		errorStatus: error?.cause?.status || null,
 	};
 }
 
@@ -66,7 +53,6 @@ function useRequestMutation(
 	callback: (...params: any) => any
 ) {
 	const navigateSignIn = useNavigateSignIn();
-	let returnedError: string | null = null;
 
 	const { isLoading, isError, isSuccess, error, status, mutate, reset } =
 		useMutation(callback, {
@@ -80,29 +66,15 @@ function useRequestMutation(
 			},
 		}) as MutationResponse;
 
-	if (isError) {
-		const errorParsed = JSON.parse(`${error?.message}` || "");
-		returnedError = errorParsed.message;
-
-		if (errorParsed.status === 401) {
-			navigateSignIn();
-		}
-
-		if (Array.isArray(errorParsed.message)) {
-			const messages: string[] = errorParsed.message;
-			returnedError = messages.join(", ");
-		}
-
-		if (errorParsed.message.message) {
-			returnedError = errorParsed.message.message;
-		}
+	if (isError && error?.cause?.status === 401) {
+		navigateSignIn();
 	}
 
 	return {
 		isLoading,
 		isError,
 		isSuccess,
-		error: returnedError,
+		error: error?.cause?.message || null,
 		status,
 		mutate,
 		reset,

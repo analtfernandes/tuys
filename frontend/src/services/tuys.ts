@@ -29,14 +29,16 @@ async function throwError(response: Response) {
 	const error = await response
 		.json()
 		.then((response) => response)
-		.catch((error) => "{ message: 'Um erro ocorreu' }");
+		.catch(() => ({
+			message: "Um erro ocorreu",
+		}));
 
-	const errorString = JSON.stringify({
-		message: error,
-		status: response.status,
+	throw new Error("Um erro ocorreu!", {
+		cause: {
+			message: error.message || error[0],
+			status: response.status,
+		},
 	});
-
-	throw new Error(errorString);
 }
 
 async function getRequest<Type>(path: string) {

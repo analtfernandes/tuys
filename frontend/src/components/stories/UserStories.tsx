@@ -35,12 +35,12 @@ export function UserStories() {
 
 	function getUserStories() {
 		if (userId && (isNaN(userId) || userId <= 0)) {
-			throw new Error(
-				JSON.stringify({
+			throw new Error("Um erro ocorreu!", {
+				cause: {
 					message: "Id de usuário inválido!",
 					status: 400,
-				})
-			);
+				},
+			});
 		}
 		if (!userId) {
 			return api.getMyStories();

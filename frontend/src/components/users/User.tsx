@@ -35,12 +35,12 @@ export function User() {
 
 	function getUserData() {
 		if (!userId || isNaN(userId) || userId <= 0) {
-			throw new Error(
-				JSON.stringify({
+			throw new Error("Um erro ocorreu!", {
+				cause: {
 					message: "Id de usuário inválido!",
 					status: 400,
-				})
-			);
+				},
+			});
 		}
 		return api.getUserData(userId);
 	}

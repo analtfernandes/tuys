@@ -48,7 +48,7 @@ export function Notifications() {
 				toast({
 					type: "error",
 					text:
-						error.message ||
+						error?.cause.message ||
 						"Não foi possível carregar as notificações. Por favor, recarregue a página.",
 				})
 			);

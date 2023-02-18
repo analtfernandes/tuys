@@ -9,7 +9,7 @@ async function getNotifications(req: Request, res: Response) {
     const notifications = await notificationService.getNotifications(userId);
     return responseHelper.OK({ res, body: notifications });
   } catch (error: any) {
-    return responseHelper.SERVER_ERROR({ res });
+    return responseHelper.SERVER_ERROR({ res, body: { message: "" } });
   }
 }
 
