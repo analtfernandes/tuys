@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
-import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
+import { generateValidToken, generateValidUser, generateValidUserWithRank } from "../helpers/generateValidData";
 import {
+  createAppRanks,
   createBannedStoryOfChannel,
   createChannel,
   createComment,
@@ -200,6 +201,25 @@ describe("POST /stories", () => {
 
         expect(afterCount).toBe(beforeCount + 1);
       });
+
+      it("should up user to next rank", async () => {
+        const ranks = await createAppRanks();
+        const user = await generateValidUserWithRank(ranks[0].id);
+        const { authorization } = await generateValidToken(user);
+        const channel = await createChannel();
+
+        for (let i = 0; i < 10; i++) {
+          await createStoryOfChannel(user.id, channel.id);
+        }
+
+        const newBody = { ...body, channelId: channel.id };
+
+        await app.post(`${route}`).set("Authorization", authorization).send(newBody);
+
+        const updatedUser = await prisma.users.findUnique({ where: { id: user.id }, select: { Ranks: true } });
+
+        expect(updatedUser?.Ranks.id).toBe(ranks[1].id);
+      });
     });
   });
 });
@@ -303,6 +323,26 @@ describe("POST /stories/:storyId/like", () => {
       const afterCount = await prisma.notifications.count();
 
       expect(afterCount).toBe(beforeCount + 1);
+    });
+
+    it("should up user to next rank", async () => {
+      const ranks = await createAppRanks();
+      const user = await generateValidUserWithRank(ranks[1].id);
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      const {
+        Stories: [story],
+      } = await createStory(user.id);
+
+      for (let i = 0; i < 50; i++) {
+        await likeStory(story.id, otherUser.id);
+      }
+
+      await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
+
+      const updatedUser = await prisma.users.findUnique({ where: { id: user.id }, select: { Ranks: true } });
+
+      expect(updatedUser?.Ranks.id).toBe(ranks[2].id);
     });
   });
 });

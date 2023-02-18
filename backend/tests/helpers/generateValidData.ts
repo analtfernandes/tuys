@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { Users } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createSession, createCustomUser } from "../factories";
+import { createSession, createCustomUser, createCustomUserWithRank } from "../factories";
 
 async function generateValidUser() {
   const password = faker.word.noun();
@@ -12,6 +12,14 @@ async function generateValidUser() {
   } = await createCustomUser({
     password: hashedPassword,
   });
+
+  return { ...user, password };
+}
+
+async function generateValidUserWithRank(rankId: number) {
+  const password = faker.word.noun();
+  const hashedPassword = await bcrypt.hash(password, 13);
+  const user = await createCustomUserWithRank(rankId, { password: hashedPassword });
 
   return { ...user, password };
 }
@@ -26,4 +34,4 @@ async function generateValidToken(user?: Users) {
   return { authorization, session };
 }
 
-export { generateValidUser, generateValidToken };
+export { generateValidUser, generateValidUserWithRank, generateValidToken };

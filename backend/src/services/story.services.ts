@@ -1,6 +1,7 @@
 import { Comments, Denunciations, Follows, Likes, Stories, UserStatus } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
+import * as rankRepository from "../repositories/rank.repository";
 import * as notificationRepository from "../repositories/notification.repository";
 import { badRequestError, notFoundError, unauthorizedError } from "../helpers/errors.helper";
 
@@ -32,6 +33,7 @@ async function postStory(data: PostStoryParams) {
   const createdStory = await storyRepository.createStory(data);
 
   await notificationRepository.createNewStoryNotification({ story: createdStory, channel });
+  await rankRepository.updateUserRank(data.userId);
 
   return { id: createdStory.id };
 }
@@ -46,6 +48,7 @@ async function postLikeStory(storyId: number, userId: number) {
   await storyRepository.createLike(storyId, userId);
 
   await notificationRepository.createNewLikeNotification(story, userId);
+  await rankRepository.updateUserRank(story.userId);
 }
 
 async function postUnlikeStory(storyId: number, userId: number) {

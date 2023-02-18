@@ -25,6 +25,21 @@ function createCustomUser(data: CreateCustomUserParams) {
   });
 }
 
+function createCustomUserWithRank(rankId: number, data?: CreateCustomUserParams) {
+  return prisma.users.create({
+    data: {
+      username: faker.internet.userName().concat(faker.random.alphaNumeric(3)),
+      avatar: faker.image.avatar(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      about: faker.lorem.words(5),
+      status: UserStatus.ACTIVE,
+      rankId,
+      ...data,
+    },
+  });
+}
+
 type CreateCustomUserParams = Partial<Omit<Users, "id">>;
 
-export { createCustomUser };
+export { createCustomUser, createCustomUserWithRank };
