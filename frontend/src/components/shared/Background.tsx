@@ -4,6 +4,7 @@ import { CallbackType } from "../utils/Protocols";
 type BackgroundParams = {
 	children: React.ReactNode;
 	config?: Partial<WrapperProps>;
+	[key: string]: any;
 };
 
 type WrapperProps = {
@@ -16,7 +17,11 @@ type DivisionProps = {
 	margin: string;
 };
 
-export function Background({ children, config = {} }: BackgroundParams) {
+export function Background({
+	children,
+	config = {},
+	...other
+}: BackgroundParams) {
 	function hexToRGB(hex: string, alpha = 1) {
 		let r = parseInt(hex.slice(1, 3), 16),
 			g = parseInt(hex.slice(3, 5), 16),
@@ -27,6 +32,7 @@ export function Background({ children, config = {} }: BackgroundParams) {
 
 	return (
 		<Wrapper
+			{...other}
 			width={config.width || "100%"}
 			margin={config.margin || "0"}
 			getBorderColor={hexToRGB}

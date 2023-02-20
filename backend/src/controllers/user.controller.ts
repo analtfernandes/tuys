@@ -1,3 +1,4 @@
+import { StorieStatus } from "@prisma/client";
 import { Request, Response } from "express";
 import * as responseHelper from "../helpers/response.helper";
 import * as userService from "../services/user.services";
@@ -34,9 +35,10 @@ async function getUserResgiter(req: Request, res: Response) {
 
 async function getUserStories(req: Request, res: Response) {
   const userId: number = res.locals.userId;
+  const status = req.query.status === StorieStatus.BANNED ? StorieStatus.BANNED : StorieStatus.ACTIVE;
 
   try {
-    const user = await userService.getUserStories(userId);
+    const user = await userService.getUserStories(userId, status);
     return responseHelper.OK({ res, body: user });
   } catch (error: any) {
     if (error.name === "NotFound") {

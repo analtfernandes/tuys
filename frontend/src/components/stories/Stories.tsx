@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { StoryStatusType } from "../utils/Protocols";
 import { ChannelStories } from "./ChannelStories";
 import { HomeStories } from "./HomeStories";
 import { RankingStories } from "./RankingStories";
@@ -6,16 +7,17 @@ import { UserStories } from "./UserStories";
 
 type StoriesParams = {
 	path: "home" | "channel" | "user" | "ranking";
+	status?: StoryStatusType;
 };
 
-export function Stories({ path }: StoriesParams) {
+export function Stories({ path, status }: StoriesParams) {
 	return (
 		<main>
 			{path === "channel" && <ChannelStories />}
 
 			{path === "home" && <HomeStories />}
 
-			{path === "user" && <UserStories />}
+			{path === "user" && <UserStories status={status} />}
 
 			{path === "ranking" && <RankingStories />}
 		</main>

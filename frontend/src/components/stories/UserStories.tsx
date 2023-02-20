@@ -3,12 +3,17 @@ import { useRequestQuery, useToast } from "../../hooks";
 import { Icons } from "../utils";
 import { Title, Loading } from "../shared";
 import { Story } from "./Story";
+import { StoryStatusType } from "../utils/Protocols";
 import { RequestKeyEnum } from "../utils/enums";
 import { useUserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-export function UserStories() {
+type UserStoriesParams = {
+	status?: StoryStatusType;
+};
+
+export function UserStories({ status }: UserStoriesParams) {
 	const { user } = useUserContext();
 	const params = useParams();
 	const userId = Number(params.userId) || null;
@@ -20,7 +25,7 @@ export function UserStories() {
 		data: stories,
 		...request
 	} = useRequestQuery(
-		[RequestKeyEnum.stories, RequestKeyEnum.user, userId || user.id],
+		[RequestKeyEnum.stories, status ? status : RequestKeyEnum.user, userId || user.id],
 		getUserStories
 	);
 
@@ -42,6 +47,9 @@ export function UserStories() {
 				},
 			});
 		}
+		if (!userId && status) {
+			return api.getMyStories(status);
+		}
 		if (!userId) {
 			return api.getMyStories();
 		}
@@ -58,7 +66,11 @@ export function UserStories() {
 				{isLoading && <Loading />}
 
 				<>
-					{stories && stories.length === 0 && (
+					{stories && stories.length === 0 && status === "BANNED" && (
+						<span>Nenhuma história foi banida :).</span>
+					)}
+
+					{stories && stories.length === 0 && status !== "BANNED" && (
 						<span>Nenhuma história foi criada ainda.</span>
 					)}
 

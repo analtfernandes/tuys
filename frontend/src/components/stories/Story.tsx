@@ -17,6 +17,7 @@ type StoryParams = {
 
 type OptionProps = {
 	iconColor: string;
+	banned?: boolean;
 };
 
 type ModalConfig = {
@@ -150,120 +151,185 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				/>
 			)}
 
-			<Background config={{ margin: "20px 0" }}>
-				<Author>
-					<UserRank
-						background={owner.rankColor}
-						image={owner.avatar}
-						alt="usuário"
-						onClick={() => navigate(`/user/${story.userId}`)}
-						style={{ cursor: "pointer" }}
-					/>
-
-					<div>
-						<span
+			{story.status === "ACTIVE" && (
+				<Background config={{ margin: "20px 0" }}>
+					<Author>
+						<UserRank
+							background={owner.rankColor}
+							image={owner.avatar}
+							alt={owner.username}
 							onClick={() => navigate(`/user/${story.userId}`)}
 							style={{ cursor: "pointer" }}
-						>
-							{owner.username}
-						</span>
-						{showChannel && <Channel>#{story.channel.toUpperCase()}</Channel>}
-					</div>
+						/>
 
-					{!owner.isOwner && story.followedByUser && (
-						<Following>
-							<span>Seguindo</span>
-						</Following>
-					)}
-
-					{owner.isOwner && (
-						<OwnerOptions>
-							<Option
-								iconColor="darkGray"
-								onClick={() => (editing ? "" : setEditing(true))}
+						<div>
+							<span
+								onClick={() => navigate(`/user/${story.userId}`)}
+								style={{ cursor: "pointer" }}
 							>
-								<div>
-									<Icons type="edit" />
-								</div>
-							</Option>
-							<Option
-								iconColor="pink"
-								onClick={() => setModalConfig({ isOpen: true, type: "delete" })}
-							>
-								<div>
-									<Icons type="delete" />
-								</div>
-							</Option>
-						</OwnerOptions>
-					)}
-				</Author>
+								{owner.username}
+							</span>
+							{showChannel && <Channel>#{story.channel.toUpperCase()}</Channel>}
+						</div>
 
-				<PublishedDate>
-					Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
-				</PublishedDate>
+						{!owner.isOwner && story.followedByUser && (
+							<Following>
+								<span>Seguindo</span>
+							</Following>
+						)}
 
-				<Background.Div />
+						{owner.isOwner && (
+							<OwnerOptions>
+								<Option
+									iconColor="darkGray"
+									onClick={() => (editing ? "" : setEditing(true))}
+								>
+									<div>
+										<Icons type="edit" />
+									</div>
+								</Option>
+								<Option
+									iconColor="pink"
+									onClick={() =>
+										setModalConfig({ isOpen: true, type: "delete" })
+									}
+								>
+									<div>
+										<Icons type="delete" />
+									</div>
+								</Option>
+							</OwnerOptions>
+						)}
+					</Author>
 
-				<Form
-					id={story.id}
-					story={story}
-					editing={editing}
-					setEditing={setEditing}
-				/>
+					<PublishedDate>
+						Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
+					</PublishedDate>
 
-				<Background.Div />
+					<Background.Div />
 
-				<StoryOptions>
-					{owner.isOwner && (
-						<>
-							<Option iconColor="">
-								<span>{compactNumber(story.likes)} pessoas gostaram</span>
-							</Option>
+					<Form
+						id={story.id}
+						story={story}
+						editing={editing}
+						setEditing={setEditing}
+					/>
 
-							<Option iconColor="pastelBlue">
-								<div onClick={() => setShowComment((prev) => !prev)}>
-									<Icons type="comment" />
-									<span>Comentários</span>
-								</div>
-								<span>{compactNumber(story.comments)}</span>
-							</Option>
-						</>
-					)}
+					<Background.Div />
 
-					{!owner.isOwner && (
-						<>
-							<Option iconColor="red">
-								<div onClick={toggleLike}>
-									{like && <Icons type="unlike" />}
-									{!like && <Icons type="like" />}
-									<span>Gostei</span>
-								</div>
-								<span>{compactNumber(story.likes)}</span>
-							</Option>
+					<StoryOptions>
+						{owner.isOwner && (
+							<>
+								<Option iconColor="">
+									<span>{compactNumber(story.likes)} pessoas gostaram</span>
+								</Option>
 
-							<Option iconColor="pastelBlue">
-								<div onClick={() => setShowComment((prev) => !prev)}>
-									<Icons type="comment" />
-									<span>Comentar</span>
-								</div>
-								<span>{compactNumber(story.comments)}</span>
-							</Option>
+								<Option iconColor="pastelBlue">
+									<div onClick={() => setShowComment((prev) => !prev)}>
+										<Icons type="comment" />
+										<span>Comentários</span>
+									</div>
+									<span>{compactNumber(story.comments)}</span>
+								</Option>
+							</>
+						)}
 
-							<Option
-								iconColor="pink"
-								onClick={() =>
-									setModalConfig({ isOpen: true, type: "denounceStory" })
-								}
-							>
-								<div>
-									<Icons type="denounce" />
-									<span>Denunciar</span>
-								</div>
-							</Option>
-						</>
-					)}
-				</StoryOptions>
-			</Background>
+						{!owner.isOwner && (
+							<>
+								<Option iconColor="red">
+									<div onClick={toggleLike}>
+										{like && <Icons type="unlike" />}
+										{!like && <Icons type="like" />}
+										<span>Gostei</span>
+									</div>
+									<span>{compactNumber(story.likes)}</span>
+								</Option>
+
+								<Option iconColor="pastelBlue">
+									<div onClick={() => setShowComment((prev) => !prev)}>
+										<Icons type="comment" />
+										<span>Comentar</span>
+									</div>
+									<span>{compactNumber(story.comments)}</span>
+								</Option>
+
+								<Option
+									iconColor="pink"
+									onClick={() =>
+										setModalConfig({ isOpen: true, type: "denounceStory" })
+									}
+								>
+									<div>
+										<Icons type="denounce" />
+										<span>Denunciar</span>
+									</div>
+								</Option>
+							</>
+						)}
+					</StoryOptions>
+				</Background>
+			)}
+
+			{story.status === "BANNED" && (
+				<Background
+					config={{ margin: "20px 0" }}
+					style={{ filter: "sepia(0.5)", cursor: "default" }}
+				>
+					<Author>
+						<UserRank
+							background={owner.rankColor}
+							image={owner.avatar}
+							alt={owner.username}
+						/>
+
+						<div>
+							<span>{owner.username}</span>
+							<Channel>#{story.channel.toUpperCase()}</Channel>
+						</div>
+					</Author>
+
+					<PublishedDate>
+						Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
+					</PublishedDate>
+
+					<Background.Div />
+
+					<Form
+						id={story.id}
+						story={story}
+						editing={false}
+						setEditing={setEditing}
+					/>
+
+					<Background.Div />
+
+					<StoryOptions>
+						<Option iconColor="red" banned={true}>
+							<div>
+								{like && <Icons type="unlike" />}
+								{!like && <Icons type="like" />}
+								<span>Gostei</span>
+							</div>
+							<span>{compactNumber(story.likes)}</span>
+						</Option>
+
+						<Option iconColor="pastelBlue" banned={true}>
+							<div>
+								<Icons type="comment" />
+								<span>Comentar</span>
+							</div>
+							<span>{compactNumber(story.comments)}</span>
+						</Option>
+
+						<Option iconColor="pink" banned={true}>
+							<div>
+								<Icons type="denounce" />
+								<span>Denunciar</span>
+							</div>
+						</Option>
+					</StoryOptions>
+				</Background>
+			)}
 
 			{showComment ? <Comments storyId={story.id} /> : ""}
 		</>
@@ -331,14 +397,14 @@ const Option = styled.div<OptionProps>`
 		color: ${(props) => props.theme.colors.mediumGraySecond};
 
 		span {
-			cursor: pointer;
+			cursor: ${(props) => (props.banned ? "default" : "pointer")};
 		}
 
 		svg {
 			font-size: 1.1rem;
 			margin-right: 5px;
 			color: ${(props) => props.theme.colors[props.iconColor]};
-			cursor: pointer;
+			cursor: ${(props) => (props.banned ? "default" : "pointer")};
 		}
 	}
 

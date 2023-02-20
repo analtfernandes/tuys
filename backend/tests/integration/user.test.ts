@@ -6,7 +6,7 @@ import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createStory, createFollow } from "../factories";
+import { createStory, createFollow, createChannel, createBannedStoryOfChannel } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -113,6 +113,7 @@ describe("GET /users/me/stories", () => {
           body: channelWithStory.Stories[0].body,
           userId: channelWithStory.Stories[0].Users.id,
           date: channelWithStory.Stories[0].date.toISOString(),
+          status: channelWithStory.Stories[0].status,
           owner: {
             isOwner: true,
             status: channelWithStory.Stories[0].Users.status,
@@ -125,6 +126,41 @@ describe("GET /users/me/stories", () => {
           likes: 0,
           comments: 0,
           channel: channelWithStory.name,
+        },
+      ]);
+    });
+
+    it("should return 200 and a banned stories array", async () => {
+      const user = await generateValidUser();
+      const otherUser = await generateValidUser();
+      const channel = await createChannel();
+      const bannedStory = await createBannedStoryOfChannel(user.id, channel.id);
+      await createBannedStoryOfChannel(otherUser.id, channel.id);
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.get(`${route}/?status=BANNED`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: bannedStory.id,
+          title: bannedStory.title,
+          body: bannedStory.body,
+          userId: bannedStory.Users.id,
+          date: bannedStory.date.toISOString(),
+          status: bannedStory.status,
+          owner: {
+            isOwner: true,
+            status: bannedStory.Users.status,
+            username: bannedStory.Users.username,
+            avatar: bannedStory.Users.avatar,
+            rankColor: expect.any(String),
+          },
+          likedByUser: false,
+          followedByUser: false,
+          likes: 0,
+          comments: 0,
+          channel: channel.name,
         },
       ]);
     });
@@ -328,6 +364,7 @@ describe("GET /users/:userId/stories", () => {
           body: channelWithStory.Stories[0].body,
           userId: channelWithStory.Stories[0].Users.id,
           date: channelWithStory.Stories[0].date.toISOString(),
+          status: channelWithStory.Stories[0].status,
           owner: {
             isOwner: false,
             status: channelWithStory.Stories[0].Users.status,

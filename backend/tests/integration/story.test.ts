@@ -2,6 +2,7 @@ import supertest from "supertest";
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
+import { StorieStatus, UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser, generateValidUserWithRank } from "../helpers/generateValidData";
@@ -16,7 +17,6 @@ import {
   likeStory,
 } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
-import { StorieStatus, UserStatus } from "@prisma/client";
 import { createFollow } from "../factories/follow.factory";
 
 const app = supertest(server);
@@ -85,6 +85,7 @@ describe("GET /stories/:channelId", () => {
           body: channelWithStory.Stories[0].body,
           userId: channelWithStory.Stories[0].Users.id,
           date: channelWithStory.Stories[0].date.toISOString(),
+          status: channelWithStory.Stories[0].status,
           owner: {
             isOwner: true,
             status: channelWithStory.Stories[0].Users.status,
@@ -1012,6 +1013,7 @@ describe("GET /stories", () => {
             body: firstStory.body,
             userId: firstStory.Users.id,
             date: firstStory.date.toISOString(),
+            status: firstStory.status,
             owner: {
               isOwner: true,
               status: firstStory.Users.status,
@@ -1031,6 +1033,7 @@ describe("GET /stories", () => {
             body: secondStory.body,
             userId: secondStory.Users.id,
             date: secondStory.date.toISOString(),
+            status: secondStory.status,
             owner: {
               isOwner: false,
               status: secondStory.Users.status,

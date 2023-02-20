@@ -11,6 +11,7 @@ type StoryType = {
 	body: string;
 	userId: number;
 	date: string;
+	status: StoryStatusType;
 	owner: {
 		isOwner: boolean;
 		username: string;
@@ -24,6 +25,8 @@ type StoryType = {
 	comments: number;
 	channel: string;
 };
+
+type StoryStatusType = "ACTIVE" | "BANNED";
 
 type CommentType = {
 	id: number;
@@ -113,6 +116,7 @@ type CallbackType = (...params: any) => any;
 export type {
 	ChannelType,
 	StoryType,
+	StoryStatusType,
 	CommentType,
 	UserType,
 	MyDataType,

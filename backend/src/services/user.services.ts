@@ -3,7 +3,7 @@ import * as userRepository from "../repositories/user.repository";
 import * as storyRepository from "../repositories/story.repository";
 import * as notificationRepository from "../repositories/notification.repository";
 import { formatStories } from "./story.services";
-import { Follows, Users } from "@prisma/client";
+import { Follows, StorieStatus, Users } from "@prisma/client";
 
 async function getUserData(userId: number) {
   const user = await userRepository.findUserData(userId);
@@ -58,8 +58,8 @@ async function getUserDataByUserId(userId: number, wantedUser: number) {
   return formatedUser;
 }
 
-async function getUserStories(userId: number) {
-  const stories = await storyRepository.findAllByUser(userId, userId);
+async function getUserStories(userId: number, status: StorieStatus) {
+  const stories = await storyRepository.findAllByUser(userId, userId, status);
 
   if (!stories) throw notFoundError();
 

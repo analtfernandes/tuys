@@ -3,6 +3,7 @@ import {
 	CommentType,
 	MyDataType,
 	NotificationType,
+	StoryStatusType,
 	StoryType,
 	UserDataType,
 	UserRegisterType,
@@ -133,8 +134,8 @@ const getRegister = () => {
 	return getRequest<UserRegisterType>(`/users/register/me`);
 };
 
-const getMyStories = () => {
-	return getRequest<StoryType[]>(`/users/me/stories`);
+const getMyStories = (status?: StoryStatusType) => {
+	return getRequest<StoryType[]>(`/users/me/stories/?status=${status}`);
 };
 
 const getUserStories = (userId: number) => {

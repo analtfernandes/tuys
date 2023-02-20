@@ -26,7 +26,7 @@ export function Me() {
 
 	const pages = {
 		stories: <Stories path="user" />,
-		bannedStories: <span>histórias banidas</span>,
+		bannedStories: <Stories path="user" status='BANNED' />,
 		followers: <span>seguidores</span>,
 		following: <span>seguindo</span>,
 	};

@@ -68,6 +68,7 @@ describe("GET /ranking", () => {
         body: story.body,
         userId: story.Users.id,
         date: story.date.toISOString(),
+        status: story.status,
         owner: {
           isOwner: true,
           status: story.Users.status,

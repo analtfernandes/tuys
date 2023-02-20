@@ -10,6 +10,7 @@ function findStories({ from, userId }: FindStoriesParams) {
       body: true,
       userId: true,
       date: true,
+      status: true,
       Users: {
         select: {
           id: true,

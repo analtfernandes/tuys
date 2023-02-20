@@ -10,6 +10,7 @@ function findAll(userId: number) {
       body: true,
       userId: true,
       date: true,
+      status: true,
       Users: {
         select: {
           id: true,
@@ -53,6 +54,7 @@ function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
       body: true,
       userId: true,
       date: true,
+      status: true,
       Users: {
         select: {
           id: true,
@@ -87,15 +89,16 @@ function findAllByChannelId({ channelId, userId }: FindAllByChannelIdParams) {
   });
 }
 
-function findAllByUser(ownerId: number, userId: number) {
+function findAllByUser(ownerId: number, userId: number, status: StorieStatus = "ACTIVE") {
   return prisma.stories.findMany({
-    where: { status: StorieStatus.ACTIVE, userId: ownerId },
+    where: { status, userId: ownerId },
     select: {
       id: true,
       title: true,
       body: true,
       userId: true,
       date: true,
+      status: true,
       Users: {
         select: {
           id: true,
@@ -125,7 +128,6 @@ function findAllByUser(ownerId: number, userId: number) {
         },
       },
     },
-
     orderBy: { id: "desc" },
   });
 }
