@@ -32,7 +32,7 @@ export function User() {
 	const pages = {
 		stories: <Stories path="user" />,
 		followers: <FollowPage type="followers" userId={user?.id} />,
-		following: <span>seguindo</span>,
+		following: <FollowPage type="following" userId={user?.id} />,
 	};
 
 	useEffect(() => setPage("stories"), [userId]);

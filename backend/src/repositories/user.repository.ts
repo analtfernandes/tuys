@@ -101,6 +101,14 @@ function findFollowers(userId: number) {
   });
 }
 
+function findWhoUserIsFollowing(userId: number) {
+  return prisma.follows.findMany({
+    where: { followerId: userId },
+    select: { Follower: { select: { id: true, username: true, avatar: true, Ranks: { select: { color: true } } } } },
+    orderBy: { id: "desc" },
+  });
+}
+
 function createFollow(data: FollowParams) {
   return prisma.follows.create({ data: { ...data } });
 }
@@ -124,6 +132,7 @@ export {
   findUserById,
   findFollow,
   findFollowers,
+  findWhoUserIsFollowing,
   findUserByUsername,
   createFollow,
   deleteFollow,

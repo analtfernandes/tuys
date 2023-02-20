@@ -29,7 +29,7 @@ export function Me() {
 		stories: <Stories path="user" />,
 		bannedStories: <Stories path="user" status="BANNED" />,
 		followers: <FollowPage type="followers" />,
-		following: <span>seguindo</span>,
+		following: <FollowPage type="following" />,
 	};
 
 	if (isError) {

@@ -21,7 +21,11 @@ type ApiFunctions = {
 		otherUser: ApiFunctionName;
 	};
 };
-type ApiFunctionName = "getUserFollowers" | "getMyFollowers";
+type ApiFunctionName =
+	| "getUserFollowers"
+	| "getMyFollowers"
+	| "getWhoIFollow"
+	| "getWhoUserFollow";
 
 export function FollowPage({ type, userId = 0 }: FollowParams) {
 	const [followList, setFollowList] = useState<FollowType[] | null>(null);
@@ -34,8 +38,8 @@ export function FollowPage({ type, userId = 0 }: FollowParams) {
 				otherUser: "getUserFollowers",
 			},
 			following: {
-				me: "getMyFollowers",
-				otherUser: "getUserFollowers",
+				me: "getWhoIFollow",
+				otherUser: "getWhoUserFollow",
 			},
 		};
 
@@ -66,16 +70,24 @@ export function FollowPage({ type, userId = 0 }: FollowParams) {
 	return (
 		<main>
 			<Wrapper>
-				<Title>Seguidores</Title>
+				<Title>{type === "followers" ? "Seguidores" : "Segue"}</Title>
 
 				{!followList && <Loading />}
 
 				<div>
-					{followList && followList.length === 0 && (
+					{type === "followers" && followList && followList.length === 0 && (
 						<span>
 							{userId
 								? "Usuário ainda não tem nenhum seguidor. Que tal ser o primeiro?"
 								: "Você ainda não tem nenhum seguidor."}
+						</span>
+					)}
+
+					{type === "following" && followList && followList.length === 0 && (
+						<span>
+							{userId
+								? "Usuário ainda não segue ninguém."
+								: "Você ainda não segue ninguém."}
 						</span>
 					)}
 

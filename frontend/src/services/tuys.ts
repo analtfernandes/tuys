@@ -143,12 +143,20 @@ const getMyFollowers = () => {
 	return getRequest<FollowType[]>(`/users/me/followers`);
 };
 
+const getWhoIFollow = () => {
+	return getRequest<FollowType[]>(`/users/me/following`);
+};
+
 const getUserStories = (userId: number) => {
 	return getRequest<StoryType[]>(`/users/${userId}/stories`);
 };
 
 const getUserFollowers = (userId: number) => {
 	return getRequest<FollowType[]>(`/users/${userId}/followers`);
+};
+
+const getWhoUserFollow = (userId: number) => {
+	return getRequest<FollowType[]>(`/users/${userId}/following`);
 };
 
 const getUsers = (usename: string) => {
@@ -251,12 +259,14 @@ const getFunctions = {
 	getComments,
 	getMyData,
 	getMyStories,
-	getMyFollowers,
 	getUsers,
 	getUserData,
 	getRegister,
 	getUserStories,
+	getMyFollowers,
 	getUserFollowers,
+	getWhoIFollow,
+	getWhoUserFollow,
 	getRanking,
 	getNotifications,
 };

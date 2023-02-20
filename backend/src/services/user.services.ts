@@ -81,6 +81,21 @@ async function getUserFollowers(userId: number) {
   return formatedFollowers;
 }
 
+async function getWhoUserIsFollowing(userId: number) {
+  const user = await userRepository.findUserById(userId);
+  if (!user) throw notFoundError();
+
+  const following = await userRepository.findWhoUserIsFollowing(userId);
+  if (!following) throw notFoundError();
+
+  const formatedFollowing = following.map(({ Follower: { Ranks, ...follower } }) => ({
+    rankColor: Ranks.color,
+    ...follower,
+  }));
+
+  return formatedFollowing;
+}
+
 async function getUserStoriesByUserId(userId: number, wantedUser: number) {
   const user = await userRepository.findUserById(wantedUser);
   if (!user) throw notFoundError();
@@ -143,6 +158,7 @@ export {
   getUserResgiter,
   getUserStories,
   getUserFollowers,
+  getWhoUserIsFollowing,
   getUsersByUsername,
   getUserDataByUserId,
   getUserStoriesByUserId,
