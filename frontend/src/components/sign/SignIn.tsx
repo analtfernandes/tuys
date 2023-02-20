@@ -44,12 +44,11 @@ export default function SignIn() {
 
 				navigate("/");
 			})
-			.catch((err) => {
-				const error = JSON.parse(err.message);
+			.catch((error) => {
 				toast({
 					type: "error",
 					text:
-						error?.message?.message ||
+						error?.cause?.message ||
 						"Não foi possível realizar login. Por favor, tente novamente.",
 				});
 			});

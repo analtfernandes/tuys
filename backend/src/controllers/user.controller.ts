@@ -49,6 +49,21 @@ async function getUserStories(req: Request, res: Response) {
   }
 }
 
+async function getUserFollowers(req: Request, res: Response) {
+  const userId: number = Number(req.params.userId) || res.locals.userId;
+
+  try {
+    const followers = await userService.getUserFollowers(userId);
+    return responseHelper.OK({ res, body: followers });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não encontrado!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res, body: { message: "" } });
+  }
+}
+
 async function getUsersByUsername(req: Request, res: Response) {
   const userId: number = res.locals.userId;
   const username: string = req.params.username;
@@ -172,6 +187,7 @@ export {
   getUserData,
   getUserResgiter,
   getUserStories,
+  getUserFollowers,
   getUsersByUsername,
   getUserDataByUserId,
   getUserStoriesByUserId,

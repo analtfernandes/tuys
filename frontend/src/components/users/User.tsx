@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../services/tuys";
 import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
@@ -8,6 +8,7 @@ import { Icons } from "../utils";
 import { Loading } from "../shared";
 import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
+import { FollowPage } from "../follow/Follow";
 
 type PageStateValues = "stories" | "followers" | "following";
 
@@ -30,9 +31,11 @@ export function User() {
 
 	const pages = {
 		stories: <Stories path="user" />,
-		followers: <span>seguidores</span>,
+		followers: <FollowPage type="followers" userId={user?.id} />,
 		following: <span>seguindo</span>,
 	};
+
+	useEffect(() => setPage("stories"), [userId]);
 
 	if (requestUser.isError) {
 		toast({

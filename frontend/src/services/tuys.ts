@@ -1,6 +1,7 @@
 import {
 	ChannelType,
 	CommentType,
+	FollowType,
 	MyDataType,
 	NotificationType,
 	StoryStatusType,
@@ -138,8 +139,16 @@ const getMyStories = (status?: StoryStatusType) => {
 	return getRequest<StoryType[]>(`/users/me/stories/?status=${status}`);
 };
 
+const getMyFollowers = () => {
+	return getRequest<FollowType[]>(`/users/me/followers`);
+};
+
 const getUserStories = (userId: number) => {
 	return getRequest<StoryType[]>(`/users/${userId}/stories`);
+};
+
+const getUserFollowers = (userId: number) => {
+	return getRequest<FollowType[]>(`/users/${userId}/followers`);
 };
 
 const getUsers = (usename: string) => {
@@ -242,10 +251,12 @@ const getFunctions = {
 	getComments,
 	getMyData,
 	getMyStories,
+	getMyFollowers,
 	getUsers,
 	getUserData,
 	getRegister,
 	getUserStories,
+	getUserFollowers,
 	getRanking,
 	getNotifications,
 };

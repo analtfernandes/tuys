@@ -88,6 +88,13 @@ type UserRegisterType = {
 	email: string;
 };
 
+type FollowType = {
+	id: number;
+	username: string;
+	avatar: string;
+	rankColor: string;
+};
+
 type NotificationType = {
 	id: number;
 	toUserId: number;
@@ -123,6 +130,7 @@ export type {
 	UserDataType,
 	UsersType,
 	UserRegisterType,
+	FollowType,
 	NotificationType,
 	LocalStorageType,
 	SetState,

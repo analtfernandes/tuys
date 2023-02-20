@@ -5,8 +5,8 @@ import { faker } from "@faker-js/faker";
 import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
-import { generateValidToken, generateValidUser } from "../helpers/generateValidData";
-import { createStory, createFollow, createChannel, createBannedStoryOfChannel } from "../factories";
+import { generateValidToken, generateValidUser, generateValidUserWithRank } from "../helpers/generateValidData";
+import { createStory, createFollow, createChannel, createBannedStoryOfChannel, createRank } from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -161,6 +161,53 @@ describe("GET /users/me/stories", () => {
           likes: 0,
           comments: 0,
           channel: channel.name,
+        },
+      ]);
+    });
+  });
+});
+
+describe("GET /users/me/followers", () => {
+  const route = "/users/me/followers";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(route);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(route).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return 200 and a followers array", async () => {
+      const rank = await createRank();
+      const user = await generateValidUser();
+      const otherUser = await generateValidUserWithRank(rank.id);
+      await createFollow({ followedId: user.id, followerId: otherUser.id });
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.get(route).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: otherUser.id,
+          username: otherUser.username,
+          avatar: otherUser.avatar,
+          rankColor: rank.color,
         },
       ]);
     });
@@ -377,6 +424,70 @@ describe("GET /users/:userId/stories", () => {
           likes: 0,
           comments: 0,
           channel: channelWithStory.name,
+        },
+      ]);
+    });
+  });
+});
+
+describe("GET /users/:userId/followers", () => {
+  const route = "/users";
+  const subRoute = "followers";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.get(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const { authorization } = await generateValidToken();
+
+      const response = await app.get(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 404 if user does not exist", async () => {
+      const { authorization } = await generateValidToken();
+
+      const response = await app.get(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return 200 and a followers array", async () => {
+      const rank = await createRank();
+      const user = await generateValidUserWithRank(rank.id);
+      const otherUser = await generateValidUser();
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.get(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: user.id,
+          username: user.username,
+          avatar: user.avatar,
+          rankColor: rank.color,
         },
       ]);
     });

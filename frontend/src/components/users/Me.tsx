@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
-import { Icons } from "../utils";
-import { PageStyle } from "./PageStyle";
-import { Stories } from "../stories/Stories";
 import { useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
-import { useUserContext } from "../../contexts/UserContext";
+import { Icons } from "../utils";
 import { Loading } from "../shared";
+import { PageStyle } from "./PageStyle";
+import { Stories } from "../stories/Stories";
+import { FollowPage } from "../follow/Follow";
 
 type PageStateValues = "stories" | "bannedStories" | "followers" | "following";
 
@@ -26,8 +27,8 @@ export function Me() {
 
 	const pages = {
 		stories: <Stories path="user" />,
-		bannedStories: <Stories path="user" status='BANNED' />,
-		followers: <span>seguidores</span>,
+		bannedStories: <Stories path="user" status="BANNED" />,
+		followers: <FollowPage type="followers" />,
 		following: <span>seguindo</span>,
 	};
 

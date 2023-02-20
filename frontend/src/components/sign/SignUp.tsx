@@ -53,12 +53,11 @@ export default function SignUp() {
 				});
 				navigate("/sign-in");
 			})
-			.catch((err) => {
-				const error = JSON.parse(err.message);
+			.catch((error) => {
 				toast({
 					type: "error",
 					text:
-						error?.message?.message ||
+						error?.cause?.message ||
 						"Não foi possível realizar o cadastro. Por favor, tente novamente.",
 				});
 			});

@@ -66,6 +66,21 @@ async function getUserStories(userId: number, status: StorieStatus) {
   return formatStories(stories, userId);
 }
 
+async function getUserFollowers(userId: number) {
+  const user = await userRepository.findUserById(userId);
+  if (!user) throw notFoundError();
+
+  const followers = await userRepository.findFollowers(userId);
+  if (!followers) throw notFoundError();
+
+  const formatedFollowers = followers.map(({ Followed: { Ranks, ...follower } }) => ({
+    rankColor: Ranks.color,
+    ...follower,
+  }));
+
+  return formatedFollowers;
+}
+
 async function getUserStoriesByUserId(userId: number, wantedUser: number) {
   const user = await userRepository.findUserById(wantedUser);
   if (!user) throw notFoundError();
@@ -127,6 +142,7 @@ export {
   getUserData,
   getUserResgiter,
   getUserStories,
+  getUserFollowers,
   getUsersByUsername,
   getUserDataByUserId,
   getUserStoriesByUserId,

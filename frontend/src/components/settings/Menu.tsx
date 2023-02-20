@@ -45,12 +45,11 @@ export function Menu() {
 
 				navigate("/sign-in");
 			})
-			.catch((err) => {
-				const error = JSON.parse(err.message);
+			.catch((error) => {
 				toast({
 					type: "error",
 					text:
-						error?.message?.message ||
+						error?.cause?.message ||
 						"Não foi possível deslogar. Por favor, tente novamente.",
 				});
 			});
