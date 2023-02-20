@@ -161,7 +161,16 @@ export function Perfil() {
 								justifyContent: "end",
 							}}
 						>
-							<Button config={{ margin: "0" }}>Atualizar</Button>
+							<Button
+								config={{ margin: "0" }}
+								disabled={updateRegister.isLoading}
+							>
+								{updateRegister.isLoading ? (
+									<Loading size="small" />
+								) : (
+									"Atualizar"
+								)}
+							</Button>
 						</div>
 					</Form>
 				)}

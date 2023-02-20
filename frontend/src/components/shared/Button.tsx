@@ -20,13 +20,13 @@ type WrapperProps = {
 export function Button({ children, config = {}, ...otherProps }: ButtonParams) {
 	return (
 		<Wrapper
+			{...otherProps}
 			width={config.width || config.type === "secundary" ? "100%" : "111px"}
 			margin={config.margin || "0 auto"}
 			height={config.height || "40px"}
 			radius={config.radius || ""}
 			padding={config.padding || "0"}
 			buttonType={config.type || "primary"}
-			{...otherProps}
 		>
 			{children}
 		</Wrapper>

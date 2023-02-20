@@ -16,7 +16,7 @@ export function CreateComment({ storyId }: CreateCommentParams) {
 	const { user } = useUserContext();
 	const toast = useToast();
 
-	const { isError, isSuccess, ...request } = useRequestMutation(
+	const { isError, isSuccess, isLoading, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories, RequestKeyEnum.comments, storyId],
 		(data) => api.postComment(data)
 	);
@@ -61,9 +61,10 @@ export function CreateComment({ storyId }: CreateCommentParams) {
 					placeholder="Escrever..."
 					value={newComment}
 					onChange={(e) => setNewComment(e.target.value)}
+					disabled={isLoading}
 				/>
 
-				<button>
+				<button disabled={isLoading}>
 					<Icons type="send" />
 				</button>
 			</form>

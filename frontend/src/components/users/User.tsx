@@ -46,7 +46,9 @@ export function User() {
 	}
 
 	function toggleFollow() {
-		if (user) {
+		const isLoading = requestFollow.isLoading || requestUnfollow.isLoading;
+
+		if (user && !isLoading) {
 			if (!user.isFollowing) {
 				requestFollow.mutate(user.id);
 				return;

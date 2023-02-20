@@ -42,7 +42,7 @@ export function Search() {
 			/>
 			<Icons type="search" />
 
-			{search.length >= 3 && (
+			{search.length >= 2 && (
 				<Users>
 					<>
 						{isLoading && <Loading />}

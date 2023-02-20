@@ -2,7 +2,7 @@ import { useState } from "react";
 import api, { PostStoryParams } from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
-import { Button, Form } from "../shared";
+import { Button, Form, Loading } from "../shared";
 
 type CreateStoryParams = {
 	channelId: number;
@@ -14,7 +14,7 @@ export function CreateStory({ channelId }: CreateStoryParams) {
 	} as PostStoryParams);
 	const toast = useToast();
 
-	const { isError, isSuccess, ...request } = useRequestMutation(
+	const { isError, isSuccess, isLoading, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories],
 		() => api.postStory(story)
 	);
@@ -115,7 +115,9 @@ export function CreateStory({ channelId }: CreateStoryParams) {
 			</Form.Section>
 
 			<div style={{ width: "100%", display: "flex", justifyContent: "end" }}>
-				<Button config={{ margin: "0" }}>Enviar</Button>
+				<Button config={{ margin: "0" }} disabled={isLoading}>
+					{isLoading ? <Loading size="small" /> : "Enviar"}
+				</Button>
 			</div>
 		</Form>
 	);

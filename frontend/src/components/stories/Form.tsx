@@ -26,7 +26,7 @@ type EditStory = {
 };
 
 export function Form({ id, story, editing, setEditing }: FormParams) {
-	const { isError, isSuccess, ...request } = useRequestMutation(
+	const { isError, isSuccess, isLoading, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories, id],
 		() => api.putStory(editStory, id)
 	);
@@ -92,7 +92,9 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 	}
 
 	function isBodyBiggerThanMinimun() {
-		return ref.current?.scrollHeight && ref.current?.scrollHeight > minimusHeightPx;
+		return (
+			ref.current?.scrollHeight && ref.current?.scrollHeight > minimusHeightPx
+		);
 	}
 
 	if (isError) {
@@ -149,11 +151,17 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 
 			{editing && (
 				<Buttons>
-					<Button config={{ type: "primary-invert" }} onClick={cancelEdit}>
+					<Button
+						config={{ type: "primary-invert" }}
+						onClick={cancelEdit}
+						disabled={isLoading}
+					>
 						Cancelar
 					</Button>
 
-					<Button config={{ type: "primary" }}>Atualizar</Button>
+					<Button config={{ type: "primary" }} disabled={isLoading}>
+						Atualizar
+					</Button>
 				</Buttons>
 			)}
 

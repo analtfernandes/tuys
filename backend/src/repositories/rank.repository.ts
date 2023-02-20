@@ -24,7 +24,13 @@ async function createRanks() {
 
 function updateUserRank(userId: number) {
   return prisma.$transaction(async (p) => {
-    const user = await p.users.findUnique({ where: { id: userId }, select: { Ranks: { select: { name: true } } } });
+    const user = await p.users.findUnique({
+      where: { id: userId },
+      select: {
+        Ranks: { select: { name: true } },
+        Stories: { select: { id: true } },
+      },
+    });
     if (!user) throw new Error();
 
     const ranks = await p.ranks.findMany({ orderBy: { id: "asc" } });
@@ -40,46 +46,44 @@ function updateUserRank(userId: number) {
     if (userLevel === 0) throw new Error();
 
     if (userLevel !== 7) {
-      const storiesByUser = await p.stories.findMany({ where: { userId }, select: { id: true } });
-      const storiesCount = storiesByUser.length;
-
-      const likesCount = await p.likes.count({ where: { storyId: { in: storiesByUser.map(({ id }) => id) } } });
+      const storiesCount = user.Stories.length;
+      const likesCount = await p.likes.count({ where: { storyId: { in: user.Stories.map(({ id }) => id) } } });
       const likesPerStory = likesCount / storiesCount;
 
       switch (userLevel) {
-      case 1:
-        if (storiesCount > 10) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[1].id } });
-        }
-        break;
-      case 2:
-        if (likesPerStory > 50) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[2].id } });
-        }
-        break;
-      case 3:
-        if (likesPerStory > 200) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[3].id } });
-        }
-        break;
-      case 4:
-        if (likesPerStory > 500) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[4].id } });
-        }
-        break;
-      case 5:
-        if (likesPerStory > 2000) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[5].id } });
-        }
-        break;
-      case 6:
-        if (likesPerStory > 10000) {
-          await p.users.update({ where: { id: userId }, data: { rankId: ranks[6].id } });
-        }
-        break;
+        case 1:
+          if (storiesCount > 10) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[1].id } });
+          }
+          break;
+        case 2:
+          if (likesPerStory > 50) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[2].id } });
+          }
+          break;
+        case 3:
+          if (likesPerStory > 200) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[3].id } });
+          }
+          break;
+        case 4:
+          if (likesPerStory > 500) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[4].id } });
+          }
+          break;
+        case 5:
+          if (likesPerStory > 2000) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[5].id } });
+          }
+          break;
+        case 6:
+          if (likesPerStory > 10000) {
+            await p.users.update({ where: { id: userId }, data: { rankId: ranks[6].id } });
+          }
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
     }
   });

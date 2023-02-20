@@ -82,6 +82,7 @@ const Wrapper = styled.div<WrapperProps>`
 			justify-content: center;
 			z-index: 1;
 			margin: 0;
+			overflow: hidden;
 
 			img {
 				width: 40px;
