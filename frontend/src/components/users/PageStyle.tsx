@@ -14,7 +14,12 @@ export function PageStyle({ children }: React.PropsWithChildren) {
 PageStyle.Header = ({ color, avatar, username }: HeaderParams) => {
 	return (
 		<Header>
-			<UserRank background={color} image={avatar} alt={username} size={window.innerWidth > 340 ? "large" : 'normal'} />
+			<UserRank
+				background={color}
+				image={avatar}
+				alt={username}
+				size={window.innerWidth > 340 ? "large" : "normal"}
+			/>
 			<h1>{username}</h1>
 		</Header>
 	);
@@ -101,9 +106,19 @@ const User = styled.div`
 	font-size: 1.1rem;
 	margin-right: 20px;
 
-	p {
+	p,
+	button {
 		width: 100%;
+		display: flex;
+		align-items: center;
+		border: none;
 		margin: 15px 0 3px;
+		padding: 0;
+		text-align: start;
+		font-family: "Roboto", sans-serif;
+		font-size: 1.1rem;
+		color: ${(props) => props.theme.colors.text};
+		background-color: transparent;
 
 		svg {
 			width: auto;
@@ -116,6 +131,10 @@ const User = styled.div`
 		}
 	}
 
+	button {
+		cursor: pointer;
+	}
+
 	span {
 		line-height: 1.4rem;
 	}
@@ -124,7 +143,8 @@ const User = styled.div`
 		width: 100%;
 		font-size: 1rem;
 
-		p {
+		p,
+		button {
 			width: 100%;
 			margin: 12px 0 3px;
 

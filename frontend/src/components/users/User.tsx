@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../services/tuys";
 import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
@@ -8,8 +9,11 @@ import { Loading } from "../shared";
 import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
 
+type PageStateValues = "stories" | "followers" | "following";
+
 export function User() {
 	const toast = useToast();
+	const [page, setPage] = useState<PageStateValues>("stories");
 	const params = useParams();
 	const userId = Number(params.userId) || null;
 
@@ -23,6 +27,12 @@ export function User() {
 	const requestUnfollow = useRequestMutation([RequestKeyEnum.user], () =>
 		api.postUnfollow(user?.id || 0)
 	);
+
+	const pages = {
+		stories: <Stories path="user" />,
+		followers: <span>seguidores</span>,
+		following: <span>seguindo</span>,
+	};
 
 	if (requestUser.isError) {
 		toast({
@@ -126,21 +136,25 @@ export function User() {
 										{user.rankName}
 									</span>
 								</p>
-								<p>
+
+								<button onClick={() => setPage("stories")}>
 									<Icons type="createdStories" />
 									<b>Total de contos criados: </b>
 									<span>{user.createdStories}</span>
-								</p>
-								<p>
+								</button>
+
+								<button onClick={() => setPage("followers")}>
 									<Icons type="follower" />
 									<b>Seguidores: </b>
 									<span>{user.followers}</span>
-								</p>
-								<p>
+								</button>
+
+								<button onClick={() => setPage("following")}>
 									<Icons type="following" />
 									<b>Segue: </b>
 									<span>{user.following}</span>
-								</p>
+								</button>
+
 								<p>
 									<Icons type="status" />
 									<b>Status: </b>
@@ -154,7 +168,7 @@ export function User() {
 								</p>
 							</PageStyle.User>
 
-							<Stories path="user" />
+							{pages[page]}
 						</PageStyle.Sections>
 					</>
 				)}

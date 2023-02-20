@@ -1,3 +1,4 @@
+import { useState } from "react";
 import api from "../../services/tuys";
 import { Icons } from "../utils";
 import { PageStyle } from "./PageStyle";
@@ -7,7 +8,10 @@ import { RequestKeyEnum } from "../utils/enums";
 import { useUserContext } from "../../contexts/UserContext";
 import { Loading } from "../shared";
 
+type PageStateValues = "stories" | "bannedStories" | "followers" | "following";
+
 export function Me() {
+	const [page, setPage] = useState<PageStateValues>("stories");
 	const { user: userData } = useUserContext();
 	const toast = useToast();
 
@@ -19,6 +23,13 @@ export function Me() {
 	} = useRequestQuery([RequestKeyEnum.user, userData.username], () =>
 		api.getMyData()
 	);
+
+	const pages = {
+		stories: <Stories path="user" />,
+		bannedStories: <span>histórias banidas</span>,
+		followers: <span>seguidores</span>,
+		following: <span>seguindo</span>,
+	};
 
 	if (isError) {
 		toast({
@@ -68,26 +79,30 @@ export function Me() {
 										{user.rankName}
 									</span>
 								</p>
-								<p>
+								<button onClick={() => setPage("stories")}>
 									<Icons type="createdStories" />
 									<b>Total de contos criados: </b>
 									<span>{user.createdStories}</span>
-								</p>
-								<p>
+								</button>
+
+								<button onClick={() => setPage("bannedStories")}>
 									<Icons type="bannedBooks" />
 									<b>Total de contos banidos: </b>
 									<span>{user.bannedStories}</span>
-								</p>
-								<p>
+								</button>
+
+								<button onClick={() => setPage("followers")}>
 									<Icons type="follower" />
 									<b>Seguidores: </b>
 									<span>{user.followers}</span>
-								</p>
-								<p>
+								</button>
+
+								<button onClick={() => setPage("following")}>
 									<Icons type="following" />
 									<b>Segue: </b>
 									<span>{user.following}</span>
-								</p>
+								</button>
+
 								<p>
 									<Icons type="status" />
 									<b>Status: </b>
@@ -101,7 +116,7 @@ export function Me() {
 								</p>
 							</PageStyle.User>
 
-							<Stories path="user" />
+							{pages[page]}
 						</PageStyle.Sections>
 					</>
 				)}
