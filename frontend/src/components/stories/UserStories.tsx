@@ -1,13 +1,14 @@
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import { useUserContext } from "../../contexts/UserContext";
 import api from "../../services/tuys";
 import { useRequestQuery, useToast } from "../../hooks";
+import { StoryStatusType, StoryType } from "../utils/Protocols";
+import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Title, Loading } from "../shared";
 import { Story } from "./Story";
-import { StoryStatusType } from "../utils/Protocols";
-import { RequestKeyEnum } from "../utils/enums";
-import { useUserContext } from "../../contexts/UserContext";
-import { useParams } from "react-router-dom";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 
 export type UserStoriesParams = {
 	status?: StoryStatusType;
@@ -15,10 +16,15 @@ export type UserStoriesParams = {
 };
 
 export function UserStories({ status, liked }: UserStoriesParams) {
-	const { user } = useUserContext();
+	const [channels, setChannels] = useState<string[]>([]);
+	const [currentStoriesFilter, setCurrentStoriesFilter] = useState("todos");
+	const [filteredStories, setFilteredStories] = useState<{
+		[key: string]: StoryType[];
+	}>({});
 	const params = useParams();
-	const userId = Number(params.userId) || null;
+	const { user } = useUserContext();
 	const toast = useToast();
+	const userId = Number(params.userId) || null;
 
 	const {
 		isError,
@@ -34,6 +40,37 @@ export function UserStories({ status, liked }: UserStoriesParams) {
 		],
 		getUserStories
 	);
+
+	useEffect(() => setCurrentStoriesFilter("todos"), [status, liked]);
+
+	useEffect(() => {
+		if (!stories) return;
+
+		const channelsSet = new Set<string>();
+		const storiesChannels: string[] = [];
+		const filteredStories: { [key: string]: StoryType[] } = {
+			todos: [...stories],
+		};
+
+		stories.forEach((story) => {
+			const channel = story.channel.toLowerCase();
+			channelsSet.add(channel);
+
+			if (filteredStories[channel]) {
+				filteredStories[channel].push(story);
+				return;
+			}
+
+			filteredStories[channel] = [story];
+		});
+
+		channelsSet.forEach((name) => storiesChannels.push(name));
+		storiesChannels.sort();
+
+		setChannels(["todos", ...storiesChannels]);
+		setFilteredStories({ ...filteredStories });
+		channelsSet.clear();
+	}, [stories]);
 
 	if (isError) {
 		toast({
@@ -59,6 +96,8 @@ export function UserStories({ status, liked }: UserStoriesParams) {
 		return api.getUserStories(userId, liked);
 	}
 
+	const currentStories = filteredStories[currentStoriesFilter] || stories;
+
 	return (
 		<StoriesSection>
 			<Title>
@@ -69,6 +108,17 @@ export function UserStories({ status, liked }: UserStoriesParams) {
 				{isLoading && <Loading />}
 
 				<>
+					{stories && stories.length > 0 && (
+						<select
+							value={currentStoriesFilter}
+							onChange={(e) => setCurrentStoriesFilter(e.target.value)}
+						>
+							{channels.map((name, index) => (
+								<option key={index}>{name}</option>
+							))}
+						</select>
+					)}
+
 					{status === "BANNED" && stories && stories.length === 0 && (
 						<span>Nenhuma história foi banida :).</span>
 					)}
@@ -82,7 +132,7 @@ export function UserStories({ status, liked }: UserStoriesParams) {
 					)}
 
 					{stories &&
-						stories.map((story, index) => (
+						currentStories.map((story, index) => (
 							<Story key={index} story={story} showChannel={true} />
 						))}
 				</>
@@ -110,6 +160,18 @@ const StoriesSection = styled.section`
 				margin-top: 30px;
 				font-size: 1.1rem;
 				color: ${(props) => props.theme.colors.text};
+			}
+
+			select {
+				width: fit-content;
+				min-width: 100px;
+				margin: 0 auto 0 0;
+				background-color: ${(props) => props.theme.colors.lightGray};
+				border: 1px solid ${(props) => props.theme.colors.mediumGrayPrimary};
+				border-radius: 4px;
+				font-family: "Roboto", sans-serif;
+				letter-spacing: 0.03rem;
+				color: ${(props) => props.theme.colors.black};
 			}
 		}
 
