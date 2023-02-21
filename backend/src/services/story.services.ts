@@ -1,9 +1,9 @@
-import { Comments, Denunciations, Follows, Likes, Stories, UserStatus } from "@prisma/client";
+import { Comments, Denunciations, Follows, Likes, Stories, StorieStatus, UserStatus } from "@prisma/client";
 import * as storyRepository from "../repositories/story.repository";
 import * as channelRepository from "../repositories/channel.repository";
 import * as rankRepository from "../repositories/rank.repository";
 import * as notificationRepository from "../repositories/notification.repository";
-import { badRequestError, notFoundError, unauthorizedError } from "../helpers/errors.helper";
+import { badRequestError, forbiddenError, notFoundError, unauthorizedError } from "../helpers/errors.helper";
 
 async function getFromUserAndFollowed(userId: number) {
   const stories = await storyRepository.findAll(userId);
@@ -41,6 +41,7 @@ async function postStory(data: PostStoryParams) {
 async function postLikeStory(storyId: number, userId: number) {
   const story = await storyRepository.findById(storyId);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   const isLikedByUser = await storyRepository.findStoryLikedByUser(storyId, userId);
   if (isLikedByUser) throw badRequestError();
@@ -54,6 +55,7 @@ async function postLikeStory(storyId: number, userId: number) {
 async function postUnlikeStory(storyId: number, userId: number) {
   const story = await storyRepository.findById(storyId);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   const isLikedByUser = await storyRepository.findStoryLikedByUser(storyId, userId);
   if (!isLikedByUser) throw badRequestError();
@@ -64,6 +66,7 @@ async function postUnlikeStory(storyId: number, userId: number) {
 async function postComment(data: PostCommentParams) {
   const story = await storyRepository.findById(data.storyId);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   const comment = await storyRepository.createComment(data);
 
@@ -75,6 +78,7 @@ async function postComment(data: PostCommentParams) {
 async function postDenounce(data: PostDenounceParams) {
   const story = await storyRepository.findById(data.storyId);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   const userAlreadyDenounceStory = await storyRepository.findStoryDenouncedByUser(data.storyId, data.userId);
   if (userAlreadyDenounceStory) throw badRequestError();
@@ -86,6 +90,7 @@ async function postDenounce(data: PostDenounceParams) {
 async function deleteStory(data: DeleteStoryParams) {
   const story = await storyRepository.findById(data.id);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   if (story.userId !== data.userId) throw unauthorizedError();
 
@@ -95,6 +100,7 @@ async function deleteStory(data: DeleteStoryParams) {
 async function putStory(data: PutStoryParams) {
   const story = await storyRepository.findById(data.storyId);
   if (!story) throw notFoundError();
+  validateStoryStatus(story);
 
   if (story.userId !== data.userId) throw unauthorizedError();
 
@@ -107,6 +113,10 @@ async function validateChannelId(id: number) {
   if (!channel) throw notFoundError();
 
   return channel;
+}
+
+function validateStoryStatus(story: Stories) {
+  if (story.status === StorieStatus.BANNED) throw forbiddenError();
 }
 
 function formatComments(comments: FormartCommentsParams, userId: number) {

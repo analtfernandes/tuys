@@ -93,8 +93,8 @@ export function FollowPage({ type, userId = 0 }: FollowParams) {
 
 					{followList &&
 						followList.length > 0 &&
-						followList.map(({ id, username, avatar, rankColor }) => (
-							<Link to={`/user/${id}`}>
+						followList.map(({ id, username, avatar, rankColor }, index) => (
+							<Link to={`/user/${id}`} key={index}>
 								<UserRank
 									background={rankColor}
 									image={avatar}

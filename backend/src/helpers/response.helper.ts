@@ -22,6 +22,10 @@ function BAD_REQUEST<Type>({ res, body }: params<Type>) {
   return res.status(httpStatus.BAD_REQUEST).send(body);
 }
 
+function FORBIDDEN<Type>({ res, body }: params<Type>) {
+  return res.status(httpStatus.FORBIDDEN).send(body);
+}
+
 function NOT_FOUND<Type>({ res, body }: params<Type>) {
   return res.status(httpStatus.NOT_FOUND).send(body);
 }
@@ -44,4 +48,15 @@ function BAD_GATEWAY<Type>({ res, body }: params<Type>) {
   return res.status(httpStatus.BAD_GATEWAY).send(body || message);
 }
 
-export { OK, CREATED, NO_CONTENT, NOT_FOUND, BAD_REQUEST, CONFLICT, UNAUTHORIZED, SERVER_ERROR, BAD_GATEWAY };
+export {
+  OK,
+  CREATED,
+  NO_CONTENT,
+  BAD_REQUEST,
+  FORBIDDEN,
+  NOT_FOUND,
+  CONFLICT,
+  UNAUTHORIZED,
+  SERVER_ERROR,
+  BAD_GATEWAY,
+};

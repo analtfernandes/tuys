@@ -9,9 +9,10 @@ import { UserRank } from "../shared";
 
 type CreateCommentParams = {
 	storyId: number;
+	storyIsBanned: boolean;
 };
 
-export function CreateComment({ storyId }: CreateCommentParams) {
+export function CreateComment({ storyId, storyIsBanned }: CreateCommentParams) {
 	const [newComment, setNewComment] = useState("");
 	const { user } = useUserContext();
 	const toast = useToast();
@@ -47,27 +48,31 @@ export function CreateComment({ storyId }: CreateCommentParams) {
 
 	return (
 		<Wrapper>
-			<UserRank
-				background={user.rankColor}
-				image={user.avatar}
-				alt={user.username}
-				size="small"
-			/>
+			{!storyIsBanned && (
+				<>
+					<UserRank
+						background={user.rankColor}
+						image={user.avatar}
+						alt={user.username}
+						size="small"
+					/>
 
-			<form onSubmit={handleComment}>
-				<input
-					required
-					type="text"
-					placeholder="Escrever..."
-					value={newComment}
-					onChange={(e) => setNewComment(e.target.value)}
-					disabled={isLoading}
-				/>
+					<form onSubmit={handleComment}>
+						<input
+							required
+							type="text"
+							placeholder="Escrever..."
+							value={newComment}
+							onChange={(e) => setNewComment(e.target.value)}
+							disabled={storyIsBanned || isLoading}
+						/>
 
-				<button disabled={isLoading}>
-					<Icons type="send" />
-				</button>
-			</form>
+						<button disabled={storyIsBanned || isLoading}>
+							<Icons type="send" />
+						</button>
+					</form>
+				</>
+			)}
 		</Wrapper>
 	);
 }

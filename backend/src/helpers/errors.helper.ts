@@ -14,6 +14,12 @@ function badRequestError(): ErrorType {
   };
 }
 
+function forbiddenError(): ErrorType {
+  return {
+    name: "Forbidden",
+  };
+}
+
 function unauthorizedError(): ErrorType {
   return {
     name: "Unauthorized",
@@ -32,4 +38,4 @@ function signUpError(): ErrorType {
   };
 }
 
-export { notFoundError, badRequestError, unauthorizedError, conflictError, signUpError };
+export { notFoundError, badRequestError, forbiddenError, unauthorizedError, conflictError, signUpError };

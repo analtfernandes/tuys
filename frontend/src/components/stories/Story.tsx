@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
@@ -50,6 +50,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	} as ModalConfig);
 	const toast = useToast();
 	const { owner } = story;
+
+	useEffect(() => setShowComment(false), [story]);
 
 	function compactNumber(number: number) {
 		return Intl.NumberFormat("pt-br", {
@@ -313,7 +315,11 @@ export function Story({ story, showChannel = true }: StoryParams) {
 							<span>{compactNumber(story.likes)}</span>
 						</Option>
 
-						<Option iconColor="pastelBlue" banned={true}>
+						<Option
+							iconColor="pastelBlue"
+							banned={true}
+							onClick={() => setShowComment((prev) => !prev)}
+						>
 							<div>
 								<Icons type="comment" />
 								<span>Comentar</span>
@@ -331,7 +337,14 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				</Background>
 			)}
 
-			{showComment ? <Comments storyId={story.id} /> : ""}
+			{showComment ? (
+				<Comments
+					storyId={story.id}
+					storyIsBanned={story.status === "BANNED"}
+				/>
+			) : (
+				""
+			)}
 		</>
 	);
 }

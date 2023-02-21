@@ -76,6 +76,10 @@ async function postLikeStory(req: Request, res: Response) {
       return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já curtiu ssa história!" } });
     }
 
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+    }
+
     return responseHelper.SERVER_ERROR({ res });
   }
 }
@@ -96,6 +100,10 @@ async function postUnlikeStory(req: Request, res: Response) {
       return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário já curtiu essa história!" } });
     }
 
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+    }
+
     return responseHelper.SERVER_ERROR({ res });
   }
 }
@@ -110,6 +118,10 @@ async function postComment(req: Request, res: Response) {
   } catch (error: any) {
     if (error.name === "NotFound") {
       return responseHelper.NOT_FOUND({ res, body: { message: "Essa história não existe!" } });
+    }
+
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -132,6 +144,10 @@ async function postDenounce(req: Request, res: Response) {
       return responseHelper.BAD_REQUEST({ res, body: { message: "Denúncias só são pertimidas uma vez!" } });
     }
 
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+    }
+
     return responseHelper.SERVER_ERROR({ res });
   }
 }
@@ -151,6 +167,10 @@ async function deleteStory(req: Request, res: Response) {
       return responseHelper.UNAUTHORIZED({ res });
     }
 
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+    }
+
     return responseHelper.SERVER_ERROR({ res });
   }
 }
@@ -168,6 +188,10 @@ async function putStory(req: Request, res: Response) {
     }
     if (error.name === "Unauthorized") {
       return responseHelper.UNAUTHORIZED({ res });
+    }
+
+    if (error.name === "Forbidden") {
+      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
     }
 
     return responseHelper.SERVER_ERROR({ res });

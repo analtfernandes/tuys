@@ -9,9 +9,10 @@ import { CreateComment } from "./CreateComment";
 
 type CommentsProps = {
 	storyId: number;
+	storyIsBanned: boolean;
 };
 
-export function Comments({ storyId }: CommentsProps) {
+export function Comments({ storyId, storyIsBanned }: CommentsProps) {
 	const scrollToLast = useRef<HTMLDivElement>(null);
 	const toast = useToast();
 
@@ -57,7 +58,7 @@ export function Comments({ storyId }: CommentsProps) {
 				)}
 			</>
 
-			<CreateComment storyId={storyId} />
+			<CreateComment storyId={storyId} storyIsBanned={storyIsBanned} />
 		</Wrapper>
 	);
 }
