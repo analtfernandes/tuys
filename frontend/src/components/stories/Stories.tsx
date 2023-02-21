@@ -3,21 +3,21 @@ import { StoryStatusType } from "../utils/Protocols";
 import { ChannelStories } from "./ChannelStories";
 import { HomeStories } from "./HomeStories";
 import { RankingStories } from "./RankingStories";
-import { UserStories } from "./UserStories";
+import { UserStories, UserStoriesParams } from "./UserStories";
 
 type StoriesParams = {
 	path: "home" | "channel" | "user" | "ranking";
-	status?: StoryStatusType;
+	userStories?: UserStoriesParams
 };
 
-export function Stories({ path, status }: StoriesParams) {
+export function Stories({ path, userStories }: StoriesParams) {
 	return (
 		<main>
 			{path === "channel" && <ChannelStories />}
 
 			{path === "home" && <HomeStories />}
 
-			{path === "user" && <UserStories status={status} />}
+			{path === "user" && <UserStories {...userStories} />}
 
 			{path === "ranking" && <RankingStories />}
 		</main>

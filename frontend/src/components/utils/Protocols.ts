@@ -71,6 +71,7 @@ type MyDataType = {
 	rankColor: string;
 	bannedStories: number;
 	createdStories: number;
+	likedStories: number;
 	followers: number;
 	following: number;
 };

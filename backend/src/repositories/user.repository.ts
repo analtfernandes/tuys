@@ -16,6 +16,7 @@ function findUserData(id: number) {
           Followed: true,
           Follower: true,
           Stories: true,
+          Likes: true,
         },
       },
       Stories: {
@@ -49,6 +50,7 @@ function findUserDataByUserId(id: number, userId: number) {
           Followed: true,
           Follower: true,
           Stories: true,
+          Likes: true,
         },
       },
       Follower: {

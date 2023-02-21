@@ -36,10 +36,11 @@ async function getUserResgiter(req: Request, res: Response) {
 async function getUserStories(req: Request, res: Response) {
   const userId: number = res.locals.userId;
   const status = req.query.status === StorieStatus.BANNED ? StorieStatus.BANNED : StorieStatus.ACTIVE;
+  const likedByUser = req.query.liked === "true";
 
   try {
-    const user = await userService.getUserStories(userId, status);
-    return responseHelper.OK({ res, body: user });
+    const stories = await userService.getUserStories(userId, status, likedByUser);
+    return responseHelper.OK({ res, body: stories });
   } catch (error: any) {
     if (error.name === "NotFound") {
       return responseHelper.NOT_FOUND({ res });
@@ -114,9 +115,10 @@ async function getUserDataByUserId(req: Request, res: Response) {
 async function getUserStoriesByUserId(req: Request, res: Response) {
   const userId: number = res.locals.userId;
   const wantedUser = Number(req.params.userId);
+  const likedByUser = req.query.liked === "true";
 
   try {
-    const stories = await userService.getUserStoriesByUserId(userId, wantedUser);
+    const stories = await userService.getUserStoriesByUserId(userId, wantedUser, likedByUser);
     return responseHelper.OK({ res, body: stories });
   } catch (error: any) {
     if (error.name === "NotFound") {

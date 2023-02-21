@@ -20,6 +20,7 @@ async function getUserData(userId: number) {
     rankColor: user.Ranks.color,
     bannedStories: user.Stories.length,
     createdStories: user._count.Stories,
+    likedStories: user._count.Likes,
     followers: user._count.Follower,
     following: user._count.Followed,
   };
@@ -49,6 +50,7 @@ async function getUserDataByUserId(userId: number, wantedUser: number) {
     rankName: user.Ranks.name,
     rankColor: user.Ranks.color,
     createdStories: user._count.Stories,
+    likedStories: user._count.Likes,
     followers: user._count.Follower,
     following: user._count.Followed,
     isFollowing: user.Follower.length > 0 ? true : false,
@@ -58,8 +60,10 @@ async function getUserDataByUserId(userId: number, wantedUser: number) {
   return formatedUser;
 }
 
-async function getUserStories(userId: number, status: StorieStatus) {
-  const stories = await storyRepository.findAllByUser(userId, userId, status);
+async function getUserStories(userId: number, status: StorieStatus, likedByUser: boolean) {
+  const stories = likedByUser
+    ? await storyRepository.findAllUserLikedStories(userId)
+    : await storyRepository.findAllByUser(userId, userId, status);
 
   if (!stories) throw notFoundError();
 
@@ -96,11 +100,13 @@ async function getWhoUserIsFollowing(userId: number) {
   return formatedFollowing;
 }
 
-async function getUserStoriesByUserId(userId: number, wantedUser: number) {
+async function getUserStoriesByUserId(userId: number, wantedUser: number, likedByUser: boolean) {
   const user = await userRepository.findUserById(wantedUser);
   if (!user) throw notFoundError();
 
-  const stories = await storyRepository.findAllByUser(wantedUser, userId);
+  const stories = likedByUser
+    ? await storyRepository.findAllUserLikedStories(wantedUser)
+    : await storyRepository.findAllByUser(wantedUser, userId);
 
   return formatStories(stories, userId);
 }

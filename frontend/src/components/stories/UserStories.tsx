@@ -9,11 +9,12 @@ import { useUserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-type UserStoriesParams = {
+export type UserStoriesParams = {
 	status?: StoryStatusType;
+	liked?: boolean;
 };
 
-export function UserStories({ status }: UserStoriesParams) {
+export function UserStories({ status, liked }: UserStoriesParams) {
 	const { user } = useUserContext();
 	const params = useParams();
 	const userId = Number(params.userId) || null;
@@ -25,7 +26,12 @@ export function UserStories({ status }: UserStoriesParams) {
 		data: stories,
 		...request
 	} = useRequestQuery(
-		[RequestKeyEnum.stories, status ? status : RequestKeyEnum.user, userId || user.id],
+		[
+			RequestKeyEnum.stories,
+			status ? status : RequestKeyEnum.user,
+			liked ? "only liked" : RequestKeyEnum.user,
+			userId || user.id,
+		],
 		getUserStories
 	);
 
@@ -47,13 +53,10 @@ export function UserStories({ status }: UserStoriesParams) {
 				},
 			});
 		}
-		if (!userId && status) {
-			return api.getMyStories(status);
-		}
 		if (!userId) {
-			return api.getMyStories();
+			return api.getMyStories(status, liked);
 		}
-		return api.getUserStories(userId);
+		return api.getUserStories(userId, liked);
 	}
 
 	return (
@@ -66,11 +69,15 @@ export function UserStories({ status }: UserStoriesParams) {
 				{isLoading && <Loading />}
 
 				<>
-					{stories && stories.length === 0 && status === "BANNED" && (
+					{status === "BANNED" && stories && stories.length === 0 && (
 						<span>Nenhuma história foi banida :).</span>
 					)}
 
-					{stories && stories.length === 0 && status !== "BANNED" && (
+					{liked && stories && stories.length === 0 && (
+						<span>Nenhuma história curtida ainda.</span>
+					)}
+
+					{status !== "BANNED" && !liked && stories && stories.length === 0 && (
 						<span>Nenhuma história foi criada ainda.</span>
 					)}
 

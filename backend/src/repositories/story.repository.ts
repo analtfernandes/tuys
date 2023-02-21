@@ -140,6 +140,49 @@ function findStoryLikedByUser(storyId: number, userId: number) {
   return prisma.likes.findFirst({ where: { storyId, userId } });
 }
 
+function findAllUserLikedStories(userId: number) {
+  return prisma.stories.findMany({
+    where: { Likes: { some: { userId } }, status: StorieStatus.ACTIVE },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      userId: true,
+      date: true,
+      status: true,
+      Users: {
+        select: {
+          id: true,
+          username: true,
+          avatar: true,
+          status: true,
+          Ranks: { select: { color: true } },
+          Follower: {
+            where: {
+              followerId: userId,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          Comments: true,
+          Likes: true,
+        },
+      },
+      Likes: {
+        where: { userId },
+      },
+      Channels: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: { id: "desc" },
+  });
+}
+
 function findComments(storyId: number, userId: number) {
   return prisma.comments.findMany({
     where: { storyId },
@@ -257,6 +300,7 @@ export {
   findStoryLikes,
   findStoryComments,
   findStoryLikedByUser,
+  findAllUserLikedStories,
   findStoryDenouncedByUser,
   createStory,
   createLike,

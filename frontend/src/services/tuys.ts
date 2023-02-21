@@ -135,8 +135,10 @@ const getRegister = () => {
 	return getRequest<UserRegisterType>(`/users/register/me`);
 };
 
-const getMyStories = (status?: StoryStatusType) => {
-	return getRequest<StoryType[]>(`/users/me/stories/?status=${status}`);
+const getMyStories = (status?: StoryStatusType, liked = false) => {
+	return getRequest<StoryType[]>(
+		`/users/me/stories/?status=${status}&liked=${liked}`
+	);
 };
 
 const getMyFollowers = () => {
@@ -147,8 +149,8 @@ const getWhoIFollow = () => {
 	return getRequest<FollowType[]>(`/users/me/following`);
 };
 
-const getUserStories = (userId: number) => {
-	return getRequest<StoryType[]>(`/users/${userId}/stories`);
+const getUserStories = (userId: number, liked = false) => {
+	return getRequest<StoryType[]>(`/users/${userId}/stories/?liked=${liked}`);
 };
 
 const getUserFollowers = (userId: number) => {

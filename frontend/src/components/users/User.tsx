@@ -10,7 +10,7 @@ import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
 import { FollowPage } from "../follow/Follow";
 
-type PageStateValues = "stories" | "followers" | "following";
+type PageStateValues = "stories" | "likedStories" | "followers" | "following";
 
 export function User() {
 	const toast = useToast();
@@ -33,6 +33,7 @@ export function User() {
 		stories: <Stories path="user" />,
 		followers: <FollowPage type="followers" userId={user?.id} />,
 		following: <FollowPage type="following" userId={user?.id} />,
+		likedStories: <Stories path="user" userStories={{ liked: true }} />,
 	};
 
 	useEffect(() => setPage("stories"), [userId]);
@@ -144,6 +145,12 @@ export function User() {
 									<Icons type="createdStories" />
 									<b>Total de contos criados: </b>
 									<span>{user.createdStories}</span>
+								</button>
+
+								<button onClick={() => setPage("likedStories")}>
+									<Icons type="unlike" />
+									<b>Histórias curtidas: </b>
+									<span>{user.likedStories}</span>
 								</button>
 
 								<button onClick={() => setPage("followers")}>

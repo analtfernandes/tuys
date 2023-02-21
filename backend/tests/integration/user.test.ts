@@ -6,7 +6,15 @@ import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import { generateValidToken, generateValidUser, generateValidUserWithRank } from "../helpers/generateValidData";
-import { createStory, createFollow, createChannel, createBannedStoryOfChannel, createRank } from "../factories";
+import {
+  createStory,
+  createFollow,
+  createChannel,
+  createBannedStoryOfChannel,
+  createRank,
+  likeStory,
+  createStoryOfChannel,
+} from "../factories";
 import { cleanDatabase } from "../helpers/cleanDatabase";
 
 const app = supertest(server);
@@ -49,6 +57,8 @@ describe("GET /users/me", () => {
       await createStory(user.id);
       const otherUser = await generateValidUser();
       await createFollow({ followedId: user.id, followerId: otherUser.id });
+      const channelWithStory = await createStory(otherUser.id);
+      await likeStory(channelWithStory.Stories[0].id, user.id);
       const { authorization } = await generateValidToken(user);
 
       const response = await app.get(route).set("Authorization", authorization);
@@ -64,6 +74,7 @@ describe("GET /users/me", () => {
         rankColor: expect.any(String),
         bannedStories: 0,
         createdStories: 1,
+        likedStories: 1,
         followers: 1,
         following: 0,
       });
@@ -159,6 +170,42 @@ describe("GET /users/me/stories", () => {
           likedByUser: false,
           followedByUser: false,
           likes: 0,
+          comments: 0,
+          channel: channel.name,
+        },
+      ]);
+    });
+
+    it("should return 200 and a liked stories array", async () => {
+      const user = await generateValidUser();
+      const otherUser = await generateValidUser();
+      const channel = await createChannel();
+      const story = await createStoryOfChannel(otherUser.id, channel.id);
+      await createStoryOfChannel(user.id, channel.id);
+      await likeStory(story.id, user.id);
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.get(`${route}/?liked=true`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: story.id,
+          title: story.title,
+          body: story.body,
+          userId: story.Users.id,
+          date: story.date.toISOString(),
+          status: story.status,
+          owner: {
+            isOwner: false,
+            status: story.Users.status,
+            username: story.Users.username,
+            avatar: story.Users.avatar,
+            rankColor: expect.any(String),
+          },
+          likedByUser: true,
+          followedByUser: false,
+          likes: 1,
           comments: 0,
           channel: channel.name,
         },
@@ -365,6 +412,8 @@ describe("GET /users/user/:userId", () => {
       await createStory(otherUser.id);
       await createFollow({ followedId: otherUser.id, followerId: user.id });
       await createFollow({ followedId: user.id, followerId: otherUser.id });
+      const channelWithStory = await createStory(user.id);
+      await likeStory(channelWithStory.Stories[0].id, otherUser.id);
 
       const response = await app.get(`${route}/${otherUser.id}`).set("Authorization", authorization);
 
@@ -378,6 +427,7 @@ describe("GET /users/user/:userId", () => {
         rankName: expect.any(String),
         rankColor: expect.any(String),
         createdStories: 1,
+        likedStories: 1,
         followers: 1,
         following: 1,
         isFollowing: true,
@@ -471,6 +521,44 @@ describe("GET /users/:userId/stories", () => {
           likes: 0,
           comments: 0,
           channel: channelWithStory.name,
+        },
+      ]);
+    });
+
+    it("should return 200 and a liked stories array", async () => {
+      const user = await generateValidUser();
+      const otherUser = await generateValidUser();
+      const channel = await createChannel();
+      const story = await createStoryOfChannel(otherUser.id, channel.id);
+      await createStoryOfChannel(user.id, channel.id);
+      await likeStory(story.id, user.id);
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app
+        .get(`${route}/${otherUser.id}/${subRoute}/?liked=true`)
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.OK);
+      expect(response.body).toEqual([
+        {
+          id: story.id,
+          title: story.title,
+          body: story.body,
+          userId: story.Users.id,
+          date: story.date.toISOString(),
+          status: story.status,
+          owner: {
+            isOwner: false,
+            status: story.Users.status,
+            username: story.Users.username,
+            avatar: story.Users.avatar,
+            rankColor: expect.any(String),
+          },
+          likedByUser: true,
+          followedByUser: false,
+          likes: 1,
+          comments: 0,
+          channel: channel.name,
         },
       ]);
     });

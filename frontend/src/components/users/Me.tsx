@@ -9,7 +9,12 @@ import { PageStyle } from "./PageStyle";
 import { Stories } from "../stories/Stories";
 import { FollowPage } from "../follow/Follow";
 
-type PageStateValues = "stories" | "bannedStories" | "followers" | "following";
+type PageStateValues =
+	| "stories"
+	| "bannedStories"
+	| "likedStories"
+	| "followers"
+	| "following";
 
 export function Me() {
 	const [page, setPage] = useState<PageStateValues>("stories");
@@ -27,9 +32,10 @@ export function Me() {
 
 	const pages = {
 		stories: <Stories path="user" />,
-		bannedStories: <Stories path="user" status="BANNED" />,
+		bannedStories: <Stories path="user" userStories={{ status: "BANNED" }} />,
 		followers: <FollowPage type="followers" />,
 		following: <FollowPage type="following" />,
+		likedStories: <Stories path="user" userStories={{ liked: true }} />,
 	};
 
 	if (isError) {
@@ -90,6 +96,12 @@ export function Me() {
 									<Icons type="bannedBooks" />
 									<b>Total de contos banidos: </b>
 									<span>{user.bannedStories}</span>
+								</button>
+
+								<button onClick={() => setPage("likedStories")}>
+									<Icons type="unlike" />
+									<b>Histórias curtidas: </b>
+									<span>{user.likedStories}</span>
 								</button>
 
 								<button onClick={() => setPage("followers")}>
