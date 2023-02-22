@@ -17,7 +17,7 @@ type StoryType = {
 		username: string;
 		avatar: string;
 		rankColor: string;
-		status: "ACTIVE" | "BANNED";
+		status: UserStatusType;
 	};
 	likedByUser: boolean;
 	followedByUser: boolean;
@@ -25,8 +25,6 @@ type StoryType = {
 	comments: number;
 	channel: string;
 };
-
-type StoryStatusType = "ACTIVE" | "BANNED";
 
 type CommentType = {
 	id: number;
@@ -38,7 +36,7 @@ type CommentType = {
 		username: string;
 		avatar: string;
 		rankColor: string;
-		status: "ACTIVE" | "BANNED";
+		status: UserStatusType;
 	};
 	isOwnerFollower: boolean;
 	commentedByAuthor: boolean;
@@ -50,6 +48,7 @@ type UserType = {
 	avatar: string;
 	token: string;
 	rankColor: string;
+	status: UserStatusType;
 };
 
 type UsersType = {
@@ -66,7 +65,7 @@ type MyDataType = {
 	username: string;
 	avatar: string;
 	about: string;
-	status: "ACTIVE" | "BANNED";
+	status: UserStatusType;
 	rankName: string;
 	rankColor: string;
 	bannedStories: number;
@@ -117,6 +116,9 @@ type LocalStorageType = {
 	token: string;
 	theme: "light" | "dark" | "melancholic" | "highlight";
 };
+
+type StoryStatusType = "ACTIVE" | "BANNED";
+type UserStatusType = "ACTIVE" | "BANNED";
 
 type SetState<Type> = React.Dispatch<React.SetStateAction<Type>>;
 type CallbackType = (...params: any) => any;

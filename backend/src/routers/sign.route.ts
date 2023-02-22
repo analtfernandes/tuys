@@ -9,6 +9,6 @@ signRoute
   .post("/sign-up", validateSchema(schema.postSignUp), postSignUp)
   .post("/sign-in", validateSchema(schema.postSignIn), postSignIn)
   .post("/sign/method/google", validateSchema(schema.postSignWithGoogle), postSignWithGoogle)
-  .post("/sign-out", authenticationMiddleware, postSignOut);
+  .post("/sign-out", authenticationMiddleware({ validateUserStatus: false }), postSignOut);
 
 export { signRoute };

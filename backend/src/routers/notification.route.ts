@@ -5,7 +5,7 @@ import { getNotifications, postNotificationRead } from "../controllers/notificat
 const notificationRoute = Router();
 
 notificationRoute
-  .all("/*", authenticationMiddleware)
+  .all("/*", authenticationMiddleware({ validateUserStatus: false }))
   .get("/", getNotifications)
   .post("/:notificationId/read", postNotificationRead);
 

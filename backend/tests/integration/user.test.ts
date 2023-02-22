@@ -5,7 +5,12 @@ import { faker } from "@faker-js/faker";
 import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
-import { generateValidToken, generateValidUser, generateValidUserWithRank } from "../helpers/generateValidData";
+import {
+  generateValidBannedUser,
+  generateValidToken,
+  generateValidUser,
+  generateValidUserWithRank,
+} from "../helpers/generateValidData";
 import {
   createStory,
   createFollow,
@@ -798,6 +803,16 @@ describe("POST /users/:userId/follow", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
+    it("should return status 403 if user is banned", async () => {
+      const user = await generateValidBannedUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.FORBIDDEN);
+    });
+
     it("should return status 204", async () => {
       const user = await generateValidUser();
       const { authorization } = await generateValidToken(user);
@@ -897,6 +912,17 @@ describe("POST /users/:userId/unfollow", () => {
       const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 403 if user is banned", async () => {
+      const user = await generateValidBannedUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+      await createFollow({ followedId: otherUser.id, followerId: user.id });
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.FORBIDDEN);
     });
 
     it("should return status 204", async () => {
@@ -1008,6 +1034,20 @@ describe("PUT /users/:userId", () => {
         const response = await app.put(`${route}/${otherUser.id}`).set("Authorization", authorization).send(body);
 
         expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+      });
+
+      it("should return status 403 if user is banned", async () => {
+        const user = await generateValidBannedUser();
+        const { authorization } = await generateValidToken(user);
+        const body = {
+          username: faker.random.alphaNumeric(3).concat(faker.random.alphaNumeric(3)),
+          avatar: faker.image.avatar(),
+          about: "",
+        };
+
+        const response = await app.put(`${route}/${user.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.FORBIDDEN);
       });
 
       it("should return status 204", async () => {

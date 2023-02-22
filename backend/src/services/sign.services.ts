@@ -34,7 +34,14 @@ async function postSignIn(data: PostSignInParams) {
 
   await signRepository.createSession({ userId: user.id, token });
 
-  return { token, id: user.id, username: user.username, avatar: user.avatar, rankColor: user.Ranks.color };
+  return {
+    token,
+    id: user.id,
+    username: user.username,
+    avatar: user.avatar,
+    rankColor: user.Ranks.color,
+    status: user.status,
+  };
 }
 
 async function postSignWithGoogle(data: PostSignUpParams) {
@@ -63,7 +70,14 @@ async function signUpGoogle(data: PostSignUpParams) {
 
   await signRepository.createSession({ userId: newUser.id, token });
 
-  return { token, id: newUser.id, username: newUser.username, avatar: newUser.avatar, rankColor: rank.color };
+  return {
+    token,
+    id: newUser.id,
+    username: newUser.username,
+    avatar: newUser.avatar,
+    rankColor: rank.color,
+    status: newUser.status,
+  };
 }
 
 async function signInGoogle(user: SignInGoogleParams) {
@@ -74,7 +88,14 @@ async function signInGoogle(user: SignInGoogleParams) {
 
   await signRepository.createSession({ userId: user.id, token });
 
-  return { token, id: user.id, username: user.username, avatar: user.avatar, rankColor: user.Ranks.color };
+  return {
+    token,
+    id: user.id,
+    username: user.username,
+    avatar: user.avatar,
+    rankColor: user.Ranks.color,
+    status: user.status,
+  };
 }
 
 async function getNewUserRank() {

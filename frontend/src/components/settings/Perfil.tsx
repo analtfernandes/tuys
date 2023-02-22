@@ -110,6 +110,7 @@ export function Perfil() {
 								name="username"
 								value={newData.username}
 								onChange={handleChange}
+								disabled={user.status === "BANNED"}
 							/>
 						</Form.Section>
 
@@ -125,6 +126,7 @@ export function Perfil() {
 								name="avatar"
 								value={newData.avatar}
 								onChange={handleChange}
+								disabled={user.status === "BANNED"}
 							/>
 						</Form.Section>
 
@@ -151,6 +153,7 @@ export function Perfil() {
 								name="about"
 								value={newData.about}
 								onChange={handleChange}
+								disabled={user.status === "BANNED"}
 							/>
 						</Form.Section>
 
@@ -163,7 +166,7 @@ export function Perfil() {
 						>
 							<Button
 								config={{ margin: "0" }}
-								disabled={updateRegister.isLoading}
+								disabled={updateRegister.isLoading || user.status === "BANNED"}
 							>
 								{updateRegister.isLoading ? (
 									<Loading size="small" />

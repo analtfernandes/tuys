@@ -18,7 +18,7 @@ import {
 const storyRoute = Router();
 
 storyRoute
-  .all("/*", authenticationMiddleware)
+  .all("/*", authenticationMiddleware({ validateUserStatus: true }))
   .get("/", getFromUserAndFollowed)
   .get("/:channelId", validateSchema(schema.getByChannelId, "params"), getAllOfChannel)
   .get("/:storyId/comments", validateSchema(schema.allCommentsParams, "params"), getComments)

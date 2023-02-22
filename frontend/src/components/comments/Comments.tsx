@@ -54,6 +54,18 @@ export function Comments({ storyId, storyIsBanned }: CommentsProps) {
 						))}
 
 						{comments.length > 0 && <div ref={scrollToLast} />}
+
+						{storyIsBanned && comments.length === 0 && (
+							<span
+								style={{
+									textAlign: "center",
+									width: "100%",
+									display: "inherit",
+								}}
+							>
+								Não há comentários.
+							</span>
+						)}
 					</div>
 				)}
 			</>

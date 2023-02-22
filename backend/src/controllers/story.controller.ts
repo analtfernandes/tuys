@@ -77,7 +77,10 @@ async function postLikeStory(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -101,7 +104,10 @@ async function postUnlikeStory(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -121,7 +127,10 @@ async function postComment(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -145,7 +154,10 @@ async function postDenounce(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -168,7 +180,10 @@ async function deleteStory(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });
@@ -191,7 +206,10 @@ async function putStory(req: Request, res: Response) {
     }
 
     if (error.name === "Forbidden") {
-      return responseHelper.FORBIDDEN({ res, body: { message: "Essa ação é proibida, pois a história está banida!" } });
+      return responseHelper.FORBIDDEN({
+        res,
+        body: { message: { message: "Essa ação é proibida, pois a história está banida!" } },
+      });
     }
 
     return responseHelper.SERVER_ERROR({ res });

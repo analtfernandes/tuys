@@ -18,7 +18,7 @@ import {
 const userRoute = Router();
 
 userRoute
-  .all("/*", authenticationMiddleware)
+  .all("/*", authenticationMiddleware({ validateUserStatus: true }))
   .get("/me", getUserData)
   .get("/me/stories", getUserStories)
   .get("/me/followers", getUserFollowers)

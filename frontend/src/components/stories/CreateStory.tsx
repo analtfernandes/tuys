@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useUserContext } from "../../contexts";
 import api, { PostStoryParams } from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
@@ -9,15 +10,18 @@ type CreateStoryParams = {
 };
 
 export function CreateStory({ channelId }: CreateStoryParams) {
+	const toast = useToast();
+	const { user } = useUserContext();
 	const [story, setStory] = useState({
 		channelId,
 	} as PostStoryParams);
-	const toast = useToast();
 
 	const { isError, isSuccess, isLoading, ...request } = useRequestMutation(
 		[RequestKeyEnum.stories],
 		() => api.postStory(story)
 	);
+
+	if (user.status === "BANNED") return null;
 
 	function handleChange(
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

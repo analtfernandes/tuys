@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
@@ -27,6 +28,7 @@ type ModalConfig = {
 
 export function Story({ story, showChannel = true }: StoryParams) {
 	const navigate = useNavigate();
+	const { user } = useUserContext();
 	const requestKey = [RequestKeyEnum.stories, RequestKeyEnum.story];
 	const requestLike = useRequestMutation(requestKey, () =>
 		api.postLike(story.id)
@@ -180,7 +182,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 							</Following>
 						)}
 
-						{owner.isOwner && (
+						{owner.isOwner && user.status !== "BANNED" && (
 							<OwnerOptions>
 								<Option
 									iconColor="darkGray"
@@ -213,14 +215,14 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					<Form
 						id={story.id}
 						story={story}
-						editing={editing}
+						editing={user.status === "BANNED" ? false : editing}
 						setEditing={setEditing}
 					/>
 
 					<Background.Div />
 
 					<StoryOptions>
-						{owner.isOwner && (
+						{(owner.isOwner || user.status === "BANNED") && (
 							<>
 								<Option iconColor="">
 									<span>{compactNumber(story.likes)} pessoas gostaram</span>
@@ -236,7 +238,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 							</>
 						)}
 
-						{!owner.isOwner && (
+						{!owner.isOwner && user.status !== "BANNED" && (
 							<>
 								<Option iconColor="red">
 									<div onClick={toggleLike}>
@@ -340,7 +342,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			{showComment ? (
 				<Comments
 					storyId={story.id}
-					storyIsBanned={story.status === "BANNED"}
+					storyIsBanned={story.status === "BANNED" || user.status === "BANNED"}
 				/>
 			) : (
 				""

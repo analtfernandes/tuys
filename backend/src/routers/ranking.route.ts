@@ -4,6 +4,6 @@ import { getRanking } from "../controllers/ranking.controller";
 
 const rankingRoute = Router();
 
-rankingRoute.all("/*", authenticationMiddleware).get("/", getRanking);
+rankingRoute.all("/*", authenticationMiddleware({})).get("/", getRanking);
 
 export { rankingRoute };

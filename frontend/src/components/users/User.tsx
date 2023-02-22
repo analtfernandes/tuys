@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
@@ -13,8 +14,9 @@ import { FollowPage } from "../follow/Follow";
 type PageStateValues = "stories" | "likedStories" | "followers" | "following";
 
 export function User() {
-	const toast = useToast();
 	const [page, setPage] = useState<PageStateValues>("stories");
+	const { user: localUser } = useUserContext();
+	const toast = useToast();
 	const params = useParams();
 	const userId = Number(params.userId) || null;
 
@@ -102,19 +104,23 @@ export function User() {
 
 						<PageStyle.Sections>
 							<PageStyle.User>
-								{!user.isUser && user.isFollowing && (
-									<Follow onClick={toggleFollow}>
-										<Icons type="unfollow" />
-										<span>Parar de seguir</span>
-									</Follow>
-								)}
+								{localUser.status !== "BANNED" &&
+									!user.isUser &&
+									user.isFollowing && (
+										<Follow onClick={toggleFollow}>
+											<Icons type="unfollow" />
+											<span>Parar de seguir</span>
+										</Follow>
+									)}
 
-								{!user.isUser && !user.isFollowing && (
-									<Follow onClick={toggleFollow}>
-										<Icons type="follow" />
-										<span>Seguir</span>
-									</Follow>
-								)}
+								{localUser.status !== "BANNED" &&
+									!user.isUser &&
+									!user.isFollowing && (
+										<Follow onClick={toggleFollow}>
+											<Icons type="follow" />
+											<span>Seguir</span>
+										</Follow>
+									)}
 
 								<p>
 									<Icons type="me" />
