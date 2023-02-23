@@ -1,4 +1,4 @@
-import { Channels, Follows, NotificationType, Stories } from "@prisma/client";
+import { Channels, Follows, NotificationType, Stories, Users } from "@prisma/client";
 import { prisma } from "../database";
 
 function findNotifications(userId: number) {
@@ -111,13 +111,33 @@ function createNewFollowNotification({ followedId, followerId }: CreateNewFollow
 
     if (!followedByUser) throw new Error("Follower não existe!");
 
-    await prisma.notifications.create({
+    await p.notifications.create({
       data: {
         text: `#${followedByUser.username}# começou a te seguir.`,
         toUserId: followedId,
         type: NotificationType.NEW_FOLLOW,
       },
     });
+  });
+}
+
+function createNewBanNotification(toUserId: number) {
+  return prisma.notifications.create({
+    data: {
+      text: `Você foi #banido# porque excedeu o limite de histórias banidas.`,
+      toUserId: toUserId,
+      type: NotificationType.NEW_BAN,
+    },
+  });
+}
+
+function createNewUnbanNotification(toUserId: number, byUser: Users) {
+  return prisma.notifications.create({
+    data: {
+      text: `Você foi #desbanido# por #${byUser.username}#.`,
+      toUserId: toUserId,
+      type: NotificationType.NEW_UNBAN,
+    },
   });
 }
 
@@ -140,4 +160,6 @@ export {
   createNewLikeNotification,
   createNewCommentNotification,
   createNewFollowNotification,
+  createNewBanNotification,
+  createNewUnbanNotification,
 };

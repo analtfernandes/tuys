@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Users } from "@prisma/client";
+import { Ranks, Users, UserStatus } from "@prisma/client";
 import { badRequestError, conflictError, notFoundError, signUpError } from "../helpers/errors.helper";
 import { RanksHelper } from "../helpers/ranks.helper";
 import * as signRepository from "../repositories/sign.repository";
@@ -34,14 +34,7 @@ async function postSignIn(data: PostSignInParams) {
 
   await signRepository.createSession({ userId: user.id, token });
 
-  return {
-    token,
-    id: user.id,
-    username: user.username,
-    avatar: user.avatar,
-    rankColor: user.Ranks.color,
-    status: user.status,
-  };
+  return formatUser(token, user);
 }
 
 async function postSignWithGoogle(data: PostSignUpParams) {
@@ -70,14 +63,7 @@ async function signUpGoogle(data: PostSignUpParams) {
 
   await signRepository.createSession({ userId: newUser.id, token });
 
-  return {
-    token,
-    id: newUser.id,
-    username: newUser.username,
-    avatar: newUser.avatar,
-    rankColor: rank.color,
-    status: newUser.status,
-  };
+  return formatUser(token, newUser);
 }
 
 async function signInGoogle(user: SignInGoogleParams) {
@@ -88,6 +74,15 @@ async function signInGoogle(user: SignInGoogleParams) {
 
   await signRepository.createSession({ userId: user.id, token });
 
+  return formatUser(token, user);
+}
+
+function formatUser(
+  token: string,
+  user: Users & {
+    Ranks: Ranks;
+  },
+) {
   return {
     token,
     id: user.id,
@@ -95,6 +90,7 @@ async function signInGoogle(user: SignInGoogleParams) {
     avatar: user.avatar,
     rankColor: user.Ranks.color,
     status: user.status,
+    isAdmin: user.Ranks.name === RanksHelper.LEVEL_7.name && user.status === UserStatus.ACTIVE,
   };
 }
 
@@ -117,9 +113,7 @@ async function getNewUserRank() {
 type PostSignUpParams = Omit<Users, "id" | "about" | "rankId" | "status">;
 type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
 type SignInGoogleParams = Users & {
-  Ranks: {
-    color: string;
-  };
+  Ranks: Ranks;
 };
 
 export { postSignUp, postSignIn, postSignOut, postSignWithGoogle };

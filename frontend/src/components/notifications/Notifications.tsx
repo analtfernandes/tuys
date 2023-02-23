@@ -13,7 +13,14 @@ type NotificationProps = {
 };
 
 type NotificationIconsType = {
-	[key: string]: "comment" | "denounce" | "follower" | "unlike" | "edit";
+	[key: string]:
+		| "comment"
+		| "denounce"
+		| "follower"
+		| "unlike"
+		| "edit"
+		| "banned"
+		| "unbanned";
 };
 
 export function Notifications() {
@@ -33,6 +40,8 @@ export function Notifications() {
 		[NotificationTypesEnum.NEW_FOLLOW]: "follower",
 		[NotificationTypesEnum.NEW_LIKE]: "unlike",
 		[NotificationTypesEnum.NEW_STORY]: "edit",
+		[NotificationTypesEnum.NEW_BAN]: "banned",
+		[NotificationTypesEnum.NEW_UNBAN]: "unbanned",
 	};
 
 	useEffect(() => {

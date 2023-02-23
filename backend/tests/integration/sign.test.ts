@@ -160,6 +160,7 @@ describe("POST /auth/sign-in", () => {
         avatar: user.avatar,
         token: expect.any(String),
         rankColor: expect.any(String),
+        isAdmin: false,
       });
     });
 

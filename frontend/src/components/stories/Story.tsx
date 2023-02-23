@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
@@ -9,7 +10,6 @@ import { Icons } from "../utils";
 import { Background, Modal, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
-import { useNavigate } from "react-router-dom";
 
 type StoryParams = {
 	story: StoryType;
@@ -339,13 +339,11 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				</Background>
 			)}
 
-			{showComment ? (
+			{showComment && (
 				<Comments
 					storyId={story.id}
 					storyIsBanned={story.status === "BANNED" || user.status === "BANNED"}
 				/>
-			) : (
-				""
 			)}
 		</>
 	);

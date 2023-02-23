@@ -117,6 +117,8 @@ enum NotificationType {
   NEW_LIKE
   NEW_COMMENT
   NEW_FOLLOW
+  NEW_BAN
+  NEW_UNBAN
 }
 
 enum StorieStatus {

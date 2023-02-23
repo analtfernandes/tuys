@@ -1,6 +1,6 @@
 import { TbBookOff } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
-import { FaRegCommentDots, FaBook, FaAward } from "react-icons/fa";
+import { FaRegCommentDots, FaBook, FaAward, FaBan } from "react-icons/fa";
 import {
 	AiFillBook,
 	AiOutlineEdit,
@@ -13,7 +13,7 @@ import {
 	AiFillEye,
 	AiFillEyeInvisible,
 	AiFillPicture,
-	AiOutlineInfoCircle
+	AiOutlineInfoCircle,
 } from "react-icons/ai";
 import {
 	BsBellFill,
@@ -21,6 +21,7 @@ import {
 	BsFlagFill,
 	BsTrashFill,
 	BsBookFill,
+	BsUnlockFill,
 } from "react-icons/bs";
 import {
 	IoHome,
@@ -73,7 +74,9 @@ type IconsParams = {
 		| "avatar"
 		| "email"
 		| "password"
-		| "signWithGoogle";
+		| "signWithGoogle"
+		| "banned"
+		| "unbanned";
 };
 
 const IconsTypes = Object.freeze({
@@ -111,6 +114,8 @@ const IconsTypes = Object.freeze({
 	email: IoMail,
 	password: IoKey,
 	signWithGoogle: FcGoogle,
+	banned: FaBan,
+	unbanned: BsUnlockFill,
 });
 
 export function Icons({ type, ...otherProps }: IconsParams) {

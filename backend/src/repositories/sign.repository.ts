@@ -20,7 +20,7 @@ function countActiveSessionsByUserId(userId: number) {
 }
 
 function findUserByEmail(email: string) {
-  return prisma.users.findUnique({ where: { email }, include: { Ranks: { select: { color: true } } } });
+  return prisma.users.findUnique({ where: { email }, include: { Ranks: true } });
 }
 
 function findUserByUsername(username: string) {
@@ -28,7 +28,7 @@ function findUserByUsername(username: string) {
 }
 
 function createUser(data: CreateUserParams) {
-  return prisma.users.create({ data: { ...data } });
+  return prisma.users.create({ data: { ...data }, include: { Ranks: true } });
 }
 
 function createSession(data: CreateSessionParams) {

@@ -333,7 +333,7 @@ describe("POST /stories", () => {
         body: faker.lorem.words(10),
       };
 
-      it("should return status 403 if user is banned", async () => {
+      it("should return status 401 if user is banned", async () => {
         const user = await generateValidBannedUser();
         const { authorization } = await generateValidToken(user);
         const channel = await createChannel();
@@ -341,7 +341,7 @@ describe("POST /stories", () => {
 
         const response = await app.post(`${route}`).set("Authorization", authorization).send(newBody);
 
-        expect(response.status).toBe(httpStatus.FORBIDDEN);
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
       it("should return status 404 if the channel with id on body property 'channelId' does not exist", async () => {
@@ -473,7 +473,7 @@ describe("POST /stories/:storyId/like", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
-    it("should return status 403 if user is banned", async () => {
+    it("should return status 401 if user is banned", async () => {
       const user = await generateValidBannedUser();
       const { authorization } = await generateValidToken(user);
       const {
@@ -482,7 +482,7 @@ describe("POST /stories/:storyId/like", () => {
 
       const response = await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
 
-      expect(response.status).toBe(httpStatus.FORBIDDEN);
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it("should return status 403 if story is banned", async () => {
@@ -617,7 +617,7 @@ describe("POST /stories/:storyId/unlike", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
-    it("should return status 403 if user is banned", async () => {
+    it("should return status 401 if user is banned", async () => {
       const user = await generateValidBannedUser();
       const { authorization } = await generateValidToken(user);
       const {
@@ -626,7 +626,7 @@ describe("POST /stories/:storyId/unlike", () => {
 
       const response = await app.post(`${route}/${story.id}/${subRoute}`).set("Authorization", authorization);
 
-      expect(response.status).toBe(httpStatus.FORBIDDEN);
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it("should return status 403 if story is banned", async () => {
@@ -739,7 +739,7 @@ describe("POST /stories/:storyId/comments", () => {
         expect(response.status).toBe(httpStatus.NOT_FOUND);
       });
 
-      it("should return status 403 if user is banned", async () => {
+      it("should return status 401 if user is banned", async () => {
         const user = await generateValidBannedUser();
         const { authorization } = await generateValidToken(user);
         const {
@@ -751,7 +751,7 @@ describe("POST /stories/:storyId/comments", () => {
           .set("Authorization", authorization)
           .send(body);
 
-        expect(response.status).toBe(httpStatus.FORBIDDEN);
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
       it("should return status 403 if story is banned", async () => {
@@ -898,7 +898,7 @@ describe("POST /stories/:storyId/denounce", () => {
         expect(response.status).toBe(httpStatus.BAD_REQUEST);
       });
 
-      it("should return status 403 if user is banned", async () => {
+      it("should return status 401 if user is banned", async () => {
         const user = await generateValidBannedUser();
         const { authorization } = await generateValidToken(user);
         const {
@@ -910,7 +910,7 @@ describe("POST /stories/:storyId/denounce", () => {
           .set("Authorization", authorization)
           .send(body);
 
-        expect(response.status).toBe(httpStatus.FORBIDDEN);
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
       it("should return status 403 if story is banned", async () => {
@@ -1061,7 +1061,7 @@ describe("DELETE /stories/:storyId", () => {
       expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
-    it("should return status 403 if user is banned", async () => {
+    it("should return status 401 if user is banned", async () => {
       const user = await generateValidBannedUser();
       const { authorization } = await generateValidToken(user);
       const {
@@ -1070,7 +1070,7 @@ describe("DELETE /stories/:storyId", () => {
 
       const response = await app.delete(`${route}/${story.id}`).set("Authorization", authorization);
 
-      expect(response.status).toBe(httpStatus.FORBIDDEN);
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it("should return status 403 if story is banned", async () => {
@@ -1185,7 +1185,7 @@ describe("PUT /stories/:storyId", () => {
         expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
-      it("should return status 403 if user is banned", async () => {
+      it("should return status 401 if user is banned", async () => {
         const user = await generateValidBannedUser();
         const { authorization } = await generateValidToken(user);
         const {
@@ -1194,7 +1194,7 @@ describe("PUT /stories/:storyId", () => {
 
         const response = await app.put(`${route}/${story.id}`).set("Authorization", authorization).send(body);
 
-        expect(response.status).toBe(httpStatus.FORBIDDEN);
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
       it("should return status 403 if story is banned", async () => {

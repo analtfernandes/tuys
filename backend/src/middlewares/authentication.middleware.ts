@@ -21,7 +21,7 @@ export function authenticationMiddleware({ validateUserStatus = false }) {
       if (validateUserStatus && req.method !== "GET") {
         const user = await findUserById(payload.user);
         if (!user || user.status === UserStatus.BANNED) {
-          return responseHelper.FORBIDDEN({
+          return responseHelper.UNAUTHORIZED({
             res,
             body: { message: "Essa ação é proibida, pois o usuário está banido!" },
           });

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticationMiddleware, validateSchema } from "../middlewares";
+import { authenticationMiddleware, validateAdminRankMiddleware, validateSchema } from "../middlewares";
 import * as schema from "../schemas/user.schema";
 import {
   getUserData,
@@ -11,6 +11,7 @@ import {
   getUserStoriesByUserId,
   getWhoUserIsFollowing,
   postFollow,
+  postUnban,
   postUnfollow,
   putUser,
 } from "../controllers/user.controller";
@@ -31,6 +32,7 @@ userRoute
   .get("/:userId/following", validateSchema(schema.allUserIdParams, "params"), getWhoUserIsFollowing)
   .post("/:userId/follow", validateSchema(schema.allUserIdParams, "params"), postFollow)
   .post("/:userId/unfollow", validateSchema(schema.allUserIdParams, "params"), postUnfollow)
+  .post("/:userId/unban", validateSchema(schema.allUserIdParams, "params"), validateAdminRankMiddleware, postUnban)
   .put("/:userId", validateSchema(schema.allUserIdParams, "params"), validateSchema(schema.putUserBody), putUser);
 
 export { userRoute };

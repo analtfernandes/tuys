@@ -1,4 +1,4 @@
-import { StorieStatus } from "@prisma/client";
+import { StorieStatus, Users } from "@prisma/client";
 import { Request, Response } from "express";
 import * as responseHelper from "../helpers/response.helper";
 import * as userService from "../services/user.services";
@@ -173,6 +173,28 @@ async function postUnfollow(req: Request, res: Response) {
   }
 }
 
+async function postUnban(req: Request, res: Response) {
+  const user: Users = res.locals.user;
+  const bannedUserId = Number(req.params.userId);
+
+  if (user.id === bannedUserId) return responseHelper.BAD_REQUEST({ res });
+
+  try {
+    await userService.postUnban({ user, bannedUserId });
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Usuário não encontrado!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Usuário não está banido!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
 async function putUser(req: Request, res: Response) {
   const userId: number = res.locals.userId;
   const userIdParams = Number(req.params.userId);
@@ -211,5 +233,6 @@ export {
   getUserStoriesByUserId,
   postFollow,
   postUnfollow,
+  postUnban,
   putUser,
 };

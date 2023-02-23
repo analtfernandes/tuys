@@ -30,6 +30,9 @@ export function User() {
 	const requestUnfollow = useRequestMutation([RequestKeyEnum.user], () =>
 		api.postUnfollow(user?.id || 0)
 	);
+	const requestUnban = useRequestMutation([RequestKeyEnum.user], () =>
+		api.postUnban(user?.id || 0)
+	);
 
 	const pages = {
 		stories: <Stories path="user" />,
@@ -89,6 +92,22 @@ export function User() {
 		requestUnfollow.reset();
 	}
 
+	function handleUnban() {
+		if (user && !requestUnban.isLoading) {
+			requestUnban.mutate(user.id);
+		}
+	}
+
+	if (requestUnban.isError) {
+		toast({
+			type: "error",
+			text:
+				requestUnban.error ||
+				`Não foi possível desbanir ${user?.username}. Tente novamente.`,
+		});
+		requestUnban.reset();
+	}
+
 	return (
 		<PageStyle>
 			<>
@@ -104,6 +123,10 @@ export function User() {
 
 						<PageStyle.Sections>
 							<PageStyle.User>
+								{user.status === "BANNED" && localUser.isAdmin && (
+									<Unban onClick={handleUnban}>Desbanir</Unban>
+								)}
+
 								{localUser.status !== "BANNED" &&
 									!user.isUser &&
 									user.isFollowing && (
@@ -205,6 +228,28 @@ const Follow = styled.div`
 
 		svg {
 			margin-right: 10px;
+		}
+	}
+`;
+
+const Unban = styled.button`
+	&& {
+		width: 10rem;
+		height: 2rem;
+		margin-top: 20px;
+		display: initial;
+		border-radius: 10px;
+		border: 1px solid ${(props) => props.theme.colors.pink};
+		background-color: ${(props) => props.theme.colors.background};
+		text-align: center;
+		font-weight: 700;
+		color: ${(props) => props.theme.colors.pink};
+		cursor: pointer;
+		outline: none;
+
+		:hover,
+		:focus {
+			filter: brightness(0.7);
 		}
 	}
 `;

@@ -49,6 +49,7 @@ type UserType = {
 	token: string;
 	rankColor: string;
 	status: UserStatusType;
+	isAdmin: boolean;
 };
 
 type UsersType = {
@@ -106,7 +107,9 @@ type NotificationType = {
 		| "NEW_DENUNCIATION"
 		| "NEW_LIKE"
 		| "NEW_COMMENT"
-		| "NEW_FOLLOW";
+		| "NEW_FOLLOW"
+		| "NEW_BAN"
+		| "NEW_UNBAN";
 };
 
 type LocalStorageType = {

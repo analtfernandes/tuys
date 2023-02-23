@@ -17,6 +17,8 @@ const NotificationTypesEnum = {
 	NEW_LIKE: "NEW_LIKE",
 	NEW_COMMENT: "NEW_COMMENT",
 	NEW_FOLLOW: "NEW_FOLLOW",
+	NEW_BAN: "NEW_BAN",
+	NEW_UNBAN: "NEW_UNBAN",
 };
 
 export { RequestKeyEnum, NotificationTypesEnum };

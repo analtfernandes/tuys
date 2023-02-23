@@ -2,7 +2,8 @@ import { faker } from "@faker-js/faker";
 import { Users, UserStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createSession, createCustomUser, createCustomUserWithRank } from "../factories";
+import { createSession, createCustomUser, createCustomUserWithRank, upsertRank } from "../factories";
+import { RanksHelper } from "../../src/helpers/ranks.helper";
 
 async function generateValidUser() {
   const password = faker.word.noun();
@@ -20,6 +21,15 @@ async function generateValidUserWithRank(rankId: number) {
   const password = faker.word.noun();
   const hashedPassword = await bcrypt.hash(password, 13);
   const user = await createCustomUserWithRank(rankId, { password: hashedPassword });
+
+  return { ...user, password };
+}
+
+async function generateValidAdminUser() {
+  const password = faker.word.noun();
+  const hashedPassword = await bcrypt.hash(password, 13);
+  const rank = await upsertRank(RanksHelper.LEVEL_7.name);
+  const user = await createCustomUserWithRank(rank.id, { password: hashedPassword });
 
   return { ...user, password };
 }
@@ -47,4 +57,10 @@ async function generateValidToken(user?: Users) {
   return { authorization, session };
 }
 
-export { generateValidUser, generateValidUserWithRank, generateValidBannedUser, generateValidToken };
+export {
+  generateValidUser,
+  generateValidUserWithRank,
+  generateValidAdminUser,
+  generateValidBannedUser,
+  generateValidToken,
+};

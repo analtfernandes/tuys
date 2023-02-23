@@ -11,6 +11,19 @@ function createRank() {
   });
 }
 
+function upsertRank(name: string) {
+  return prisma.ranks.upsert({
+    where: {
+      name,
+    },
+    update: {},
+    create: {
+      name: name,
+      color: faker.internet.color(),
+    },
+  });
+}
+
 async function createAppRanks() {
   await prisma.ranks.createMany({
     data: [
@@ -45,4 +58,4 @@ async function createAppRanks() {
   });
 }
 
-export { createRank, createAppRanks };
+export { createRank, createAppRanks, upsertRank };

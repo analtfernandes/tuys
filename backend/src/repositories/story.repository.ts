@@ -1,5 +1,7 @@
 import { Comments, Denunciations, Stories, StorieStatus, UserStatus } from "@prisma/client";
 import { prisma } from "../database";
+import { RanksHelper } from "../helpers/ranks.helper";
+import * as notificationRepository from "./notification.repository";
 
 function findAll(userId: number) {
   return prisma.stories.findMany({
@@ -248,9 +250,16 @@ function createDenunciation(data: PostDenounceParams) {
   return prisma.$transaction(async (pr) => {
     await pr.denunciations.create({ data: { ...data } });
 
-    const storieDenuncies = await pr.denunciations.count({ where: { storyId: data.storyId } });
+    const storyDenunciesFromAdmin = await pr.denunciations.findMany({
+      where: { AND: [{ storyId: data.storyId }, { Users: { Ranks: { name: { equals: RanksHelper.LEVEL_7.name } } } }] },
+    });
+    const storyDenuncies = await pr.denunciations.findMany({
+      where: { AND: [{ storyId: data.storyId }, { Users: { Ranks: { name: { not: RanksHelper.LEVEL_7.name } } } }] },
+    });
 
-    if (storieDenuncies >= 3) {
+    const storyDenunciesCount = storyDenunciesFromAdmin.length * 2 + storyDenuncies.length;
+
+    if (storyDenunciesCount >= 3) {
       await pr.stories.update({ where: { id: data.storyId }, data: { status: StorieStatus.BANNED } });
     }
 
@@ -262,8 +271,9 @@ function createDenunciation(data: PostDenounceParams) {
       where: { userId: storyFromUser.userId, status: StorieStatus.BANNED },
     });
 
-    if (bannedStoriesFromUser >= 4) {
+    if (bannedStoriesFromUser % 4 === 0) {
       await pr.users.update({ where: { id: storyFromUser.userId }, data: { status: UserStatus.BANNED } });
+      await notificationRepository.createNewBanNotification(storyFromUser.userId);
     }
   });
 }

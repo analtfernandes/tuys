@@ -205,6 +205,10 @@ const postUnfollow = (userId: number) => {
 	return postRequest(`/users/${userId}/unfollow`, {});
 };
 
+const postUnban = (userId: number) => {
+	return postRequest(`/users/${userId}/unban`, {});
+};
+
 const postNotificationRead = (id: number) => {
 	return postRequest(`/notifications/${id}/read`, {});
 };
@@ -281,6 +285,7 @@ const postFunctions = {
 	postDenounce,
 	postFollow,
 	postUnfollow,
+	postUnban,
 	postNotificationRead,
 	postSignUp,
 	postSignIn,

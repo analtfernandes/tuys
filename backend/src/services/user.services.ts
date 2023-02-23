@@ -3,7 +3,7 @@ import * as userRepository from "../repositories/user.repository";
 import * as storyRepository from "../repositories/story.repository";
 import * as notificationRepository from "../repositories/notification.repository";
 import { formatStories } from "./story.services";
-import { Follows, StorieStatus, Users } from "@prisma/client";
+import { Follows, StorieStatus, Users, UserStatus } from "@prisma/client";
 
 async function getUserData(userId: number) {
   const user = await userRepository.findUserData(userId);
@@ -146,6 +146,15 @@ async function postUnfollow({ followedId, followerId }: PostFollowParams) {
   await userRepository.deleteFollow({ followedId, followerId });
 }
 
+async function postUnban({ bannedUserId, user }: PostUnbanParams) {
+  const bannedUser = await userRepository.findUserById(bannedUserId);
+  if (!bannedUser) throw notFoundError();
+  if (bannedUser.status !== UserStatus.BANNED) throw badRequestError();
+
+  await userRepository.updateUserStatustoActive(bannedUserId);
+  await notificationRepository.createNewUnbanNotification(bannedUserId, user);
+}
+
 async function putUser(userId: number, data: PutUserParams) {
   const user = await userRepository.findUserById(userId);
   if (!user) throw notFoundError();
@@ -158,6 +167,7 @@ async function putUser(userId: number, data: PutUserParams) {
 
 type PostFollowParams = Omit<Follows, "id">;
 type PutUserParams = Omit<Users, "id" | "email" | "password" | "rankId" | "status">;
+type PostUnbanParams = { bannedUserId: number; user: Users };
 
 export {
   getUserData,
@@ -170,5 +180,6 @@ export {
   getUserStoriesByUserId,
   postFollow,
   postUnfollow,
+  postUnban,
   putUser,
 };

@@ -6,6 +6,7 @@ import { UserStatus } from "@prisma/client";
 import server from "../../src/server";
 import { prisma } from "../../src/database";
 import {
+  generateValidAdminUser,
   generateValidBannedUser,
   generateValidToken,
   generateValidUser,
@@ -803,14 +804,14 @@ describe("POST /users/:userId/follow", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
-    it("should return status 403 if user is banned", async () => {
+    it("should return status 401 if user is banned", async () => {
       const user = await generateValidBannedUser();
       const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
 
       const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
 
-      expect(response.status).toBe(httpStatus.FORBIDDEN);
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it("should return status 204", async () => {
@@ -914,7 +915,7 @@ describe("POST /users/:userId/unfollow", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
-    it("should return status 403 if user is banned", async () => {
+    it("should return status 401 if user is banned", async () => {
       const user = await generateValidBannedUser();
       const { authorization } = await generateValidToken(user);
       const otherUser = await generateValidUser();
@@ -922,7 +923,7 @@ describe("POST /users/:userId/unfollow", () => {
 
       const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
 
-      expect(response.status).toBe(httpStatus.FORBIDDEN);
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it("should return status 204", async () => {
@@ -949,6 +950,125 @@ describe("POST /users/:userId/unfollow", () => {
       const afterCount = await prisma.follows.count();
 
       expect(afterCount).toBe(beforeCount - 1);
+    });
+  });
+});
+
+describe("POST /users/:userId/unban", () => {
+  const route = "/users";
+  const subRoute = "unban";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.post(`${route}/1/${subRoute}`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if params 'userId' is invalid", async () => {
+      const { authorization } = await generateValidToken();
+
+      const response = await app.post(`${route}/0/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if params 'userId' and the requester id are the same", async () => {
+      const user = await generateValidUser();
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.post(`${route}/${user.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 401 if requester is banned", async () => {
+      const user = await generateValidBannedUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidBannedUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 401 if requester is not Admin rank", async () => {
+      const user = await generateValidUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidBannedUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 404 if user does not exist", async () => {
+      const { authorization } = await generateValidToken();
+
+      const response = await app.post(`${route}/1/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 400 if user is not banned", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 204", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidBannedUser();
+
+      const response = await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NO_CONTENT);
+    });
+
+    it(`should set user status to "${UserStatus.ACTIVE}" in database`, async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidBannedUser();
+
+      await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      const updatedUser = await prisma.users.findUnique({ where: { id: otherUser.id } });
+
+      expect(updatedUser?.status).toBe(UserStatus.ACTIVE);
+    });
+
+    it("should create a new notification in database", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const otherUser = await generateValidBannedUser();
+
+      const beforeCount = await prisma.notifications.count({ where: { toUserId: otherUser.id } });
+
+      await app.post(`${route}/${otherUser.id}/${subRoute}`).set("Authorization", authorization);
+
+      const afterCount = await prisma.notifications.count({ where: { toUserId: otherUser.id } });
+
+      expect(afterCount).toBe(beforeCount + 1);
     });
   });
 });
@@ -1036,7 +1156,7 @@ describe("PUT /users/:userId", () => {
         expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
-      it("should return status 403 if user is banned", async () => {
+      it("should return status 401 if user is banned", async () => {
         const user = await generateValidBannedUser();
         const { authorization } = await generateValidToken(user);
         const body = {
@@ -1047,7 +1167,7 @@ describe("PUT /users/:userId", () => {
 
         const response = await app.put(`${route}/${user.id}`).set("Authorization", authorization).send(body);
 
-        expect(response.status).toBe(httpStatus.FORBIDDEN);
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
       it("should return status 204", async () => {

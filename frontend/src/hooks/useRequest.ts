@@ -1,5 +1,6 @@
 import { UseMutateFunction, useMutation, useQuery } from "react-query";
 import { queryClient } from "../contexts/QueryClientContext";
+import { useLocalStorage } from "./useLocalStorage";
 import { useNavigateSignIn } from "./useNavigateSignIn";
 
 type QueryResponse<Type> = {
@@ -27,6 +28,7 @@ function useRequestQuery<Type>(
 	callback: (...params: any) => Promise<Type | null>
 ) {
 	const navigateSignIn = useNavigateSignIn();
+	const { clearLocalStorage } = useLocalStorage();
 
 	const { isLoading, isError, isSuccess, data, error, status } = useQuery(
 		key,
@@ -34,6 +36,7 @@ function useRequestQuery<Type>(
 	) as QueryResponse<Type>;
 
 	if (isError && error?.cause?.status === 401) {
+		clearLocalStorage();
 		navigateSignIn();
 	}
 
@@ -53,6 +56,7 @@ function useRequestMutation(
 	callback: (...params: any) => any
 ) {
 	const navigateSignIn = useNavigateSignIn();
+	const { clearLocalStorage } = useLocalStorage();
 
 	const { isLoading, isError, isSuccess, error, status, mutate, reset } =
 		useMutation(callback, {
@@ -67,6 +71,7 @@ function useRequestMutation(
 		}) as MutationResponse;
 
 	if (isError && error?.cause?.status === 401) {
+		clearLocalStorage();
 		navigateSignIn();
 	}
 
