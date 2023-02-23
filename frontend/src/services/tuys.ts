@@ -229,6 +229,10 @@ const postSignWithGoogle = (body: PostSignUpParams) => {
 	return postRequest<UserType>(`/auth/sign/method/google`, body, true);
 };
 
+const postChannel = (body: PostChannelParams) => {
+	return postRequest<{ id: number }>(`/channels`, body, true);
+};
+
 const deleteStory = (storyId: number) => {
 	return deleteRequest(`/stories/${storyId}`);
 };
@@ -257,6 +261,7 @@ export type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
 export type PostDenounceParams = PostCommentParams;
 export type PutStoryParams = Omit<PostStoryParams, "channelId">;
 export type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
+export type PostChannelParams = Omit<ChannelType, "id" | "editable">;
 
 const getFunctions = {
 	getChannels,
@@ -291,6 +296,7 @@ const postFunctions = {
 	postSignIn,
 	postSignOut,
 	postSignWithGoogle,
+	postChannel,
 };
 
 const deleteFunctions = {

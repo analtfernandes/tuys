@@ -7,7 +7,7 @@ import { useRequestMutation, useToast } from "../../hooks";
 import { StoryType } from "../utils/Protocols";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Background, Modal, UserRank } from "../shared";
+import { Background, Modal, ModalSetStateType, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
 
@@ -19,11 +19,6 @@ type StoryParams = {
 type OptionProps = {
 	iconColor: string;
 	banned?: boolean;
-};
-
-type ModalConfig = {
-	isOpen: boolean;
-	type?: "denounceStory" | "delete";
 };
 
 export function Story({ story, showChannel = true }: StoryParams) {
@@ -49,7 +44,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	const [modalConfig, setModalConfig] = useState({
 		isOpen: false,
 		type: "delete",
-	} as ModalConfig);
+	} as ModalSetStateType);
 	const toast = useToast();
 	const { owner } = story;
 

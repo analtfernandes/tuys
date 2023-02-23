@@ -1,14 +1,17 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useToast } from "../../hooks";
 import { Loading, Subtitle, Title } from "../shared";
 import { Channel } from "./Channel";
-import { useEffect, useState } from "react";
 import { ChannelType } from "../utils/Protocols";
+import { CreateChannel } from "./CreateChannel";
 
 export function Channels() {
 	const [channels, setChannels] = useState<ChannelType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const { user } = useUserContext();
 	const toast = useToast();
 
 	useEffect(() => {
@@ -44,6 +47,8 @@ export function Channels() {
 						{channels.map((channel, index) => (
 							<Channel key={index} {...channel} />
 						))}
+
+						{user.isAdmin && <CreateChannel setChannels={setChannels} />}
 					</div>
 				)}
 			</>

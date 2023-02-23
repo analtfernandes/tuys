@@ -9,8 +9,8 @@ ReactModal.setAppElement("#root");
 
 type ModalParams = {
 	modalIsOpen: boolean;
-	type: "denounceStory" | "delete";
-	setModalIsOpen: SetState<SetStateType>;
+	type: "denounceStory" | "delete" | "createChannel";
+	setModalIsOpen: SetState<ModalSetStateType>;
 	callback?: CallbackType;
 	closeModalOnSubmit?: boolean;
 	storyData?: {
@@ -18,13 +18,15 @@ type ModalParams = {
 	};
 };
 
-type SetStateType = {
+export type ModalSetStateType = {
 	isOpen: boolean;
-	type?: "denounceStory" | "delete";
+	type: "denounceStory" | "delete" | "createChannel";
 };
 
 type ModalForm = {
 	text?: string;
+	name?: string;
+	background?: string;
 };
 
 export function Modal({
@@ -74,6 +76,44 @@ export function Modal({
 			),
 			continueButtonText: "Apagar",
 		},
+		createChannel: {
+			title: "Criar Canal",
+			content: (
+				<>
+					<Form.Section>
+						<label>
+							Nome<em>*</em>
+						</label>
+						<input
+							required
+							autoComplete="off"
+							minLength={3}
+							maxLength={20}
+							type="text"
+							placeholder="Nome do canal..."
+							name="name"
+							value={form?.name || ""}
+							onChange={handleChange}
+						/>
+					</Form.Section>
+					<Form.Section>
+						<label>
+							Imagem<em>*</em>
+						</label>
+						<input
+							required
+							autoComplete="off"
+							type="url"
+							placeholder="Imagem de fundo..."
+							name="background"
+							value={form?.background || ""}
+							onChange={handleChange}
+						/>
+					</Form.Section>
+				</>
+			),
+			continueButtonText: "Criar",
+		},
 	};
 
 	const data = modalTypeOptions[type];
@@ -99,10 +139,7 @@ export function Modal({
 	}
 
 	function closeModal() {
-		setModalIsOpen({
-			isOpen: false,
-			type: "delete",
-		});
+		setModalIsOpen((prev) => ({ ...prev, isOpen: false }));
 	}
 
 	return (
