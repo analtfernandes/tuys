@@ -300,3 +300,98 @@ describe("PUT /channels/:channelId", () => {
     });
   });
 });
+
+describe("DELETE /channels/:channelId", () => {
+  const route = "/channels";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.delete(`${route}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.delete(`${route}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.delete(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if param 'channelId' is invalid", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const body = { [faker.word.adjective()]: faker.color.rgb() };
+
+      const response = await app.delete(`${route}/0`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 401 if user is banned", async () => {
+      const user = await generateValidBannedUser();
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.delete(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 401 if user is not Admin rank", async () => {
+      const user = await generateValidUser();
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.delete(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 404 if channel does not exist", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+
+      const response = await app.delete(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should return status 400 if channel is not editable", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const channel = await createCustomChannel({ editable: false });
+
+      const response = await app.delete(`${route}/${channel.id}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 204", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const channel = await createChannel();
+
+      const response = await app.delete(`${route}/${channel.id}`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.NO_CONTENT);
+    });
+
+    it("should delete channel in dabatase", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const channel = await createChannel();
+
+      await app.delete(`${route}/${channel.id}`).set("Authorization", authorization);
+      const afterChannel = await prisma.channels.findUnique({ where: { id: channel.id } });
+
+      expect(afterChannel).toBeNull();
+    });
+  });
+});

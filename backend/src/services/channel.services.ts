@@ -28,7 +28,15 @@ async function putChannel(data: PutChannelParams) {
   await channelRepository.updateChannel(data);
 }
 
+async function deleteChannel(id: number) {
+  const channel = await channelRepository.findById(id);
+  if (!channel) throw notFoundError();
+  if (!channel.editable) throw badRequestError();
+
+  await channelRepository.deleteChannel(id);
+}
+
 type PostChannelParams = Omit<Channels, "id" | "editable">;
 type PutChannelParams = Omit<Channels, "editable">;
 
-export { getAll, postChannel, putChannel };
+export { getAll, postChannel, putChannel, deleteChannel };

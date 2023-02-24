@@ -41,4 +41,21 @@ async function putChannel(req: Request, res: Response) {
   }
 }
 
-export { getAll, postChannel, putChannel };
+async function deleteChannel(req: Request, res: Response) {
+  try {
+    await channelService.deleteChannel(Number(req.params.channelId));
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Canal não existe!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: "Esse canal não é editável!" } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getAll, postChannel, putChannel, deleteChannel };

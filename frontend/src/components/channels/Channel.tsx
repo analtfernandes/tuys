@@ -41,11 +41,18 @@ export function Channel({ channel, setChannels }: ChannelParams) {
 		});
 	}
 
-	function updateChannel(
-		event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	function callModal(
+		event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		type: "edit" | "delete"
 	) {
 		event.stopPropagation();
-		setModalConfig((prev) => ({ ...prev, isOpen: true }));
+
+		if (type === "edit") {
+			setModalConfig({ type: "createChannel", isOpen: true });
+			return;
+		}
+
+		setModalConfig({ type: "deleteChannel", isOpen: true });
 	}
 
 	function updateChannelCallback(data: EditChannel) {
@@ -73,6 +80,22 @@ export function Channel({ channel, setChannels }: ChannelParams) {
 			);
 	}
 
+	function deleteChannelCallback() {
+		api
+			.deleteChannel(id)
+			.then(() => {
+				setChannels((prev) => prev.filter((channel) => channel.id !== id));
+			})
+			.catch((err) =>
+				toast({
+					type: "error",
+					text:
+						err.cause?.message ||
+						"Não foi possível apagar o canal. Por favor, tente novamente.",
+				})
+			);
+	}
+
 	return (
 		<>
 			{modalConfig.isOpen && (
@@ -80,8 +103,13 @@ export function Channel({ channel, setChannels }: ChannelParams) {
 					type={modalConfig.type}
 					modalIsOpen={modalConfig.isOpen}
 					setModalIsOpen={setModalConfig}
-					callback={updateChannelCallback}
+					callback={
+						modalConfig.type === "createChannel"
+							? updateChannelCallback
+							: deleteChannelCallback
+					}
 					defaultForm={{ name, background }}
+					channelData={{ name }}
 				/>
 			)}
 
@@ -91,8 +119,11 @@ export function Channel({ channel, setChannels }: ChannelParams) {
 
 				{editable && (
 					<div>
-						<button onClick={updateChannel}>
+						<button onClick={(e) => callModal(e, "edit")}>
 							<Icons type="edit" size={20} title="editar" />
+						</button>
+						<button onClick={(e) => callModal(e, "delete")}>
+							<Icons type="delete" size={20} title="apagar" />
 						</button>
 					</div>
 				)}

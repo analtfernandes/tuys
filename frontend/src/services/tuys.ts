@@ -237,6 +237,10 @@ const deleteStory = (storyId: number) => {
 	return deleteRequest(`/stories/${storyId}`);
 };
 
+const deleteChannel = (channelId: number) => {
+	return deleteRequest(`/channels/${channelId}`);
+};
+
 const putStory = (body: PutStoryParams, storyId: number) => {
 	return putRequest(`/stories/${storyId}`, body);
 };
@@ -305,6 +309,7 @@ const postFunctions = {
 
 const deleteFunctions = {
 	deleteStory,
+	deleteChannel,
 };
 
 const putFunctions = {

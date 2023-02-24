@@ -9,7 +9,7 @@ ReactModal.setAppElement("#root");
 
 type ModalParams = {
 	modalIsOpen: boolean;
-	type: "denounceStory" | "delete" | "createChannel";
+	type: ModalType;
 	setModalIsOpen: SetState<ModalSetStateType>;
 	callback?: CallbackType;
 	closeModalOnSubmit?: boolean;
@@ -17,12 +17,17 @@ type ModalParams = {
 	storyData?: {
 		name: string;
 	};
+	channelData?: {
+		name: string;
+	};
 };
 
 export type ModalSetStateType = {
 	isOpen: boolean;
-	type: "denounceStory" | "delete" | "createChannel";
+	type: ModalType;
 };
+
+type ModalType = "denounceStory" | "delete" | "createChannel" | "deleteChannel";
 
 type ModalForm = {
 	text?: string;
@@ -35,6 +40,7 @@ export function Modal({
 	modalIsOpen,
 	type,
 	storyData,
+	channelData,
 	defaultForm,
 	setModalIsOpen,
 	callback,
@@ -115,6 +121,21 @@ export function Modal({
 				</>
 			),
 			continueButtonText: "Enviar",
+		},
+		deleteChannel: {
+			title: "Apagar Canal",
+			content: (
+				<Form.Section>
+					<p>
+						Você tem certeza que deseja apagar o canal
+						<b>{channelData?.name ? ` ${channelData?.name}` : ""}</b>?
+					</p>
+					<p>
+						<b>Atenção:</b> essa ação <u>não</u> pode ser desfeita!
+					</p>
+				</Form.Section>
+			),
+			continueButtonText: "Apagar",
 		},
 	};
 

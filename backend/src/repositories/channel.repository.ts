@@ -25,7 +25,14 @@ function updateChannel({ id, ...data }: UpdateChannelParams) {
   return prisma.channels.update({ where: { id }, data: { ...data, editable: true } });
 }
 
+function deleteChannel(id: number) {
+  return prisma.$transaction(async (pr) => {
+    await pr.stories.deleteMany({ where: { channelId: id } });
+    await pr.channels.delete({ where: { id } });
+  });
+}
+
 type CreateChannelParams = Omit<Channels, "id" | "editable">;
 type UpdateChannelParams = Omit<Channels, "editable">;
 
-export { findAll, findById, findByName, findAllByName, createChannel, updateChannel };
+export { findAll, findById, findByName, findAllByName, createChannel, updateChannel, deleteChannel };
