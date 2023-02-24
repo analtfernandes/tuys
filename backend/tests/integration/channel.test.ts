@@ -11,7 +11,7 @@ import {
   generateValidUser,
 } from "../helpers/generateValidData";
 import { cleanDatabase } from "../helpers/cleanDatabase";
-import { createChannel } from "../factories";
+import { createChannel, createCustomChannel } from "../factories";
 
 const app = supertest(server);
 
@@ -69,7 +69,7 @@ describe("GET /channels", () => {
           id: channel.id,
           name: channel.name,
           background: channel.background,
-          editable: false,
+          editable: channel.editable,
         },
       ]);
     });
@@ -173,6 +173,129 @@ describe("POST /channels", () => {
         const channel = await prisma.channels.findUnique({ where: { id: response.body.id } });
 
         expect(channel).toEqual({ id: response.body.id, name: body.name, background: body.background, editable: true });
+      });
+    });
+  });
+});
+
+describe("PUT /channels/:channelId", () => {
+  const route = "/channels";
+
+  it("should return status 401 when no token is sent", async () => {
+    const response = await app.put(`${route}/1`);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should return status 401 when token is invalid", async () => {
+    const authorization = `Bearer ${faker.lorem.word()}`;
+    const response = await app.put(`${route}/1`).set("Authorization", authorization);
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe("when token is valid", () => {
+    it("should return status 401 if there is no active session for the user", async () => {
+      const { id } = await generateValidUser();
+      const token = jwt.sign({ user: id }, process.env.JWT_SECRET || "");
+      const authorization = `Bearer ${token}`;
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization);
+
+      expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should return status 400 if param 'channelId' is invalid", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const body = { [faker.word.adjective()]: faker.color.rgb() };
+
+      const response = await app.put(`${route}/0`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should return status 400 if body is invalid", async () => {
+      const user = await generateValidAdminUser();
+      const { authorization } = await generateValidToken(user);
+      const body = { [faker.word.adjective()]: faker.color.rgb() };
+
+      const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    describe("when body is valid", () => {
+      const background = faker.internet.avatar();
+
+      function createBody() {
+        return {
+          background,
+          name: faker.random.alphaNumeric(5).concat(faker.random.alphaNumeric(5)),
+        };
+      }
+
+      it("should return status 401 if user is banned", async () => {
+        const user = await generateValidBannedUser();
+        const { authorization } = await generateValidToken(user);
+        const body = createBody();
+
+        const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+      });
+
+      it("should return status 401 if user is not Admin rank", async () => {
+        const user = await generateValidUser();
+        const { authorization } = await generateValidToken(user);
+        const body = createBody();
+
+        const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+      });
+
+      it("should return status 404 if channel does not exist", async () => {
+        const user = await generateValidAdminUser();
+        const { authorization } = await generateValidToken(user);
+        const channel = await createChannel();
+        const body = { name: channel.name, background };
+
+        const response = await app.put(`${route}/1`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NOT_FOUND);
+      });
+
+      it("should return status 400 if channel is not editable", async () => {
+        const user = await generateValidAdminUser();
+        const { authorization } = await generateValidToken(user);
+        const channel = await createCustomChannel({ editable: false });
+        const body = { name: channel.name, background };
+
+        const response = await app.put(`${route}/${channel.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      });
+
+      it("should return status 400 if already have an channel with the sent name", async () => {
+        const user = await generateValidAdminUser();
+        const { authorization } = await generateValidToken(user);
+        const channel = await createChannel();
+        const otherChannel = await createChannel();
+        const body = { name: otherChannel.name, background };
+
+        const response = await app.put(`${route}/${channel.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      });
+
+      it("should return status 204", async () => {
+        const user = await generateValidAdminUser();
+        const { authorization } = await generateValidToken(user);
+        const channel = await createChannel();
+        const body = createBody();
+
+        const response = await app.put(`${route}/${channel.id}`).set("Authorization", authorization).send(body);
+
+        expect(response.status).toBe(httpStatus.NO_CONTENT);
       });
     });
   });

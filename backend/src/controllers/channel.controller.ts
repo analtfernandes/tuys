@@ -24,4 +24,21 @@ async function postChannel(req: Request, res: Response) {
   }
 }
 
-export { getAll, postChannel };
+async function putChannel(req: Request, res: Response) {
+  try {
+    await channelService.putChannel({ ...req.body, id: Number(req.params.channelId) });
+    return responseHelper.NO_CONTENT({ res });
+  } catch (error: any) {
+    if (error.name === "NotFound") {
+      return responseHelper.NOT_FOUND({ res, body: { message: "Canal não existe!" } });
+    }
+
+    if (error.name === "BadRequest") {
+      return responseHelper.BAD_REQUEST({ res, body: { message: error.message } });
+    }
+
+    return responseHelper.SERVER_ERROR({ res });
+  }
+}
+
+export { getAll, postChannel, putChannel };

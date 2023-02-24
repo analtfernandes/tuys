@@ -1,5 +1,5 @@
 import { Channels } from "@prisma/client";
-import { badRequestError } from "../helpers/errors.helper";
+import { badRequestError, notFoundError } from "../helpers/errors.helper";
 import * as channelRepository from "../repositories/channel.repository";
 
 function getAll() {
@@ -15,6 +15,20 @@ async function postChannel(data: PostChannelParams) {
   return { id: channel.id };
 }
 
-type PostChannelParams = Omit<Channels, "id" | "editable">;
+async function putChannel(data: PutChannelParams) {
+  const channel = await channelRepository.findById(data.id);
+  if (!channel) throw notFoundError();
+  if (!channel.editable) throw badRequestError("Esse canal não é editável!");
 
-export { getAll, postChannel };
+  if (channel.name !== data.name) {
+    const channelWithSameName = await channelRepository.findAllByName(data.name);
+    if (channelWithSameName.length > 0) throw badRequestError(`Já existe um canal chamado ${data.name.toLowerCase()}!`);
+  }
+
+  await channelRepository.updateChannel(data);
+}
+
+type PostChannelParams = Omit<Channels, "id" | "editable">;
+type PutChannelParams = Omit<Channels, "editable">;
+
+export { getAll, postChannel, putChannel };

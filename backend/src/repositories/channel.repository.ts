@@ -10,13 +10,22 @@ function findById(id: number) {
 }
 
 function findByName(name: string) {
-  return prisma.channels.findFirst({ where: { name: { contains: name, mode: "insensitive" } } });
+  return prisma.channels.findFirst({ where: { name: { equals: name, mode: "insensitive" } } });
+}
+
+function findAllByName(name: string) {
+  return prisma.channels.findMany({ where: { name: { equals: name, mode: "insensitive" } } });
 }
 
 function createChannel(data: CreateChannelParams) {
   return prisma.channels.create({ data: { ...data, editable: true } });
 }
 
-type CreateChannelParams = Omit<Channels, "id" | "editable">;
+function updateChannel({ id, ...data }: UpdateChannelParams) {
+  return prisma.channels.update({ where: { id }, data: { ...data, editable: true } });
+}
 
-export { findAll, findById, findByName, createChannel };
+type CreateChannelParams = Omit<Channels, "id" | "editable">;
+type UpdateChannelParams = Omit<Channels, "editable">;
+
+export { findAll, findById, findByName, findAllByName, createChannel, updateChannel };

@@ -13,6 +13,7 @@ type ModalParams = {
 	setModalIsOpen: SetState<ModalSetStateType>;
 	callback?: CallbackType;
 	closeModalOnSubmit?: boolean;
+	defaultForm?: ModalForm;
 	storyData?: {
 		name: string;
 	};
@@ -34,10 +35,11 @@ export function Modal({
 	modalIsOpen,
 	type,
 	storyData,
+	defaultForm,
 	setModalIsOpen,
 	callback,
 }: ModalParams) {
-	const [form, setForm] = useState({} as ModalForm);
+	const [form, setForm] = useState(defaultForm as ModalForm);
 
 	const modalTypeOptions = {
 		denounceStory: {
@@ -112,7 +114,7 @@ export function Modal({
 					</Form.Section>
 				</>
 			),
-			continueButtonText: "Criar",
+			continueButtonText: "Enviar",
 		},
 	};
 

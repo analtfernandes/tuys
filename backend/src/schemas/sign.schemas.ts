@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const imageFormatRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+const imageFormatRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/;
 
 const postSignUp = Joi.object({
   username: Joi.string().required(),

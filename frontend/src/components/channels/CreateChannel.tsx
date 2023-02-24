@@ -1,8 +1,8 @@
 import styled from "styled-components";
+import { useState } from "react";
 import api from "../../services/tuys";
 import { useToast } from "../../hooks";
 import { Modal, ModalSetStateType } from "../shared";
-import { useEffect, useState } from "react";
 import { ChannelType, SetState } from "../utils/Protocols";
 import { Icons } from "../utils";
 
@@ -61,7 +61,7 @@ export function CreateChannel({ setChannels }: CreateChannelParams) {
 			<Wrapper
 				onClick={() => setModalConfig((prev) => ({ ...prev, isOpen: true }))}
 			>
-				<Icons type="following" size={50} title="add channel" />
+				<Icons type="following" size={50} title="criar canal" />
 			</Wrapper>
 		</>
 	);

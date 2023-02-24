@@ -45,7 +45,11 @@ export function Channels() {
 				{channels && channels.length > 0 && (
 					<div>
 						{channels.map((channel, index) => (
-							<Channel key={index} {...channel} />
+							<Channel
+								key={index}
+								channel={channel}
+								setChannels={setChannels}
+							/>
 						))}
 
 						{user.isAdmin && <CreateChannel setChannels={setChannels} />}

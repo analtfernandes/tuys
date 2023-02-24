@@ -245,6 +245,10 @@ const putRegister = (body: PutRegisterParams, userId: number) => {
 	return putRequest(`/users/${userId}`, body);
 };
 
+const putChannel = (body: PostChannelParams, channelId: number) => {
+	return putRequest(`/channels/${channelId}`, body);
+};
+
 export type PostStoryParams = {
 	title: string;
 	body: string;
@@ -306,6 +310,7 @@ const deleteFunctions = {
 const putFunctions = {
 	putStory,
 	putRegister,
+	putChannel,
 };
 
 const service = {

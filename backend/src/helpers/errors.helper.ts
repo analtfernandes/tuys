@@ -1,40 +1,47 @@
 export type ErrorType = {
   name: string;
+  message: string;
 };
 
-function notFoundError(): ErrorType {
+function notFoundError(message: string = ""): ErrorType {
   return {
     name: "NotFound",
+    message,
   };
 }
 
-function badRequestError(): ErrorType {
+function badRequestError(message: string = ""): ErrorType {
   return {
     name: "BadRequest",
+    message,
   };
 }
 
-function forbiddenError(): ErrorType {
+function forbiddenError(message: string = ""): ErrorType {
   return {
     name: "Forbidden",
+    message,
   };
 }
 
-function unauthorizedError(): ErrorType {
+function unauthorizedError(message: string = ""): ErrorType {
   return {
     name: "Unauthorized",
+    message,
   };
 }
 
-function conflictError(): ErrorType {
+function conflictError(message: string = ""): ErrorType {
   return {
     name: "Conflict",
+    message,
   };
 }
 
-function signUpError(): ErrorType {
+function signUpError(message: string = ""): ErrorType {
   return {
     name: "SignUp",
+    message,
   };
 }
 
