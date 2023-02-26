@@ -22,6 +22,8 @@ TUYS é uma rede social para o compartilhamento de histórias fictícias, direci
 - Página de usuário
 - Seguir/Parar de seguir usuário
 - Notificações
+- Limitações para usuários banidos
+- Para usuários de rank Admin: desbanir usuários, criar/editar/apagar canais de histórias
 - Logout
 
 <br />
