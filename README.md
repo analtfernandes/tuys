@@ -1,7 +1,5 @@
 # :open_book: Tell Us Your Story (TUYS)
 
-![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=success&style=for-the-badge)
-
 TUYS é uma rede social para o compartilhamento de histórias fictícias, direcionado à pessoas que gostem de ler e/ou escrever histórias que explorem sua criatividade.
 
 <div align=center>
