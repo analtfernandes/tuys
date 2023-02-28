@@ -1,6 +1,8 @@
 # :open_book: Tell Us Your Story (TUYS)
 
 TUYS é uma rede social para o compartilhamento de histórias fictícias, direcionado à pessoas que gostem de ler e/ou escrever histórias que explorem sua criatividade.
+<br />
+Gostaria de testar? [Experimente aqui](http://35.153.31.124)
 
 <div align=center>
  <img align=top src="https://user-images.githubusercontent.com/97851922/218341002-519a7d44-e50b-4279-945a-4241ffc481fa.gif" />
