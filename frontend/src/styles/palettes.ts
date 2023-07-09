@@ -22,6 +22,8 @@ export type ThemeType = {
 	};
 };
 
+export type ThemeTypeName = "light" | "dark" | "melancholic" | "highlight";
+
 const neutralPallet = {
 	white: "#F2F2F2",
 	lightGray: "#D2D2D2",
@@ -82,8 +84,8 @@ const theme = {
 			pastelPink: "#A65353",
 			pink: "#F7827A",
 			red: "#FF0000",
-			white: '#0E1426',
-			lightGray: '#092637',
+			white: "#0E1426",
+			lightGray: "#092637",
 			mediumGrayPrimary: neutralPallet.mediumGrayPrimary,
 			mediumGraySecond: neutralPallet.mediumGrayPrimary,
 			darkGray: neutralPallet.lightGray,

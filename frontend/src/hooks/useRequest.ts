@@ -1,5 +1,5 @@
 import { UseMutateFunction, useMutation, useQuery } from "react-query";
-import { queryClient } from "../contexts/QueryClientContext";
+import { queryClient } from "../contexts/query-client/QueryClientContext";
 import { useLocalStorage } from "./useLocalStorage";
 import { useNavigateSignIn } from "./useNavigateSignIn";
 

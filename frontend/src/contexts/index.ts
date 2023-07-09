@@ -1,3 +1,3 @@
-export * from "./ThemeContext";
-export * from "./QueryClientContext";
-export * from "./UserContext";
+export * from "./theme/ThemeContext";
+export * from "./query-client/QueryClientContext";
+export * from "./user/UserContext";

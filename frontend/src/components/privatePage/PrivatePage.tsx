@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useUserContext } from "../../contexts/UserContext";
+import { useUserContext } from "../../contexts/user/UserContext";
 
 export function PrivatePage({ children }: React.PropsWithChildren) {
 	const { user } = useUserContext();
