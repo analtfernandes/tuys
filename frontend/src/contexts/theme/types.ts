@@ -1,4 +1,4 @@
-import { ThemeType, ThemeTypeName } from "../../styles/palettes";
+import { ThemeType, ThemeTypeName } from "../../assets/styles/palettes";
 import {
 	CallbackType,
 	LocalStorageType,

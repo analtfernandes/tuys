@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import background from "../../images/notfound.avif";
-import priska from "../../images/priska.gif";
+import background from "../../assets/images/notfound.avif";
+import priska from "../../assets/images/priska.gif";
 
 export function NotFoundError() {
 	const [showPriska, setShowPriska] = useState(false);

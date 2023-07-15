@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-import banner from "../../images/banner.svg";
+import banner from "../../assets/images/banner.svg";
 import { Icons } from "../utils";
 
 export function SignStyle({ children }: React.PropsWithChildren) {

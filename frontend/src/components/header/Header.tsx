@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHaveNewNotification } from "../../hooks";
-import logo from "../../images/logo.png";
+import logo from "../../assets/images/logo.png";
 import { Icons } from "../utils";
 import { Search } from "./Search";
 
