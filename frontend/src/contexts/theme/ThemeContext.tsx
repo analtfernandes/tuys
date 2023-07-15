@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import { ThemeProvider } from "styled-components";
-import GlobalStyle from "../../styles/globalStyles";
+import { GlobalStyle } from "../../styles/globalstyles";
 import { palette } from "../../styles/palettes";
 import { contextError } from "../contextError";
 import { useLocalStorage } from "../../hooks";

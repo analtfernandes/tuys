@@ -1,29 +1,3 @@
-export type ThemeType = {
-	name: string;
-	colors: {
-		background: string;
-		text: string;
-
-		primary: string;
-		secundary: string;
-
-		blue: string;
-		pastelBlue: string;
-		rosewater: string;
-		pastelPink: string;
-		pink: string;
-
-		white: string;
-		lightGray: string;
-		mediumGrayPrimary: string;
-		mediumGraySecond: string;
-		darkGray: string;
-		black: string;
-	};
-};
-
-export type ThemeTypeName = "light" | "dark" | "melancholic" | "highlight";
-
 const neutralPallet = {
 	white: "#F2F2F2",
 	lightGray: "#D2D2D2",

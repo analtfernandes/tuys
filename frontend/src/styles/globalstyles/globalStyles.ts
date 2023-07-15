@@ -1,9 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { ThemeType } from "./palettes";
-
-type GlobalStyleType = {
-	variant: ThemeType;
-};
+import { GlobalStyleType } from "./types";
 
 const GlobalStyle = createGlobalStyle<GlobalStyleType>`
     /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -176,4 +172,4 @@ const GlobalStyle = createGlobalStyle<GlobalStyleType>`
     }
 `;
 
-export default GlobalStyle;
+export { GlobalStyle };
