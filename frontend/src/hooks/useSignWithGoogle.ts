@@ -4,7 +4,7 @@ import { firebaseApp } from "../config/firebase";
 import { useThemeContext, useUserContext } from "../contexts";
 import api from "../services/tuys";
 import { useToast } from "./useToast";
-import { useLocalStorage } from "./useLocalStorage";
+import { useLocalStorage } from "./local-storage/useLocalStorage";
 
 function useSignWithGoogle() {
 	const toast = useToast();

@@ -1,8 +1,6 @@
 import { ThemeType, ThemeTypeName } from "../../assets/styles/palettes";
-import {
-	CallbackType,
-	LocalStorageType,
-} from "../../components/utils/Protocols";
+import { CallbackType } from "../../components/utils/Protocols";
+import { LocalStorageType } from "../../hooks/local-storage/types";
 
 type ThemeContextType = {
 	theme: ThemeType;

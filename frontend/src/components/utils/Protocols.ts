@@ -112,14 +112,6 @@ type NotificationType = {
 		| "NEW_UNBAN";
 };
 
-type LocalStorageType = {
-	id: number;
-	username: string;
-	avatar: string;
-	token: string;
-	theme: "light" | "dark" | "melancholic" | "highlight";
-};
-
 type StoryStatusType = "ACTIVE" | "BANNED";
 type UserStatusType = "ACTIVE" | "BANNED";
 
@@ -138,7 +130,6 @@ export type {
 	UserRegisterType,
 	FollowType,
 	NotificationType,
-	LocalStorageType,
 	SetState,
 	CallbackType,
 };
