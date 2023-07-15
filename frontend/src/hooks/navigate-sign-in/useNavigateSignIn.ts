@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useToast } from "./useToast";
+import { useToast } from "../index";
 
 function useNavigateSignIn() {
 	const navigate = useNavigate();

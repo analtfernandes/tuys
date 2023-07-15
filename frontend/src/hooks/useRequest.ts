@@ -1,7 +1,7 @@
 import { UseMutateFunction, useMutation, useQuery } from "react-query";
 import { queryClient } from "../contexts/query-client/QueryClientContext";
 import { useLocalStorage } from "./local-storage/useLocalStorage";
-import { useNavigateSignIn } from "./useNavigateSignIn";
+import { useNavigateSignIn } from "./navigate-sign-in/useNavigateSignIn";
 
 type QueryResponse<Type> = {
 	isLoading: boolean;
