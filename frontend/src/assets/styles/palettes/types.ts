@@ -1,5 +1,5 @@
 type ThemeType = {
-	name: string;
+	name: ThemeTypeName;
 	colors: {
 		background: string;
 		text: string;
@@ -12,6 +12,7 @@ type ThemeType = {
 		rosewater: string;
 		pastelPink: string;
 		pink: string;
+		red: string;
 
 		white: string;
 		lightGray: string;
@@ -24,4 +25,8 @@ type ThemeType = {
 
 type ThemeTypeName = "light" | "dark" | "melancholic" | "highlight";
 
-export type { ThemeType, ThemeTypeName };
+type PaletteType = {
+	[theme in ThemeTypeName]: ThemeType;
+};
+
+export type { ThemeType, ThemeTypeName, PaletteType };

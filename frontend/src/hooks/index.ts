@@ -1,5 +1,5 @@
 export * from "./navigate-sign-in";
-export * from "./useToast";
+export * from "./toast";
 export * from "./request";
 export * from "./sign-with-google";
 export * from "./local-storage";

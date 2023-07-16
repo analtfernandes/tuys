@@ -1,3 +1,5 @@
+import { PaletteType } from "./types";
+
 const neutralPallet = {
 	white: "#F2F2F2",
 	lightGray: "#D2D2D2",
@@ -7,7 +9,7 @@ const neutralPallet = {
 	black: "#0D0D0D",
 };
 
-const theme = {
+const theme: PaletteType = {
 	light: {
 		name: "light",
 		colors: {
