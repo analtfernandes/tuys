@@ -1,24 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { firebaseApp } from "../config/firebase";
-import { useThemeContext, useUserContext } from "../contexts";
-import api from "../services/tuys";
-import { useToast } from "./useToast";
-import { useLocalStorage } from "./local-storage/useLocalStorage";
+import { firebaseApp } from "../../config/firebase";
+import { useThemeContext, useUserContext } from "../../contexts";
+import api from "../../services/tuys";
+import { useToast, useLocalStorage } from "../index";
 
 function useSignWithGoogle() {
+	const navigate = useNavigate();
 	const toast = useToast();
 	const { setUser } = useUserContext();
 	const { setLocalTheme } = useThemeContext();
 	const { localData, addInLocalStorage } = useLocalStorage();
-	const navigate = useNavigate();
 
 	const googleProvider = new GoogleAuthProvider();
 	const auth = getAuth(firebaseApp);
 
 	const defaultValues = {
 		username: "user_",
-		email: "user@gmail.com",
 		avatar:
 			"https://cdn.pixabay.com/photo/2020/12/18/01/27/smile-5840910_640.png",
 	};
@@ -28,25 +26,22 @@ function useSignWithGoogle() {
 			const { user } = await signInWithPopup(auth, googleProvider);
 
 			const data = {
-				username: user.displayName || defaultValues.username,
-				avatar: user.photoURL || defaultValues.avatar,
-				email: user.email || defaultValues.email,
+				username: user.displayName ?? defaultValues.username,
+				avatar: user.photoURL ?? defaultValues.avatar,
+				email: user.email!,
 				password: user.uid,
 			};
 
 			api
 				.postSignWithGoogle(data)
-				.then((response) => {
+				.then((user) => {
 					toast({
 						type: "success",
 						text: "Login realizado com sucesso!",
 					});
 
-					if (response) {
-						addInLocalStorage({ ...response });
-						setUser({ ...response });
-					}
-
+					addInLocalStorage({ ...user });
+					setUser({ ...user! });
 					setLocalTheme(localData.theme || "light");
 
 					navigate("/");
