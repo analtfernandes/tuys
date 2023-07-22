@@ -1,5 +1,11 @@
 import { ChannelType, UserRegisterType } from "../types";
 
+type GetRequestParams = { path: string };
+
+type UpsertRequestParams = { path: string; body?: any; haveResponse?: boolean };
+
+type DeleteRequestParams = { path: string; haveResponse?: boolean };
+
 type PostStoryParams = {
 	title: string;
 	body: string;
@@ -29,6 +35,9 @@ type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
 type PostChannelParams = Omit<ChannelType, "id" | "editable">;
 
 export type {
+	GetRequestParams,
+	UpsertRequestParams,
+	DeleteRequestParams,
 	PostStoryParams,
 	PostCommentParams,
 	PostSignUpParams,
