@@ -1,4 +1,15 @@
 import {
+	PostStoryParams,
+	PostCommentParams,
+	PostSignUpParams,
+	PostSignInParams,
+	PostDenounceParams,
+	PutStoryParams,
+	PutRegisterParams,
+	PostChannelParams,
+} from "./types";
+
+import {
 	ChannelType,
 	CommentType,
 	FollowType,
@@ -10,7 +21,7 @@ import {
 	UserRegisterType,
 	UsersType,
 	UserType,
-} from "./types";
+} from "../types";
 
 const BASE_URI = process.env.REACT_APP_API_URI;
 
@@ -253,24 +264,6 @@ const putChannel = (body: PostChannelParams, channelId: number) => {
 	return putRequest(`/channels/${channelId}`, body);
 };
 
-export type PostStoryParams = {
-	title: string;
-	body: string;
-	channelId: number;
-};
-export type PostCommentParams = {
-	body: { text: string };
-	storyId: number;
-};
-export type PostSignUpParams = Omit<UserRegisterType, "id" | "about"> & {
-	password: string;
-};
-export type PostSignInParams = Omit<PostSignUpParams, "username" | "avatar">;
-export type PostDenounceParams = PostCommentParams;
-export type PutStoryParams = Omit<PostStoryParams, "channelId">;
-export type PutRegisterParams = Omit<UserRegisterType, "id" | "email">;
-export type PostChannelParams = Omit<ChannelType, "id" | "editable">;
-
 const getFunctions = {
 	getChannels,
 	getStories,
@@ -318,11 +311,11 @@ const putFunctions = {
 	putChannel,
 };
 
-const service = {
+const api = {
 	...getFunctions,
 	...postFunctions,
 	...deleteFunctions,
 	...putFunctions,
 };
 
-export default service;
+export { api };

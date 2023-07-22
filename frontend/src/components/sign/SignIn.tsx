@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useThemeContext, useUserContext } from "../../contexts";
-import api, { PostSignInParams } from "../../services/tuys";
+import { api, PostSignInParams } from "../../services";
 import { useToast, useSignWithGoogle, useLocalStorage } from "../../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";

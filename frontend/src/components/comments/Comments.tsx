@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";
 import { useToast, useRequestQuery } from "../../hooks";
 import { Loading } from "../shared";

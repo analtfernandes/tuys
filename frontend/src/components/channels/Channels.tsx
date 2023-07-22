@@ -1,11 +1,10 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api, ChannelType } from "../../services";
 import { useToast } from "../../hooks";
 import { Loading, Subtitle, Title } from "../shared";
 import { Channel } from "./Channel";
-import { ChannelType } from "../../services";
 import { CreateChannel } from "./CreateChannel";
 
 export function Channels() {

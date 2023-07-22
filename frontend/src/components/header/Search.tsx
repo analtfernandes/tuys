@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUserContext } from "../../contexts/user/UserContext";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { useRequestQuery } from "../../hooks";
 import { Icons } from "../utils";
 import { Loading, UserRank } from "../shared";

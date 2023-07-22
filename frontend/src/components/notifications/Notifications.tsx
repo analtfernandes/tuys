@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api, NotificationType } from "../../services";
 import { useRequestMutation, useToast } from "../../hooks";
 import { NotificationTypesEnum, RequestKeyEnum } from "../utils/enums";
-import { NotificationType } from "../../services";
 import { Icons } from "../utils";
 import { Loading, Subtitle, Title } from "../shared";
 

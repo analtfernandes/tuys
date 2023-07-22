@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { SetState } from "../utils/Protocols";
 import { Button } from "../shared";
 import { useRequestMutation, useToast } from "../../hooks";

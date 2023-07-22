@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../../services/tuys";
-import { FollowType } from "../../services";
+import { api, FollowType } from "../../services";
 import { useToast } from "../../hooks";
 import { Loading, Title, UserRank } from "../shared";
 

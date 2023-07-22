@@ -1,4 +1,4 @@
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";
 import { useRequestQuery, useToast } from "../../hooks";
 import { Loading } from "../shared";

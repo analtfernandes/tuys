@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useUserContext } from "../../contexts/user/UserContext";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { useRequestQuery, useToast } from "../../hooks";
 import { StoryStatusType, StoryType } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";

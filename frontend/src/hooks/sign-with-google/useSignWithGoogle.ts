@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from "../../config/firebase";
 import { useThemeContext, useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { useToast, useLocalStorage } from "../index";
 
 function useSignWithGoogle() {

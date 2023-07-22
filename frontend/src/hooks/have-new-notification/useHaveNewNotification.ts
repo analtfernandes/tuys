@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { RequestKeyEnum } from "../../components/utils/enums";
 import { useRequestQuery } from "../index";
 

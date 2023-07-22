@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { useRequestMutation, useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";

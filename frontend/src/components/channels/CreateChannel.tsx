@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import api from "../../services/tuys";
-import { ChannelType } from "../../services";
+import { api, ChannelType } from "../../services";
 import { useToast } from "../../hooks";
 import { Modal, ModalSetStateType } from "../shared";
 import { SetState } from "../utils/Protocols";

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../contexts";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import {
 	useLocalStorage,
 	useRequestMutation,

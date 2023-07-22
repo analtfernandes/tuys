@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import api, { PostSignUpParams } from "../../services/tuys";
+import { api, PostSignUpParams } from "../../services";
 import { useToast, useSignWithGoogle } from "../../hooks";
 import { Icons } from "../utils";
 import { SignStyle } from "./SignStyle";

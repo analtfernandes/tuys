@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";
 import { useRequestQuery, useToast } from "../../hooks";
 import { Story } from "./Story";

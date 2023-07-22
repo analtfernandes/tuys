@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUserContext } from "../../contexts/user/UserContext";
-import api from "../../services/tuys";
+import { api } from "../../services";
 import { useRequestQuery, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
