@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { UserRank } from "../shared/UserRank";
-import { CommentType } from "../utils/Protocols";
+import { CommentType } from "../../services";
 
 type CommentProps = {
 	comment: CommentType;

@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../../services/tuys";
+import { ChannelType } from "../../services";
 import { useToast } from "../../hooks";
-import { ChannelType, SetState } from "../utils/Protocols";
+import {  SetState } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { Modal, ModalSetStateType } from "../shared";
 

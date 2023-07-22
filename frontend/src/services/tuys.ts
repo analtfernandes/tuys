@@ -10,7 +10,7 @@ import {
 	UserRegisterType,
 	UsersType,
 	UserType,
-} from "../components/utils/Protocols";
+} from "./types";
 
 const BASE_URI = process.env.REACT_APP_API_URI;
 

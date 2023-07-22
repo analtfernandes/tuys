@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { StoryStatusType } from "../utils/Protocols";
 import { ChannelStories } from "./ChannelStories";
 import { HomeStories } from "./HomeStories";
 import { RankingStories } from "./RankingStories";

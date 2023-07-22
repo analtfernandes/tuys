@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../../services/tuys";
 import { useToast, useRequestQuery } from "../../hooks";
-import { StoryType } from "../utils/Protocols";
+import { StoryType } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Button, Loading, Title } from "../shared";

@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
 import api from "../../services/tuys";
+import { ChannelType } from "../../services";
 import { useToast } from "../../hooks";
 import { Modal, ModalSetStateType } from "../shared";
-import { ChannelType, SetState } from "../utils/Protocols";
+import { SetState } from "../utils/Protocols";
 import { Icons } from "../utils";
 
 type CreateChannelParams = {

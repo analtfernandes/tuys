@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useUserContext } from "../../contexts/user/UserContext";
 import api from "../../services/tuys";
 import { useRequestQuery, useToast } from "../../hooks";
-import { StoryStatusType, StoryType } from "../utils/Protocols";
+import { StoryStatusType, StoryType } from "../../services";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
 import { Title, Loading } from "../shared";

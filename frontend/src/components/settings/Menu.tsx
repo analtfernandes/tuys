@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useThemeContext, useUserContext } from "../../contexts";
 import api from "../../services/tuys";
+import { UserType } from "../../services";
 import { useLocalStorage, useToast } from "../../hooks";
-import { UserType } from "../utils/Protocols";
 import { Icons } from "../utils";
 import { Title } from "../shared";
 

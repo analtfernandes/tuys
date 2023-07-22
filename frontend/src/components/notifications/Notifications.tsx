@@ -4,7 +4,7 @@ import { useUserContext } from "../../contexts";
 import api from "../../services/tuys";
 import { useRequestMutation, useToast } from "../../hooks";
 import { NotificationTypesEnum, RequestKeyEnum } from "../utils/enums";
-import { NotificationType } from "../utils/Protocols";
+import { NotificationType } from "../../services";
 import { Icons } from "../utils";
 import { Loading, Subtitle, Title } from "../shared";
 

@@ -1,4 +1,5 @@
-import { SetState, UserType } from "../../components/utils/Protocols";
+import { SetState } from "../../components/utils/Protocols";
+import { UserType } from "../../services";
 
 type UserContextType = {
 	user: UserType;
