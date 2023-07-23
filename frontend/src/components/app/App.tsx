@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import {
+	BrowserRouter,
+	Routes,
+	Route,
+	Outlet,
+	Navigate,
+} from "react-router-dom";
 import {
 	ThemeContextProvider,
 	QueryClientContextProvider,
@@ -6,6 +12,8 @@ import {
 } from "../../contexts";
 import { ToastContainer } from "../../hooks";
 
+import SignUp from "../sign/SignUp";
+import SignIn from "../sign/SignIn";
 import { PrivatePage } from "../privatePage/PrivatePage";
 import { Header } from "../header/Header";
 import { Footer } from "../footer/Footer";
@@ -17,9 +25,7 @@ import { MePage } from "../../pages/me/Me";
 import { SettingsPage } from "../../pages/settings/Settings";
 import { UserPage } from "../../pages/user/User";
 import { Stories } from "../stories/Stories";
-import { Settings, Perfil, Themes } from "../settings";
-import SignUp from "../sign/SignUp";
-import SignIn from "../sign/SignIn";
+import { Perfil, Themes } from "../settings";
 import { NotFoundError } from "../errors/NotFoundError";
 
 function App() {
@@ -46,19 +52,21 @@ function App() {
 							>
 								<Route path="" element={<HomePage />} />
 								<Route path="channels" element={<ChannelsPage />} />
+
 								<Route
 									path="channels/:channelName"
 									element={<Stories path="channel" />}
 								/>
+
 								<Route path="ranking" element={<RankingPage />} />
 								<Route path="notifications" element={<NotificationsPage />} />
-
 								<Route path="me" element={<MePage />} />
 								<Route path="user/:userId" element={<UserPage />} />
+
 								<Route path="settings" element={<SettingsPage />}>
-									<Route path="" element={<Settings />} />
 									<Route path="perfil" element={<Perfil />} />
 									<Route path="themes" element={<Themes />} />
+									<Route path="*" element={<Navigate to="perfil" />} />
 								</Route>
 							</Route>
 
