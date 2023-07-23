@@ -4,8 +4,8 @@ import { useUserContext } from "../../contexts";
 import { api, ChannelType } from "../../services";
 import { useToast } from "../../hooks";
 import { Loading, Subtitle, Title } from "../shared";
-import { Channel } from "./Channel";
-import { CreateChannel } from "./CreateChannel";
+import { Channel } from "../channel/Channel";
+import { CreateChannel } from "../create-channel/CreateChannel";
 
 export function Channels() {
 	const [channels, setChannels] = useState<ChannelType[]>([]);
