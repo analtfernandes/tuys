@@ -6,7 +6,7 @@ import { api, StoryType } from "../../services";
 import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Background, Modal, ModalSetStateType, UserRank } from "../shared";
+import { Card, Modal, ModalSetStateType, UserRank } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
 
@@ -150,7 +150,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			)}
 
 			{story.status === "ACTIVE" && (
-				<Background config={{ margin: "20px 0" }}>
+				<Card margin="20px 0">
 					<Author>
 						<UserRank
 							background={owner.rankColor}
@@ -204,7 +204,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
 					</PublishedDate>
 
-					<Background.Div />
+					<Card.Div />
 
 					<Form
 						id={story.id}
@@ -213,7 +213,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						setEditing={setEditing}
 					/>
 
-					<Background.Div />
+					<Card.Div />
 
 					<StoryOptions>
 						{(owner.isOwner || user.status === "BANNED") && (
@@ -265,12 +265,12 @@ export function Story({ story, showChannel = true }: StoryParams) {
 							</>
 						)}
 					</StoryOptions>
-				</Background>
+				</Card>
 			)}
 
 			{story.status === "BANNED" && (
-				<Background
-					config={{ margin: "20px 0" }}
+				<Card
+					margin="20px 0"
 					style={{ filter: "sepia(0.5)", cursor: "default" }}
 				>
 					<Author>
@@ -290,7 +290,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						Publicado em {new Date(story.date).toLocaleDateString("pt-br")}
 					</PublishedDate>
 
-					<Background.Div />
+					<Card.Div />
 
 					<Form
 						id={story.id}
@@ -299,7 +299,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 						setEditing={setEditing}
 					/>
 
-					<Background.Div />
+					<Card.Div />
 
 					<StoryOptions>
 						<Option iconColor="red" banned={true}>
@@ -330,7 +330,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 							</div>
 						</Option>
 					</StoryOptions>
-				</Background>
+				</Card>
 			)}
 
 			{showComment && (

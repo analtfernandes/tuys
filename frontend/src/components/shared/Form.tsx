@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { CallbackType } from "../utils/Protocols";
-import { Background } from "./Background";
+import { Card } from "./Card";
 
 type FormParams = {
 	children: React.ReactNode;
@@ -32,11 +32,11 @@ type DivisionProps = {
 
 export function Form({ children, onSubmit, ...otherProps }: FormParams) {
 	return (
-		<Background config={{ margin: "0 0 20px 0" }}>
+		<Card margin="0 0 20px 0">
 			<Wrapper onSubmit={onSubmit} {...otherProps}>
 				{children}
 			</Wrapper>
-		</Background>
+		</Card>
 	);
 }
 
