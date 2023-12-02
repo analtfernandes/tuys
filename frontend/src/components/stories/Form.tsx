@@ -152,14 +152,14 @@ export function Form({ id, story, editing, setEditing }: FormParams) {
 			{editing && (
 				<Buttons>
 					<Button
-						config={{ type: "primary-invert" }}
+						type="primary-invert"
 						onClick={cancelEdit}
 						disabled={isLoading}
 					>
 						Cancelar
 					</Button>
 
-					<Button config={{ type: "primary" }} disabled={isLoading}>
+					<Button type="primary" disabled={isLoading}>
 						Atualizar
 					</Button>
 				</Buttons>

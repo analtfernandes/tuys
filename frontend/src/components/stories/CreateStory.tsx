@@ -119,7 +119,7 @@ export function CreateStory({ channelId }: CreateStoryParams) {
 			</Form.Section>
 
 			<div style={{ width: "100%", display: "flex", justifyContent: "end" }}>
-				<Button config={{ margin: "0" }} disabled={isLoading}>
+				<Button margin="0" disabled={isLoading}>
 					{isLoading ? <Loading size="small" /> : "Enviar"}
 				</Button>
 			</div>

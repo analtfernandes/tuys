@@ -3,7 +3,7 @@ import { CallbackType } from "../../utils/Protocols";
 type CardParams = {
 	children: React.ReactNode;
 	[key: string]: any;
-};
+} & Partial<Omit<WrapperStyleProps, "getBorderColor">>;
 
 type CardDivParams = {
 	[key: string]: any;

@@ -81,7 +81,7 @@ export function ChannelStories() {
 					{haveMoreStories && haveMoreStories.length > stories.length && (
 						<>
 							<Button
-								config={{ type: "secundary" }}
+								type="secundary"
 								onClick={updateStoriesFunction}
 							>
 								<span style={{ marginRight: "10px" }}>

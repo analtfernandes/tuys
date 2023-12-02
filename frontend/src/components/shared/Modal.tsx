@@ -180,11 +180,11 @@ export function Modal({
 				{data.content}
 
 				<Buttons>
-					<Button config={{ type: "primary-invert" }} onClick={closeModal}>
+					<Button type="primary-invert" onClick={closeModal}>
 						Cancelar
 					</Button>
 
-					<Button config={{ type: "primary" }}>
+					<Button type="primary">
 						{data.continueButtonText}
 					</Button>
 				</Buttons>

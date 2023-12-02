@@ -165,7 +165,7 @@ export function Perfil() {
 							}}
 						>
 							<Button
-								config={{ margin: "0" }}
+								margin="0"
 								disabled={updateRegister.isLoading || user.status === "BANNED"}
 							>
 								{updateRegister.isLoading ? (
