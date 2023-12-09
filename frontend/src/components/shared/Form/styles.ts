@@ -1,60 +1,5 @@
 import styled from "styled-components";
-import { CallbackType } from "../utils/Protocols";
-import { Card } from "./Card";
-
-type FormParams = {
-	children: React.ReactNode;
-	config?: Partial<WrapperProps>;
-	[key: string]: any;
-};
-
-type SectionParams = {
-	children: React.ReactNode;
-	margin?: string;
-	textarea?: { min?: string; max?: string };
-};
-
-type WrapperProps = {
-	width: string;
-	padding: string;
-	margin: string;
-	getBorderColor: CallbackType;
-};
-
-type SectionProps = {
-	margin: string;
-	textarea?: { min?: string; max?: string };
-};
-
-type DivisionProps = {
-	margin: string;
-};
-
-export function Form({ children, onSubmit, ...otherProps }: FormParams) {
-	return (
-		<Card margin="0 0 20px 0">
-			<Wrapper onSubmit={onSubmit} {...otherProps}>
-				{children}
-			</Wrapper>
-		</Card>
-	);
-}
-
-Form.Title = ({ children }: React.PropsWithChildren) => {
-	return <Title>{children}</Title>;
-};
-
-Form.Section = ({ children, margin = "10px 0", textarea }: SectionParams) => {
-	return (
-		<Section margin={margin} textarea={textarea}>
-			{children}
-		</Section>
-	);
-};
-
-Form.Division = ({ margin = "10px 0" }) => {
-	return <Division margin={margin}></Division>;
-};
+import { SectionProps, DivisionProps } from "./types";
 
 const Wrapper = styled.form`
 	width: 100%;
@@ -82,7 +27,7 @@ const Title = styled.h2`
 	}
 `;
 
-const Section = styled.div<SectionProps>`
+const Section = styled.section<SectionProps>`
 	width: 100%;
 	height: auto;
 	display: flex;
@@ -133,7 +78,7 @@ const Section = styled.div<SectionProps>`
 
 	textarea {
 		width: 100%;
-		height: ${(props) => (props?.textarea?.min ? props.textarea.min : "70px")};
+		height: ${(props) => props.textarea.min};
 		border-radius: 5px;
 		resize: none;
 		background-color: ${(props) => props.theme.colors.white};
@@ -177,8 +122,7 @@ const Section = styled.div<SectionProps>`
 		}
 
 		textarea {
-			height: ${(props) =>
-				props?.textarea?.max ? props.textarea.max : "100px"};
+			height: ${(props) => props.textarea.max};
 			font-size: 0.9rem;
 
 			::placeholder {
@@ -188,9 +132,12 @@ const Section = styled.div<SectionProps>`
 	}
 `;
 
-const Division = styled.div<DivisionProps>`
+const Division = styled.hr<DivisionProps>`
 	width: 100%;
 	height: 1px;
 	background-color: ${(props) => props.theme.colors.darkGray};
+	border-color: ${(props) => props.theme.colors.darkGray};
 	margin: ${(props) => props.margin};
 `;
+
+export { Wrapper, Title, Section, Division };

@@ -13,8 +13,8 @@ function Card({ children, ...other }: Readonly<CardParams>) {
 	return (
 		<Wrapper
 			{...other}
-			width={other.width || "100%"}
-			margin={other.margin || "0"}
+			width={other.width ?? "100%"}
+			margin={other.margin ?? "0"}
 			getBorderColor={hexToRGB}
 		>
 			{children}
