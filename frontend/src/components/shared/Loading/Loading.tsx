@@ -3,7 +3,7 @@ import { useThemeContext } from "../../../contexts";
 import { LoadingParams } from "./types";
 import { Wrapper } from "./styles";
 
-function Loading({ size, margin = "20px auto" }: LoadingParams) {
+function Loading({ size, color, margin = "20px auto" }: LoadingParams) {
 	const { theme } = useThemeContext();
 	let loadingSize = 36;
 
@@ -15,7 +15,7 @@ function Loading({ size, margin = "20px auto" }: LoadingParams) {
 			<LoaderSpinner
 				height={loadingSize}
 				width={loadingSize}
-				color={theme.colors.text}
+				color={color ?? theme.colors.text}
 				ariaLabel="loading"
 				secondaryColor="none"
 				strokeWidth={2}
