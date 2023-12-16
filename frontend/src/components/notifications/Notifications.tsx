@@ -81,7 +81,7 @@ export function Notifications() {
 
 	return (
 		<Wrapper>
-			<Title textPadding="0 0 0 15px">Notificações</Title>
+			<Title>Notificações</Title>
 
 			{isLoading && <Loading />}
 
