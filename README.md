@@ -1,8 +1,6 @@
 # :open_book: Tell Us Your Story (TUYS)
 
 TUYS é uma rede social para o compartilhamento de histórias fictícias, direcionado à pessoas que gostem de ler e/ou escrever histórias que explorem sua criatividade.
-<br />
-Gostaria de testar? [Experimente aqui](http://35.153.31.124)
 
 <div align=center>
  <img align=top src="https://user-images.githubusercontent.com/97851922/218341002-519a7d44-e50b-4279-945a-4241ffc481fa.gif" />
@@ -30,12 +28,46 @@ Gostaria de testar? [Experimente aqui](http://35.153.31.124)
 
 <br />
 
+## :ballot_box_with_check: Próximos passos
+
+- [ ] Refatorar o frontend
+  - [ ] Reestruturar os componentes
+  - [ ] Alterar tipagens nos protocolos
+  - [ ] Remover pasta build
+  - [ ] Remover as configurações do firebase
+- [ ] Refatorar o backend
+  - [ ] Alterar os retornos das rotas
+- [ ] Remover os checkpoints desnecessários
+- [ ] Melhorar a acessibilidade
+- [ ] Corrigir bugs
+  - [ ] Fechar input de pesquisa ao clicar em qualquer outro lugar
+  - [ ] Fechar dialogs ao clicar em qualquer outro lugar
+- [ ] Corrigir layout
+  - [ ] Alterar logo
+  - [ ] Tela de notificações para desktop
+  - [ ] Responsividade dos cards das histórias
+  - [ ] Responsividade da página do usuário
+  - [ ] Responsividade dos botões, formulários e dialogs
+  - [ ] Opções de tema clicáveis
+  - [ ] Tela de not found
+- [ ] Adicionar novas feats
+  - [ ] Filtrar notificações
+  - [ ] Fazer upload de avatar
+  - [ ] Permissões de usuário
+  - [ ] Perfil sysadmin
+  - [ ] Banimento permanente de usuários
+- [ ] Adicionar testes no frontend
+- [ ] Adicionar testes unitários no backend
+- [ ] Atualizar documentações
+
+<br />
+
 ## :hammer_and_wrench: Abrir e rodar o projeto
 **Atenção:** para rodar o projeto é preciso ter o [Docker](https://docs.docker.com/engine/install/) e o [Docker Compose](https://docs.docker.com/compose/install/) instalado na sua máquina.
 
 1. Clone esse repositório:
 >```bash
-> git clone https://github.com/AnaLTFernandes/tuys.git
+> git clone https://github.com/anatfernandes/tuys.git
 >```
 
 <br />
