@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { UserRank } from "../shared/UserRank";
+import { UserAvatar } from "../shared";
 import { CommentType } from "../../services";
 
 type CommentProps = {
@@ -14,10 +14,8 @@ export function Comment({ comment }: CommentProps) {
 	return (
 		<Wrapper>
 			<div>
-				<UserRank
-					background={comment.owner.rankColor}
-					image={comment.owner.avatar}
-					alt={comment.owner.username}
+				<UserAvatar
+					user={comment.owner}
 					size="small"
 				/>
 

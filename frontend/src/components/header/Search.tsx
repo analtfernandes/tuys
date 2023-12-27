@@ -5,7 +5,7 @@ import { useUserContext } from "../../contexts/user/UserContext";
 import { api } from "../../services";
 import { useRequestQuery } from "../../hooks";
 import { Icons } from "../utils";
-import { Loading, UserRank } from "../shared";
+import { Loading, UserAvatar } from "../shared";
 
 export function Search() {
 	const { user } = useUserContext();
@@ -50,10 +50,8 @@ export function Search() {
 						{users &&
 							users.map((user, index) => (
 								<User key={index} onClick={() => goToUserPage(user.id)}>
-									<UserRank
-										background={user.rankColor}
-										image={user.avatar}
-										alt={user.username}
+									<UserAvatar
+										user={user}
 										size="small"
 									/>
 

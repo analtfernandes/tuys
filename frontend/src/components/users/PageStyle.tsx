@@ -1,26 +1,27 @@
 import styled from "styled-components";
-import { UserRank } from "../shared";
+import { UserAvatar } from "../shared";
 
 type HeaderParams = {
-	color: string;
-	username: string;
-	avatar: string;
+	user: {
+		username: string;
+		avatar: string;
+		rankColor: string;
+		isAdmin?: boolean;
+	}
 };
 
 export function PageStyle({ children }: React.PropsWithChildren) {
 	return <Wrapper>{children}</Wrapper>;
 }
 
-PageStyle.Header = ({ color, avatar, username }: HeaderParams) => {
+PageStyle.Header = ({ user }: HeaderParams) => {
 	return (
 		<Header>
-			<UserRank
-				background={color}
-				image={avatar}
-				alt={username}
+			<UserAvatar
+				user={user}
 				size={window.innerWidth > 340 ? "large" : "normal"}
 			/>
-			<h1>{username}</h1>
+			<h1>{user.username}</h1>
 		</Header>
 	);
 };

@@ -5,7 +5,7 @@ import { api } from "../../services";
 import { useToast, useRequestMutation } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { UserRank } from "../shared";
+import { UserAvatar } from "../shared";
 
 type CreateCommentParams = {
 	storyId: number;
@@ -50,10 +50,8 @@ export function CreateComment({ storyId, storyIsBanned }: CreateCommentParams) {
 		<Wrapper>
 			{!storyIsBanned && (
 				<>
-					<UserRank
-						background={user.rankColor}
-						image={user.avatar}
-						alt={user.username}
+					<UserAvatar
+						user={user}
 						size="small"
 					/>
 

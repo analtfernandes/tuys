@@ -115,11 +115,7 @@ export function User() {
 
 				{user && (
 					<>
-						<PageStyle.Header
-							color={user.rankColor}
-							avatar={user.avatar}
-							username={user.username}
-						/>
+						<PageStyle.Header user={user} />
 
 						<PageStyle.Sections>
 							<PageStyle.User>

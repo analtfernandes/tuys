@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api, FollowType } from "../../services";
 import { useToast } from "../../hooks";
-import { Loading, Title, UserRank } from "../shared";
+import { Loading, Title, UserAvatar } from "../shared";
 
 type FollowParams = {
 	type: "followers" | "following";
@@ -92,12 +92,10 @@ export function FollowPage({ type, userId = 0 }: FollowParams) {
 
 					{followList &&
 						followList.length > 0 &&
-						followList.map(({ id, username, avatar, rankColor }, index) => (
+						followList.map(({ id, ...user }, index) => (
 							<Link to={`/user/${id}`} key={index}>
-								<UserRank
-									background={rankColor}
-									image={avatar}
-									alt={username}
+								<UserAvatar
+									user={user}
 									size="large"
 								/>
 							</Link>

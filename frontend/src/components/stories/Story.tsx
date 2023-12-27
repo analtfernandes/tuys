@@ -6,7 +6,7 @@ import { api, StoryType } from "../../services";
 import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Card, Modal, ModalSetStateType, UserRank } from "../shared";
+import { Card, Modal, ModalSetStateType, UserAvatar } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
 
@@ -152,12 +152,10 @@ export function Story({ story, showChannel = true }: StoryParams) {
 			{story.status === "ACTIVE" && (
 				<Card margin="20px 0">
 					<Author>
-						<UserRank
-							background={owner.rankColor}
-							image={owner.avatar}
-							alt={owner.username}
+						<UserAvatar
+							user={owner}
+							cursor="pointer"
 							onClick={() => navigate(`/user/${story.userId}`)}
-							style={{ cursor: "pointer" }}
 						/>
 
 						<div>
@@ -274,11 +272,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					style={{ filter: "sepia(0.5)", cursor: "default" }}
 				>
 					<Author>
-						<UserRank
-							background={owner.rankColor}
-							image={owner.avatar}
-							alt={owner.username}
-						/>
+						<UserAvatar user={owner} />
 
 						<div>
 							<span>{owner.username}</span>
