@@ -1,2 +1,2 @@
-export * from "./listChannels";
+export * from "./useListChannels";
 export * from "./types";
