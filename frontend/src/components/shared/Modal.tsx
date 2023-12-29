@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import ReactModal from "react-modal";
-import { useState } from "react";
 import { CallbackType, SetState } from "../utils/Protocols";
-import { Button } from "./Button";
-import { Form } from "./Form";
+import { Button } from "./button";
+import { Form } from "./form";
+import { useForm } from "../../hooks";
+import { test } from "./Modal/test";
 
 ReactModal.setAppElement("#root");
 
@@ -44,8 +45,9 @@ export function Modal({
 	defaultForm,
 	setModalIsOpen,
 	callback,
-}: ModalParams) {
-	const [form, setForm] = useState(defaultForm as ModalForm);
+}: Readonly<ModalParams>) {
+	const { form, handleChange, handleForm, clearForm } = useForm(defaultForm);
+	console.log(test());
 
 	const modalTypeOptions = {
 		denounceStory: {
@@ -84,43 +86,48 @@ export function Modal({
 			),
 			continueButtonText: "Apagar",
 		},
+		// createChannel: {
+		// 	title: "Criar Canal",
+		// 	content: (
+		// 		<>
+		// 			<Form.Section>
+		// 				<label>
+		// 					Nome<em>*</em>
+		// 				</label>
+		// 				<input
+		// 					required
+		// 					autoComplete="off"
+		// 					minLength={3}
+		// 					maxLength={20}
+		// 					type="text"
+		// 					placeholder="Nome do canal..."
+		// 					name="name"
+		// 					value={form?.name || ""}
+		// 					onChange={handleChange}
+		// 				/>
+		// 			</Form.Section>
+		// 			<Form.Section>
+		// 				<label>
+		// 					Imagem<em>*</em>
+		// 				</label>
+		// 				<input
+		// 					required
+		// 					autoComplete="off"
+		// 					type="url"
+		// 					placeholder="Imagem de fundo..."
+		// 					name="background"
+		// 					value={form?.background || ""}
+		// 					onChange={handleChange}
+		// 				/>
+		// 			</Form.Section>
+		// 		</>
+		// 	),
+		// 	continueButtonText: "Enviar",
+		// },
 		createChannel: {
-			title: "Criar Canal",
-			content: (
-				<>
-					<Form.Section>
-						<label>
-							Nome<em>*</em>
-						</label>
-						<input
-							required
-							autoComplete="off"
-							minLength={3}
-							maxLength={20}
-							type="text"
-							placeholder="Nome do canal..."
-							name="name"
-							value={form?.name || ""}
-							onChange={handleChange}
-						/>
-					</Form.Section>
-					<Form.Section>
-						<label>
-							Imagem<em>*</em>
-						</label>
-						<input
-							required
-							autoComplete="off"
-							type="url"
-							placeholder="Imagem de fundo..."
-							name="background"
-							value={form?.background || ""}
-							onChange={handleChange}
-						/>
-					</Form.Section>
-				</>
-			),
-			continueButtonText: "Enviar",
+			content: test().props.children.find((c: any) => c.props?.id === "content")?.props?.children,
+			title: test().props.children.find((c: any) => c.props?.id === "title")?.props?.children,
+			continueButtonText: test().props.children.find((c: any) => c.props?.id === "trigger")?.props?.children,
 		},
 		deleteChannel: {
 			title: "Apagar Canal",
@@ -141,24 +148,11 @@ export function Modal({
 
 	const data = modalTypeOptions[type];
 
-	function handleChange(
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) {
-		setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-	}
+	function submitForm(event: React.FormEvent<HTMLFormElement>) {
+		handleForm(event, callback);
+		clearForm();
 
-	function handleForm(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-
-		if (callback) {
-			callback(form);
-		}
-
-		setForm({});
-
-		if (closeModalOnSubmit) {
-			closeModal();
-		}
+		if (closeModalOnSubmit) closeModal();
 	}
 
 	function closeModal() {
@@ -172,7 +166,7 @@ export function Modal({
 			style={{ overlay: { zIndex: 15, backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
 			shouldCloseOnOverlayClick={false}
 		>
-			<FormStyle onSubmit={handleForm}>
+			<FormStyle onSubmit={submitForm}>
 				<Form.Title>{data.title}</Form.Title>
 
 				<Form.Division margin="15px 0" />
@@ -184,9 +178,7 @@ export function Modal({
 						Cancelar
 					</Button>
 
-					<Button type="primary">
-						{data.continueButtonText}
-					</Button>
+					<Button type="primary">{data.continueButtonText}</Button>
 				</Buttons>
 			</FormStyle>
 		</Wrapper>

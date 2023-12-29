@@ -1,4 +1,4 @@
-import { Card } from "../Card";
+import { Card } from "../card";
 
 import { FormParams, SectionParams } from "./types";
 import { Wrapper, Title, Section, Division } from "./styles";
@@ -13,8 +13,11 @@ function Form({ children, onSubmit, ...other }: Readonly<FormParams>) {
 	);
 }
 
-Form.Title = ({ children }: React.PropsWithChildren) => {
-	return <Title>{children}</Title>;
+Form.Title = ({
+	children,
+	...other
+}: React.PropsWithChildren & { [key: string]: any }) => {
+	return <Title {...other}>{children}</Title>;
 };
 
 Form.Section = ({ children, ...other }: SectionParams) => {

@@ -1,4 +1,4 @@
-import { Loading } from "../Loading";
+import { Loading } from "../loading";
 
 import { Wrapper } from "./styles";
 import { ButtonParams } from "./types";

@@ -8,6 +8,7 @@ type FormParams = {
 
 type SectionParams = {
 	children: React.ReactNode;
+	[key: string]: any;
 } & Partial<SectionProps>;
 
 type SectionProps = {
