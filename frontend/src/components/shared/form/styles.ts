@@ -41,14 +41,18 @@ const Section = styled.section<SectionProps>`
 		color: ${(props) => props.theme.colors.darkGray};
 	}
 
-	em {
+	em, sup {
 		color: ${(props) => props.theme.colors.red};
+		vertical-align: super;
+		font-size: 0.7rem;
+		margin: 0 0.04rem;
 	}
 
 	input {
 		width: 100%;
 		height: 40px;
 		border-radius: 5px;
+		margin-top: 0.3rem;
 		background-color: ${(props) => props.theme.colors.white};
 		border: 1px solid ${(props) => props.theme.colors.mediumGraySecond};
 		padding: 0 11px;
