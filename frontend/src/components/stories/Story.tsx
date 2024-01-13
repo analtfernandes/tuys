@@ -6,7 +6,7 @@ import { api, StoryType } from "../../services";
 import { useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Card, Modal, ModalSetStateType, UserAvatar } from "../shared";
+import { Card, Modal, ModalConfigOptionsType, UserAvatar } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
 
@@ -42,8 +42,8 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	const [showComment, setShowComment] = useState(false);
 	const [modalConfig, setModalConfig] = useState({
 		isOpen: false,
-		type: "delete",
-	} as ModalSetStateType);
+		type: "delete_story",
+	} as ModalConfigOptionsType);
 	const toast = useToast();
 	const { owner } = story;
 
@@ -130,22 +130,20 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 	return (
 		<>
-			{modalConfig.isOpen && modalConfig.type === "denounceStory" && (
+			{modalConfig.isOpen && modalConfig.type === "denounce_story" && (
 				<Modal
-					type="denounceStory"
-					modalIsOpen={modalConfig.isOpen}
-					setModalIsOpen={setModalConfig}
+					type="denounce_story"
 					callback={denounceStory}
+					config={{ modalConfig, setModalConfig }}
 				/>
 			)}
 
-			{modalConfig.isOpen && modalConfig.type === "delete" && (
+			{modalConfig.isOpen && modalConfig.type === "delete_story" && (
 				<Modal
-					type="delete"
-					modalIsOpen={modalConfig.isOpen}
-					setModalIsOpen={setModalConfig}
+					type="delete_story"
 					callback={deleteStoryFunction}
-					storyData={{ name: story.title }}
+					data={{ name: story.title }}
+					config={{ modalConfig, setModalConfig }}
 				/>
 			)}
 
@@ -187,7 +185,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								<Option
 									iconColor="pink"
 									onClick={() =>
-										setModalConfig({ isOpen: true, type: "delete" })
+										setModalConfig({ isOpen: true, type: "delete_story" })
 									}
 								>
 									<div>
@@ -252,7 +250,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								<Option
 									iconColor="pink"
 									onClick={() =>
-										setModalConfig({ isOpen: true, type: "denounceStory" })
+										setModalConfig({ isOpen: true, type: "denounce_story" })
 									}
 								>
 									<div>
