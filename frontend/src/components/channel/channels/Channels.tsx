@@ -1,8 +1,8 @@
-import { useUserContext } from "../../contexts";
-import { useListChannels } from "../../hooks";
-import { Loading, Subtitle, Title } from "../shared";
+import { useUserContext } from "../../../contexts";
+import { useListChannels } from "../../../hooks";
+import { Loading, Subtitle, Title } from "../../shared";
 import { Channel } from "../channel/Channel";
-import { CreateChannel } from "../create-channel/CreateChannel";
+import { CreateChannel } from "../../create-channel/CreateChannel";
 import { Wrapper } from "./styles";
 
 export function Channels() {
