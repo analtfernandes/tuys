@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { api, ChannelType } from "../../services";
-import { useToast } from "../../hooks";
-import {  SetState } from "../utils/Protocols";
-import { Icons } from "../utils";
-import { Modal, ModalSetStateType } from "../shared";
+import { api, ChannelType } from "../../../services";
+import { useToast } from "../../../hooks";
+import {  SetState } from "../../utils/Protocols";
+import { Icons } from "../../utils";
+import { Modal, ModalSetStateType } from "../../shared";
 
 type ChannelParams = {
 	channel: ChannelType;
