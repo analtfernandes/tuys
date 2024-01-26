@@ -6,4 +6,5 @@ export * from "./local-storage";
 export * from "./have-new-notification";
 export * from "./list-channels";
 export * from "./update-channel";
+export * from "./delete-channel";
 export * from "./form";
