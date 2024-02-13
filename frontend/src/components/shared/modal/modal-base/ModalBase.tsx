@@ -9,7 +9,7 @@ function ModalBase({
 	title,
 	content,
 	trigger,
-	config: { modalConfig, setModalConfig },
+	config: { modalConfig, handleCloseModal },
 	callback,
 }: Readonly<ModalBaseParams>) {
 	const wrapperStyle = {
@@ -18,17 +18,13 @@ function ModalBase({
 
 	function submitForm(event: React.FormEvent<HTMLFormElement>) {
 		callback(event);
-		closeModal();
-	}
-
-	function closeModal() {
-		setModalConfig((prev) => ({ ...prev, isOpen: false }));
+		handleCloseModal();
 	}
 
 	return (
 		<Wrapper
 			isOpen={modalConfig.isOpen}
-			onRequestClose={closeModal}
+			onRequestClose={handleCloseModal}
 			style={wrapperStyle}
 			shouldCloseOnOverlayClick={false}
 		>
@@ -40,7 +36,7 @@ function ModalBase({
 				{content}
 
 				<Buttons>
-					<Button type="primary-invert" onClick={closeModal}>
+					<Button type="primary-invert" onClick={handleCloseModal}>
 						Cancelar
 					</Button>
 

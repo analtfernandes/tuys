@@ -1,4 +1,4 @@
-import { CallbackType, SetState } from "../../../utils/Protocols";
+import { CallbackType } from "../../../utils/Protocols";
 
 type ModalBaseParams = {
 	title: string;
@@ -15,7 +15,7 @@ type ModalConfigOptionsType = {
 
 type ModalConfigType = {
 	modalConfig: ModalConfigOptionsType;
-	setModalConfig: SetState<ModalConfigOptionsType>;
+	handleCloseModal: CallbackType;
 };
 
 type ModalTypesCommonParams = {
