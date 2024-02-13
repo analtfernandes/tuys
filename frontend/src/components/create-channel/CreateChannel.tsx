@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { useState } from "react";
 import { api, ChannelType } from "../../services";
-import { useToast } from "../../hooks";
-import { Modal, ModalSetStateType } from "../shared";
+import { useModal, useToast } from "../../hooks";
+import { Modal } from "../shared";
 import { SetState } from "../utils/Protocols";
 import { Icons } from "../utils";
 
@@ -16,10 +15,9 @@ type NewChannel = {
 };
 
 export function CreateChannel({ setChannels }: CreateChannelParams) {
-	const [modalConfig, setModalConfig] = useState({
-		isOpen: false,
-		type: "createChannel",
-	} as ModalSetStateType);
+	const { modalConfig, handleOpenModal, handleCloseModal } = useModal({
+		type: "create_channel",
+	});
 	const toast = useToast();
 
 	function createChannel(data: NewChannel) {
@@ -52,15 +50,12 @@ export function CreateChannel({ setChannels }: CreateChannelParams) {
 			{modalConfig.isOpen && (
 				<Modal
 					type={modalConfig.type}
-					modalIsOpen={modalConfig.isOpen}
-					setModalIsOpen={setModalConfig}
 					callback={createChannel}
+					config={{ modalConfig, handleCloseModal }}
 				/>
 			)}
 
-			<Wrapper
-				onClick={() => setModalConfig((prev) => ({ ...prev, isOpen: true }))}
-			>
+			<Wrapper onClick={handleOpenModal}>
 				<Icons type="following" size={50} title="criar canal" />
 			</Wrapper>
 		</>

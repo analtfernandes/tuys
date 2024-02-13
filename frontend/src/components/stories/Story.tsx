@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../contexts";
 import { api, StoryType } from "../../services";
-import { useRequestMutation, useToast } from "../../hooks";
+import { useModal, useRequestMutation, useToast } from "../../hooks";
 import { RequestKeyEnum } from "../utils/enums";
 import { Icons } from "../utils";
-import { Card, Modal, ModalConfigOptionsType, UserAvatar } from "../shared";
+import { Card, Modal, UserAvatar } from "../shared";
 import { Form } from "./Form";
 import { Comments } from "../comments/Comments";
 
@@ -40,10 +40,12 @@ export function Story({ story, showChannel = true }: StoryParams) {
 	const [like, setLike] = useState(story.likedByUser);
 	const [editing, setEditing] = useState(false);
 	const [showComment, setShowComment] = useState(false);
-	const [modalConfig, setModalConfig] = useState({
-		isOpen: false,
-		type: "delete_story",
-	} as ModalConfigOptionsType);
+	const {
+		modalConfig,
+		handleOpenModal,
+		handleCloseModal,
+		...modalTypes
+	} = useModal();
 	const toast = useToast();
 	const { owner } = story;
 
@@ -53,6 +55,16 @@ export function Story({ story, showChannel = true }: StoryParams) {
 		return Intl.NumberFormat("pt-br", {
 			notation: "compact",
 		}).format(number);
+	}
+
+	function openModal(type: "denounce_story" | "delete_story") {
+		const setModalType = {
+			denounce_story: modalTypes.setDenounceStoryType,
+			delete_story: modalTypes.setDeleteStoryType,
+		}[type];
+
+		setModalType();
+		handleOpenModal();
 	}
 
 	function toggleLike() {
@@ -134,7 +146,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 				<Modal
 					type="denounce_story"
 					callback={denounceStory}
-					config={{ modalConfig, setModalConfig }}
+					config={{ modalConfig, handleCloseModal }}
 				/>
 			)}
 
@@ -143,7 +155,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 					type="delete_story"
 					callback={deleteStoryFunction}
 					data={{ name: story.title }}
-					config={{ modalConfig, setModalConfig }}
+					config={{ modalConfig, handleCloseModal }}
 				/>
 			)}
 
@@ -184,9 +196,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 								</Option>
 								<Option
 									iconColor="pink"
-									onClick={() =>
-										setModalConfig({ isOpen: true, type: "delete_story" })
-									}
+									onClick={() => openModal("delete_story")}
 								>
 									<div>
 										<Icons type="delete" />
@@ -249,9 +259,7 @@ export function Story({ story, showChannel = true }: StoryParams) {
 
 								<Option
 									iconColor="pink"
-									onClick={() =>
-										setModalConfig({ isOpen: true, type: "denounce_story" })
-									}
+									onClick={() => openModal("denounce_story")}
 								>
 									<div>
 										<Icons type="denounce" />
